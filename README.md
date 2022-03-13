@@ -4,9 +4,9 @@ This repository contains the configuration of my RaspberryPi homeserver, automat
 ## Prerequisites
 Install the dependencies:
 ```
-ansible-galaxy install -r requirements.yaml
+ansible-galaxy install -r requirements.yml
 ```
 ## Run 
 ```
-ansible-playbook main.yaml
+ansible-playbook main.yml
 ```
