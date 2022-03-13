@@ -1,0 +1,15 @@
+---
+- name: "Ensure portainer is running as a docker container"
+  community.docker.docker_container:
+    name: portainer
+    image: portainer/portainer-ce
+    ports:
+      - "{{ portainer_https_port }}:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"

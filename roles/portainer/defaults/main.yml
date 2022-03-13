@@ -1,0 +1,3 @@
+---
+# defaults file for portainer
+portainer_https_port: 9443

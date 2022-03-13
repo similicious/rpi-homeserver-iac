@@ -10,3 +10,4 @@
     - essentials
     - geerlingguy.pip
     - geerlingguy.docker_arm
+    - portainer
