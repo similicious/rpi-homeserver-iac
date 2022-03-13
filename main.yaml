@@ -1,0 +1,8 @@
+---
+- name: Setup RaspberryPi homeserver
+  become: true
+  hosts: raspberry
+
+  tasks:
+    - name: ping
+      ping:
