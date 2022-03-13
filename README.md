@@ -6,7 +6,6 @@ Install the dependencies:
 ```
 ansible-galaxy install -r requirements.yaml
 ```
-
 ## Run 
 ```
 ansible-playbook main.yaml
