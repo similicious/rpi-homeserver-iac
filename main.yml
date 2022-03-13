@@ -3,6 +3,10 @@
   become: true
   hosts: raspberry
 
-  tasks:
-    - name: ping
-      ping:
+  vars_files:
+    - ./vars/main.yml
+
+  roles:
+    - essentials
+    - geerlingguy.pip
+    - geerlingguy.docker_arm

@@ -1,6 +1,7 @@
 ---
 roles:
-  - name: geerlingguy.docker
+  - name: geerlingguy.docker_arm
+  - name: geerlingguy.pip
 
 collections:
   - name: community.docker
