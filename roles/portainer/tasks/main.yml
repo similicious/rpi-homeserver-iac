@@ -3,8 +3,6 @@
   community.docker.docker_container:
     name: portainer
     image: portainer/portainer-ce
-    ports:
-      - "{{ portainer_https_port }}:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -13,3 +11,9 @@
     log_options:
       max-size: "200k"
       max-file: "10"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ rpi_hostname }}`)"
+      traefik.http.services.portainer.loadbalancer.server.port: "9000"
+    networks:
+      - name: "{{ traefik_network_name }}"
