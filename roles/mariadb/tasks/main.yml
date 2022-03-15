@@ -1,0 +1,19 @@
+---
+- name: Ensure mariadb is running as a container
+  community.docker.docker_container:
+    name: mariadb
+    image: linuxserver/mariadb
+    ports:
+      - "{{ mariadb_port }}:3306"
+    volumes:
+      - "mariadb_data:/var/lib/mysql"
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Europe/Berlin"
+      MYSQL_ROOT_PASSWORD: "{{ vault_mariadb_root_password }}"
