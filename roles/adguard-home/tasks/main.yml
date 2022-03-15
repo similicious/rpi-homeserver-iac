@@ -1,0 +1,44 @@
+---
+- name: Ensure the config directory exists
+  file:
+    path: "{{ docker_service_conf_dir }}"
+    state: directory
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+
+- name: Ensure the config subfolder for adguard-home exists
+  file:
+    path: "{{ docker_service_conf_dir }}/adguard-home"
+    state: directory
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+
+- name: Ensure the config for adguard-home is present
+  template:
+    src: AdGuardHome.yaml.j2
+    dest: "{{ docker_service_conf_dir }}/adguard-home/AdGuardHome.yaml"
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+  notify: restart_adguard-home
+
+- name: Ensure adguard-home is running as a docker container
+  community.docker.docker_container:
+    name: adguard-home
+    image: adguard/adguardhome
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    volumes:
+      - adguardhome-work:/opt/adguardhome/work
+      - "{{ docker_service_conf_dir }}/adguard-home:/opt/adguardhome/conf"
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.adguard.rule: "Host(`{{ adguard_subdomain }}.{{ rpi_hostname }}`)"
+      traefik.http.services.adguard.loadbalancer.server.port: "80"
+    networks:
+      - name: "{{ traefik_network_name }}"

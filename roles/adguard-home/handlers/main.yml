@@ -1,0 +1,5 @@
+---
+- name: restart_adguard-home
+  community.docker.docker_container:
+    name: adguard-home
+    restart: true
