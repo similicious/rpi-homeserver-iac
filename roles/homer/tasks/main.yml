@@ -1,0 +1,44 @@
+---
+- name: Ensure the config directory exists
+  file:
+    path: "{{ docker_service_conf_dir }}"
+    state: directory
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+
+- name: Ensure the config subfolder for homer exists
+  file:
+    path: "{{ docker_service_conf_dir }}/homer"
+    state: directory
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+
+- name: Ensure the config for homer is present
+  copy:
+    src: config.yml
+    dest: "{{ docker_service_conf_dir }}/homer/config.yml"
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+  notify: restart_homer
+
+- name: Ensure homer is running as a docker container
+  community.docker.docker_container:
+    name: homer
+    image: b4bz/homer
+    volumes:
+      - "{{ docker_service_conf_dir }}/homer:/www/assets"
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"
+    env:
+      UID: "1000"
+      GID: "1000"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homer.rule: "Host(`{{ rpi_hostname }}`)"
+    networks:
+      - name: "{{ traefik_network_name }}"
+#      traefik.http.routers.homer.entrypoints: "https"
+#      traefik.http.routers.homer.tls.certresolver: "letsencrypt"

@@ -1,0 +1,18 @@
+---
+title: "Services on beth"
+subtitle: "RaspberryPi-based homeserver"
+icon: "fas fa-server"
+
+services:
+  - name: Admin
+    icon: "fas fa-gears"
+    items:
+      - name: Portainer
+        icon: "fas fa-container-storage"
+        url: "http://portainer.beth"
+      - name: AdGuard-Home
+        icon: "fas fa-shield-check"
+        url: "http://adguard.beth"
+      - name: Uptime-Kuma
+        icon: "fas fa-shield-check"
+        url: "http://uptime.beth"
