@@ -12,6 +12,6 @@
       max-file: "10"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.uptime.rule: "Host(`{{ uptime_kuma_http_subdomain}}.{{ rpi_hostname }}`)"
+      traefik.http.routers.uptime.rule: "Host(`{{ uptime_kuma_http_subdomain }}.{{ rpi_hostname }}`)"
     networks:
       - name: "{{ traefik_network_name }}"
