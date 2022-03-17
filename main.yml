@@ -18,3 +18,4 @@
     - mariadb
     - uptime-kuma
     - tandoor-recipes
+    - monitoring

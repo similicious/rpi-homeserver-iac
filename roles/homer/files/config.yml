@@ -16,6 +16,9 @@ services:
       - name: Uptime-Kuma
         icon: "fas fa-shield-check"
         url: "http://uptime.beth"
+      - name: Grafana
+        icon: "fas fa-shield-check"
+        url: "http://grafana.beth"
       - name: Traefik
         icon: "fas fa-shield-check"
         url: "http://beth:8082"
