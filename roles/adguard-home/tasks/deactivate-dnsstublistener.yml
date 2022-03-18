@@ -1,0 +1,28 @@
+---
+
+- name: Ensure a directory for systemd-resolve configuration exists
+  file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    owner: 0
+    group: 0
+
+- name: Ensure the custom systemd-reslove config exists
+  copy:
+    src: deactivate-dnsstublistener.conf
+    dest: /etc/systemd/resolved.conf.d/deactivate-dnsstublistener.conf
+    owner: 0
+    group: 0
+
+- name: Ensure /etc/resolv.conf links to /run/systemd/resolve/resolv.conf
+  file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    owner: 0
+    group: 0
+
+- name: Ensure systemd-resolve is restarted
+  service:
+    name: systemd-resolved
+    state: restarted
