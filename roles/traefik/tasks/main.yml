@@ -16,6 +16,7 @@
       # - traefik_ssl_certs:/ssl-certs
     command: >
       --api.insecure=true
+      --metrics.prometheus=true
       --providers.docker
       --providers.docker.exposedByDefault=false
       --accesslog=true

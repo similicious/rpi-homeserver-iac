@@ -36,6 +36,7 @@
             - "{{ docker_service_conf_dir }}/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
           networks:
             - monitoring
+            - "{{ traefik_network_name }}"
           restart: unless-stopped
           logging:
             driver: "json-file"
