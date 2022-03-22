@@ -22,3 +22,6 @@ services:
       - name: Traefik
         icon: "fas fa-shield-check"
         url: "http://beth:8082"
+      - name: Recipes
+        icon: "fas fa-shield-check"
+        url: "http://recipes.beth"
