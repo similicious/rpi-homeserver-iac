@@ -6,9 +6,9 @@
     owner: "{{ rpi_username }}"
     group: "{{ rpi_username }}"
 
-- name: "Ensure the config subfolder for {{ service_name }} exists"
+- name: "Ensure the config subfolder for recipes exists"
   file:
-    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
+    path: "{{ docker_service_conf_dir }}/recipes"
     state: directory
     owner: "{{ rpi_username }}"
     group: "{{ rpi_username }}"
@@ -16,67 +16,87 @@
 - name: "Ensure the environment file exists"
   template:
     src: .env.j2
-    dest: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+    dest: "{{ docker_service_conf_dir }}/recipes/.env"
     owner: "{{ rpi_username }}"
     group: "{{ rpi_username }}"
 
-- name: Make sure the network exists
-  community.docker.docker_network:
-    name: "{{ service_name }}"
+- name: Ensure the tandoor-recipes stack is running
+  docker_compose:
+    project_name: recipes
+    definition:
+      version: "3"
+      services:
 
-- name: Ensure {{ service_name }}_db is running as a container
-  community.docker.docker_container:
-    name: "{{ service_name }}_db"
-    image: postgres:11-alpine
-    ports:
-      - 5432:5432
-    volumes:
-      - "{{ service_name }}_db_data:/var/lib/postgresql/data"
-    env_file: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-    networks:
-      - name: "{{ service_name }}"
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+        db:
+          container_name: recipes-db
+          image: postgres:11-alpine
+          ports:
+            - 5432:5432
+          volumes:
+            - recipes-db_data:/var/lib/postgresql/data
+          env_file:
+            - "{{ docker_service_conf_dir }}/recipes/.env"
+          networks:
+            - app
+          restart: always
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
 
-- name: Ensure {{ service_name }}_app is running as a container
-  community.docker.docker_container:
-    name: "{{ service_name }}_app"
-    image: vabene1111/recipes
-    volumes:
-      - "{{ service_name }}_staticfiles:/opt/recipes/staticfiles"
-      - "{{ service_name }}_nginx_config:/opt/recipes/nginx/conf.d"
-      - "{{ docker_service_conf_dir }}/{{ service_name }}/mediafiles:/opt/recipes/mediafiles"
-    env_file: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-    networks:
-      - name: "{{ service_name }}"
-        aliases:
-          - web_recipes
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+        app:
+          container_name: recipes-app
+          image: vabene1111/recipes
+          env_file:
+            - "{{ docker_service_conf_dir }}/recipes/.env"
+          volumes:
+            - "recipes_staticfiles:/opt/recipes/staticfiles"
+            - "recipes_nginx_config:/opt/recipes/nginx/conf.d"
+            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/opt/recipes/mediafiles"
+          depends_on:
+            - db
+          networks:
+            - app
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
 
-- name: Ensure {{ service_name }}_web is running as a container
-  community.docker.docker_container:
-    name: "{{ service_name }}_web"
-    image: nginx:mainline-alpine
-    volumes:
-      - "{{ service_name }}_staticfiles:/static"
-      - "{{ service_name }}_nginx_config:/etc/nginx/conf.d:ro"
-      - "{{ docker_service_conf_dir }}/{{ service_name }}/mediafiles:/media"
-    env_file: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-    networks:
-      - name: "{{ service_name }}"
-      - name: "{{ traefik_network_name }}"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.recipes.rule: "Host(`{{ service_name }}.{{ rpi_hostname }}`)"
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+        web:
+          container_name: recipes-web
+          image: nginx:mainline-alpine
+          restart: always
+          env_file:
+            - "{{ docker_service_conf_dir }}/recipes/.env"
+          volumes:
+            - "recipes_staticfiles:/static"
+            - "recipes_nginx_config:/etc/nginx/conf.d:ro"
+            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/media"
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ rpi_hostname }}`)"
+            - "traefik.docker.network={{ traefik_network_name }}"
+          depends_on:
+            - app
+          links:
+            - "app:web_recipes"
+          networks:
+            - app
+            - "{{ traefik_network_name }}"
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
+
+      volumes:
+        recipes-db_data:
+        recipes_staticfiles:
+        recipes_nginx_config:
+
+      networks:
+        app:
+        traefik:
+          external: true
