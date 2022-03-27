@@ -1,9 +1,9 @@
 ---
-- name: Make sure the proxy network exists
+- name: Ensure the proxy network exists
   community.docker.docker_network:
     name: "{{ traefik_network_name }}"
 
-- name: Make sure Traefik is running as a container
+- name: Ensure Traefik is running as a container
   community.docker.docker_container:
     name: traefik
     image: traefik
@@ -23,18 +23,18 @@
       --entryPoints.http.address=:80
       --entryPoints.https.address=:443
       --entrypoints.https.http.tls=true
-#      --entryPoints.http.http.redirections.entrypoint.to=https
-#      --entryPoints.http.http.redirections.entrypoint.scheme=https
-#      --entrypoints.https.http.tls.certResolver=letsencrypt
-#      --entrypoints.https.http.tls.domains[0].main=example.com
-#      --entrypoints.https.http.tls.domains[0].sans=*.example.com
-#      --certificatesresolvers.letsencrypt.acme.email=mail@example.com
-#      --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=hetzner
-#      --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json
+    #      --entryPoints.http.http.redirections.entrypoint.to=https
+    #      --entryPoints.http.http.redirections.entrypoint.scheme=https
+    #      --entrypoints.https.http.tls.certResolver=letsencrypt
+    #      --entrypoints.https.http.tls.domains[0].main=example.com
+    #      --entrypoints.https.http.tls.domains[0].sans=*.example.com
+    #      --certificatesresolvers.letsencrypt.acme.email=mail@example.com
+    #      --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=hetzner
+    #      --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json
     networks:
       - name: "{{ traefik_network_name }}"
     env:
-#      HETZNER_API_KEY: "{{ HETZNER_API_KEY }}"
+    #      HETZNER_API_KEY: "{{ HETZNER_API_KEY }}"
     restart_policy: always
     log_driver: json-file
     log_options:
