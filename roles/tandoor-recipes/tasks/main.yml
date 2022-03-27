@@ -26,25 +26,6 @@
     definition:
       version: "3"
       services:
-
-        db:
-          container_name: recipes-db
-          image: postgres:11-alpine
-          ports:
-            - 5432:5432
-          volumes:
-            - recipes-db_data:/var/lib/postgresql/data
-          env_file:
-            - "{{ docker_service_conf_dir }}/recipes/.env"
-          networks:
-            - app
-          restart: always
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
-
         app:
           container_name: recipes-app
           image: vabene1111/recipes
@@ -54,10 +35,9 @@
             - "recipes_staticfiles:/opt/recipes/staticfiles"
             - "recipes_nginx_config:/opt/recipes/nginx/conf.d"
             - "{{ docker_service_conf_dir }}/recipes/mediafiles:/opt/recipes/mediafiles"
-          depends_on:
-            - db
           networks:
             - app
+            - postgres
           logging:
             driver: "json-file"
             options:
@@ -99,4 +79,6 @@
       networks:
         app:
         traefik:
+          external: true
+        postgres:
           external: true

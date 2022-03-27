@@ -1,0 +1,23 @@
+---
+- name: "Ensure the {{ service_name }} network exists"
+  community.docker.docker_network:
+    name: "{{ service_name }}"
+
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: postgres:11-alpine
+    volumes:
+      - "{{ service_name }}_data:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
+    env:
+      POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"
+    labels:
+    networks:
+      - name: "{{ service_name }}"
