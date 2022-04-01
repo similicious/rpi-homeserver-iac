@@ -1,0 +1,68 @@
+---
+- name: "Ensure the config subfolder for {{ service_name }} exists"
+  file:
+    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
+    state: directory
+    owner: "{{ rpi_username }}"
+    group: "{{ rpi_username }}"
+
+- name: "Ensure the {{ service_name }} stack is running"
+  docker_compose:
+    project_name: "{{ service_name }}"
+    definition:
+      version: "3.4"
+
+      services:
+        broker:
+          container_name: "{{ service_name }}-broker"
+          image: redis:6.0
+          restart: unless-stopped
+          volumes:
+            - "{{ service_name }}-broker_data:/data"
+          networks:
+            - app
+
+        app:
+          container_name: "{{ service_name }}-app"
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          restart: unless-stopped
+          depends_on:
+            - broker
+          healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8000"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+          volumes:
+            - "{{ service_name }}-app_data:/usr/src/paperless/data"
+            - "{{ service_name }}-app_media:/usr/src/paperless/media"
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/export:/usr/src/paperless/export"
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/consume:/usr/src/paperless/consume"
+          environment:
+            COMPOSE_PROJECT_NAME: "{{ service_name }}"
+            PAPERLESS_REDIS: redis://broker:6379
+            PAPERLESS_DBHOST: postgres
+            PAPERLESS_DBUSER: postgres
+            PAPERLESS_DBPASS: "{{ vault_postgres_password }}"
+            USERMAP_UID: 1000
+            USERMAP_GID: 1000
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.paperless.rule=Host(`paperless.{{ rpi_hostname }}`)"
+            - "traefik.docker.network={{ traefik_network_name }}"
+          networks:
+            - app
+            - traefik
+            - postgres
+
+      volumes:
+        paperless-ngx-app_data:
+        paperless-ngx-app_media:
+        paperless-ngx-broker_data:
+
+      networks:
+        app:
+        traefik:
+          external: true
+        postgres:
+          external: true

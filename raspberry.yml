@@ -14,5 +14,6 @@
     # - mariadb
     # - uptime-kuma
     # - postgres
-    - tandoor-recipes
+    # - tandoor-recipes
     # - monitoring
+    - paperless-ngx
