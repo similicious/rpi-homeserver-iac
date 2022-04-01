@@ -5,3 +5,6 @@ username: pi
 # Path for docker containers to mount configs etc.
 docker_service_conf_dir: "/home/{{ username }}/docker-services"
 traefik_network_name: traefik
+
+wireguard_address: "10.10.0.2/24"
+wireguard_endpoint: ""
