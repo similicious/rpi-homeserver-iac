@@ -1,7 +1,4 @@
 ---
-
-- import_tasks: ./deactivate-dnsstublistener.yml
-
 - name: Ensure the config directory exists
   file:
     path: "{{ docker_service_conf_dir }}"
@@ -23,6 +20,12 @@
     owner: "{{ username }}"
     group: "{{ username }}"
   notify: restart_adguard-home
+
+- name: Ensure adguard-home docker image is downloaded
+  docker_image:
+    name: adguard/adguardhome
+
+- import_tasks: ./deactivate-dnsstublistener.yml
 
 - name: Ensure adguard-home is running as a docker container
   community.docker.docker_container:

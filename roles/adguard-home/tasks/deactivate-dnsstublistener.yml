@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure a directory for systemd-resolve configuration exists
   file:
     path: /etc/systemd/resolved.conf.d
@@ -14,6 +13,11 @@
     owner: 0
     group: 0
 
+- name: Ensure systemd-resolve is restarted
+  service:
+    name: systemd-resolved
+    state: restarted
+
 - name: Ensure /etc/resolv.conf links to /run/systemd/resolve/resolv.conf
   file:
     src: /run/systemd/resolve/resolv.conf
@@ -21,8 +25,3 @@
     state: link
     owner: 0
     group: 0
-
-- name: Ensure systemd-resolve is restarted
-  service:
-    name: systemd-resolved
-    state: restarted
