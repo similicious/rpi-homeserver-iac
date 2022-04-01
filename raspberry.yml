@@ -3,10 +3,6 @@
   become: true
   hosts: raspberry
 
-  vars_files:
-    - ./vars/main.yml
-    - ./vars/secrets.yml
-
   roles:
     - essentials
     - geerlingguy.pip

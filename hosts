@@ -4,3 +4,10 @@
 [raspberry:vars]
 ansible_user=pi
 ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[jerry]
+20.113.154.172
+
+[jerry:vars]
+ansible_user=similicious
+ansible_ssh_private_key_file=~/.ssh/id_rsa

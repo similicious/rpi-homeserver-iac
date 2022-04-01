@@ -3,22 +3,22 @@
   file:
     path: "{{ docker_service_conf_dir }}"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: Ensure the config subfolder for homer exists
   file:
     path: "{{ docker_service_conf_dir }}/homer"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: Ensure the config for homer is present
   copy:
     src: config.yml
     dest: "{{ docker_service_conf_dir }}/homer/config.yml"
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
   notify: restart_homer
 
 - name: Ensure homer is running as a docker container
@@ -37,7 +37,7 @@
       GID: "1000"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.homer.rule: "Host(`{{ rpi_hostname }}`)"
+      traefik.http.routers.homer.rule: "Host(`{{ hostname }}`)"
     networks:
       - name: "{{ traefik_network_name }}"
 #      traefik.http.routers.homer.entrypoints: "https"

@@ -3,22 +3,22 @@
   file:
     path: "{{ docker_service_conf_dir }}"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: "Ensure the config subfolder for recipes exists"
   file:
     path: "{{ docker_service_conf_dir }}/recipes"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: "Ensure the environment file exists"
   template:
     src: .env.j2
     dest: "{{ docker_service_conf_dir }}/recipes/.env"
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: Ensure the tandoor-recipes stack is running
   docker_compose:
@@ -76,7 +76,7 @@
             - "{{ docker_service_conf_dir }}/recipes/mediafiles:/media"
           labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ rpi_hostname }}`)"
+            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ hostname }}`)"
             - "traefik.docker.network={{ traefik_network_name }}"
           depends_on:
             - app

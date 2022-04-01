@@ -1,13 +1,13 @@
 ---
-- name: "Ensure the hostname is set to {{ rpi_hostname }}"
+- name: "Ensure the hostname is set to {{ hostname }}"
   hostname:
-    name: "{{ rpi_hostname }}"
+    name: "{{ hostname }}"
 
-- name: "Ensure passwordless sudo is enabled for user {{ rpi_username }}"
+- name: "Ensure passwordless sudo is enabled for user {{ username }}"
   lineinfile:
     dest: /etc/sudoers
     regexp: "^%wheel"
-    line: "{{ rpi_username }} ALL=(ALL) NOPASSWD: ALL"
+    line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
     validate: "/usr/sbin/visudo -cf %s"
 
 - name: Ensure all packages are updated to their latest version
