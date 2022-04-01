@@ -1,7 +1,4 @@
 ---
-rpi_hostname: beth
-rpi_username: pi
-
 essential_packages:
   - dnsutils
   - neofetch

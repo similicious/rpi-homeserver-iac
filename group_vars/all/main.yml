@@ -1,0 +1,8 @@
+# Install the docker python sdk for ansible (community.docker)
+pip_install_packages:
+  - name: docker
+  - name: docker-compose
+
+# A list of system users to be added to the docker group
+docker_users:
+  - "{{ username }}"

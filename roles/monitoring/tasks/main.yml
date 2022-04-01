@@ -3,22 +3,22 @@
   file:
     path: "{{ docker_service_conf_dir }}/monitoring"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: Ensure the monitoring subfolder for prometheus exists
   file:
     path: "{{ docker_service_conf_dir }}/monitoring/prometheus"
     state: directory
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
 
 - name: Ensure the prometheus config exists
   copy:
     src: prometheus.yml
     dest: "{{ docker_service_conf_dir }}/monitoring/prometheus/prometheus.yml"
-    owner: "{{ rpi_username }}"
-    group: "{{ rpi_username }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
   notify: restart_prometheus
 
 - name: Ensure the prometheus monitoring stack is running
@@ -54,7 +54,7 @@
             - "{{ traefik_network_name }}"
           labels:
             traefik.enable: "true"
-            traefik.http.routers.grafana.rule: "Host(`{{ grafana_subdomain }}.{{ rpi_hostname }}`)"
+            traefik.http.routers.grafana.rule: "Host(`{{ grafana_subdomain }}.{{ hostname }}`)"
             traefik.http.services.grafana.loadbalancer.server.port: "3000"
             traefik.docker.network: "{{ traefik_network_name }}"
           restart: unless-stopped

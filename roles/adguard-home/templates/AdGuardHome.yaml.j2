@@ -76,9 +76,9 @@ dns:
   cache_time: 30
   rewrites:
   - domain: '*.{{ vault_public_domain }}'
-    answer: {{ rpi_hostname }}
-  - domain: '*.{{ rpi_hostname }}'
-    answer: {{ rpi_hostname }}
+    answer: {{ hostname }}
+  - domain: '*.{{ hostname }}'
+    answer: {{ hostname }}
   blocked_services: []
   upstream_timeout: 10s
   local_domain_name: lan

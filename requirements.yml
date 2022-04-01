@@ -2,6 +2,7 @@
 roles:
   - name: geerlingguy.docker_arm
   - name: geerlingguy.pip
-
+  - name: geerlingguy.docker
+  - name: githubixx.ansible_role_wireguard
 collections:
   - name: community.docker

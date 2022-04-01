@@ -1,0 +1,9 @@
+---
+- name: Setup remote homeserver
+  become: true
+  hosts: jerry
+
+  roles:
+    - essentials
+    - geerlingguy.pip
+    - geerlingguy.docker
