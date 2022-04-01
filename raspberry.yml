@@ -1,19 +1,19 @@
 ---
 - name: Setup RaspberryPi homeserver
   become: true
-  hosts: raspberry
+  hosts: beth
 
   roles:
-    # - essentials
-    # - geerlingguy.pip
-    # - geerlingguy.docker_arm
-    # - traefik
-    # - portainer
-    # - adguard-home
-    # - homer
-    # - mariadb
-    # - uptime-kuma
-    # - postgres
-    # - tandoor-recipes
-    # - monitoring
+    - essentials
+    - geerlingguy.pip
+    - geerlingguy.docker_arm
+    - traefik
+    - portainer
+    - adguard-home
+    - homer
+    - mariadb
+    - uptime-kuma
+    - postgres
+    - tandoor-recipes
+    - monitoring
     - paperless-ngx

@@ -6,3 +6,7 @@ pip_install_packages:
 # A list of system users to be added to the docker group
 docker_users:
   - "{{ username }}"
+
+# Path for docker containers to mount configs etc.
+docker_service_conf_dir: "/home/{{ username }}/docker-services"
+traefik_network_name: traefik
