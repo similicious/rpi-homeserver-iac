@@ -1,0 +1,82 @@
+---
+- name: "Ensure the config subfolder for {{ service_name }} exists"
+  file:
+    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: "Ensure .env file for {{ service_name }} exists"
+  template:
+    src: .env.j2
+    dest: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: Make sure restic backup is running
+  docker_compose:
+    project_name: "{{ service_name }}"
+    definition:
+      version: "3.3"
+
+      services:
+        backup:
+          container_name: "{{ service_name }}-backup"
+          image: mazzolino/restic
+          hostname: "{{ hostname }}"
+          environment:
+            RUN_ON_STARTUP: "true"
+            BACKUP_CRON: "0 30 3 * * *"
+            RESTIC_BACKUP_SOURCES: /backup
+            RESTIC_BACKUP_ARGS: >-
+              --verbose
+            RESTIC_FORGET_ARGS: >-
+              --keep-last 10
+              --keep-daily 7
+              --keep-weekly 5
+              --keep-monthly 12
+          env_file:
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+          volumes:
+            - paperless-ngx_paperless-ngx-app_media:/backup/paperless_media:ro
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
+
+        prune:
+          container_name: "{{ service_name }}-prune"
+          image: mazzolino/restic
+          hostname: "{{ hostname }}"
+          environment:
+            RUN_ON_STARTUP: "true"
+            PRUNE_CRON: "0 0 4 * * *"
+          env_file:
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
+
+        check:
+          container_name: "{{ service_name }}-check"
+          image: mazzolino/restic
+          hostname: "{{ hostname }}"
+          environment:
+            RUN_ON_STARTUP: "false"
+            CHECK_CRON: "0 15 5 * * *"
+            RESTIC_CHECK_ARGS: >-
+              --read-data-subset=10%
+          env_file:
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
+
+      volumes:
+        paperless-ngx_paperless-ngx-app_media:
+          external: true
