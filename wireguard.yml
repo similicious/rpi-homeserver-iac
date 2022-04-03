@@ -5,14 +5,14 @@
     - jerry
     - beth
 
-  # roles:
-  #   - githubixx.ansible_role_wireguard
+  roles:
+    - githubixx.ansible_role_wireguard
 
-  # tasks:
-  #   - name: Enable ip forwarding
-  #     sysctl:
-  #       name: net.ipv4.ip_forward
-  #       value: "1"
-  #       sysctl_set: yes
-  #       state: present
-  #       reload: yes
+  tasks:
+    - name: Enable ip forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        sysctl_set: yes
+        state: present
+        reload: yes

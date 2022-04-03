@@ -10,3 +10,8 @@ docker_users:
 # Path for docker containers to mount configs etc.
 docker_service_conf_dir: "/home/{{ username }}/docker-services"
 traefik_network_name: traefik
+
+wireguard_unmanaged_peers:
+  smartphone:
+    public_key: jHqz4lrMWR04e/7GxA5EvrV20ztKuIeLAUnb00XkLgY=
+    allowed_ips: 10.10.0.3/32
