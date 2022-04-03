@@ -6,7 +6,7 @@
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: postgres:11-alpine
+    image: postgres:13
     volumes:
       - "{{ service_name }}_data:/var/lib/postgresql/data"
     ports:
