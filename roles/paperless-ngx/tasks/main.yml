@@ -46,6 +46,7 @@
             PAPERLESS_DBPASS: "{{ vault_postgres_password }}"
             USERMAP_UID: 1000
             USERMAP_GID: 1000
+            PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.paperless.rule=Host(`paperless.{{ hostname }}`)"
