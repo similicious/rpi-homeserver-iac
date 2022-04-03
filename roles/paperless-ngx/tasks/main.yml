@@ -22,26 +22,12 @@
           networks:
             - app
 
-        db:
-          container_name: "{{ service_name }}-db"
-          image: postgres:13
-          restart: unless-stopped
-          volumes:
-            - "{{ service_name }}-db_data:/var/lib/postgresql/data"
-          environment:
-            POSTGRES_DB: paperless
-            POSTGRES_USER: paperless
-            POSTGRES_PASSWORD: "{{ vault_paperless_db_password }}"
-          networks:
-            - app
-
         app:
           container_name: "{{ service_name }}-app"
           image: ghcr.io/paperless-ngx/paperless-ngx:latest
           restart: unless-stopped
           depends_on:
             - broker
-            - db
           healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8000"]
             interval: 30s
@@ -55,9 +41,9 @@
           environment:
             COMPOSE_PROJECT_NAME: "{{ service_name }}"
             PAPERLESS_REDIS: redis://broker:6379
-            PAPERLESS_DBHOST: db
-            PAPERLESS_DBUSER: paperless
-            PAPERLESS_DBPASS: "{{ vault_paperless_db_password }}"
+            PAPERLESS_DBHOST: postgres
+            PAPERLESS_DBUSER: postgres
+            PAPERLESS_DBPASS: "{{ vault_postgres_password }}"
             USERMAP_UID: 1000
             USERMAP_GID: 1000
           labels:
@@ -67,14 +53,16 @@
           networks:
             - app
             - traefik
+            - postgres
 
       volumes:
         paperless-ngx-app_data:
         paperless-ngx-app_media:
         paperless-ngx-broker_data:
-        paperless-ngx-db_data:
 
       networks:
         app:
         traefik:
+          external: true
+        postgres:
           external: true
