@@ -21,6 +21,11 @@
             - "{{ service_name }}-broker_data:/data"
           networks:
             - app
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
 
         app:
           container_name: "{{ service_name }}-app"
@@ -55,6 +60,11 @@
             - app
             - traefik
             - postgres
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
 
       volumes:
         paperless-ngx-app_data:
