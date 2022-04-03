@@ -72,7 +72,6 @@
               max-file: "10"
 
       volumes:
-        recipes-db_data:
         recipes_staticfiles:
         recipes_nginx_config:
 
