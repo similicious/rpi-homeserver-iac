@@ -39,6 +39,7 @@
             - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
           volumes:
             - paperless-ngx_paperless-ngx-app_media:/backup/paperless_media:ro
+            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/backup/recipes_mediafiles:ro"
           logging:
             driver: "json-file"
             options:
@@ -77,6 +78,29 @@
               max-size: "200k"
               max-file: "10"
 
+        postgres:
+          container_name: "{{ service_name }}-postgres"
+          image: interaction/restic-pg-dump
+          restart: always
+          hostname: "{{ hostname }}"
+          environment:
+            BACKUP_SCHEDULE: "0 3 * * *"
+            PRUNE_SCHEDULE: ""
+            PGHOST: postgres
+            PGUSER: postgres
+            PGPASSWORD: "{{ vault_postgres_password }}"
+            PGPORT: 5432
+            AWS_ACCESS_KEY_ID: "no_using" # setting env for script to work
+            AWS_SECRET_ACCESS_KEY: "aws" # but we don't need it
+          env_file:
+            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+          networks:
+            - postgres
+
       volumes:
         paperless-ngx_paperless-ngx-app_media:
+          external: true
+
+      networks:
+        postgres:
           external: true
