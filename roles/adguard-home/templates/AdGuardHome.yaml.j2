@@ -79,6 +79,10 @@ dns:
     answer: {{ hostname }}
   - domain: '*.{{ hostname }}'
     answer: {{ hostname }}
+  - domain: '*.jerry'
+    answer: 10.10.0.1
+  - domain: 'jerry'
+    answer: 10.10.0.1
   blocked_services: []
   upstream_timeout: 10s
   local_domain_name: lan
