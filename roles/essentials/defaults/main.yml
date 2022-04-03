@@ -3,3 +3,4 @@ essential_packages:
   - dnsutils
   - neofetch
   - iperf
+  - mc
