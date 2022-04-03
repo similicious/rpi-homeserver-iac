@@ -4,5 +4,6 @@ roles:
   - name: geerlingguy.pip
   - name: geerlingguy.docker
   - name: githubixx.ansible_role_wireguard
+  - name: bertvv.samba
 collections:
   - name: community.docker
