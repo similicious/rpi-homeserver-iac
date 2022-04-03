@@ -7,6 +7,8 @@
     - essentials
     - geerlingguy.pip
     - geerlingguy.docker
-    - traefik
     - portainer
+    - traefik
+    - postgres
+    - tandoor-recipes
     - paperless-ngx
