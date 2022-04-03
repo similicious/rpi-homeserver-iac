@@ -96,6 +96,11 @@
             - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
           networks:
             - postgres
+          logging:
+            driver: "json-file"
+            options:
+              max-size: "200k"
+              max-file: "10"
 
       volumes:
         paperless-ngx_paperless-ngx-app_media:
