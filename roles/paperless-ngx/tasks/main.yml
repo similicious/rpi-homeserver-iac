@@ -52,6 +52,7 @@
             USERMAP_UID: 1000
             USERMAP_GID: 1000
             PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
+            PAPERLESS_OCR_LANGUAGE: "deu+eng"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.paperless.rule=Host(`paperless.{{ hostname }}`)"
