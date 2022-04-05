@@ -5,6 +5,7 @@
 
   roles:
     - essentials
+    - geerlingguy.security
     - geerlingguy.pip
     - geerlingguy.docker
     - portainer

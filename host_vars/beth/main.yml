@@ -1,7 +1,9 @@
 ---
+# essentials
 hostname: beth
 username: pi
 
+# githubixx.ansible_role_wireguard
 wireguard_address: "10.10.0.2/24"
 wireguard_endpoint: ""
 wireguard_allowed_ips: "10.10.0.2/32, 192.168.178.0/24"

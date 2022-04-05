@@ -1,9 +1,21 @@
+# essentials
 hostname: jerry
 username: similicious
 
+# geerlingguy.security
+security_ssh_port: 62748
+security_sudoers_passwordless:
+  - "{{ username }}"
+security_autoupdate_reboot: true
+security_autoupdate_reboot_time: "05:00"
+security_autoupdate_mail_to: "{{ vault_autoupdate_mail_to }}"
+security_autoupdate_mail_on_error: true
+
+# githubixx.ansible_role_wireguard
 wireguard_address: "10.10.0.1/24"
 wireguard_endpoint: "20.113.154.172"
 
+# bertvv.samba
 samba_users:
   - name: "{{ username }}"
     password: "{{ vault_samba_user_password }}"
