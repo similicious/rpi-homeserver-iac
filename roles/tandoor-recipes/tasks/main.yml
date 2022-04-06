@@ -29,6 +29,7 @@
         app:
           container_name: recipes-app
           image: vabene1111/recipes
+          restart: always
           env_file:
             - "{{ docker_service_conf_dir }}/recipes/.env"
           volumes:

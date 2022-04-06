@@ -23,6 +23,7 @@
         backup:
           container_name: "{{ service_name }}-backup"
           image: mazzolino/restic
+          restart: always
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "true"
@@ -49,6 +50,7 @@
         prune:
           container_name: "{{ service_name }}-prune"
           image: mazzolino/restic
+          restart: always
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "true"
@@ -64,6 +66,7 @@
         check:
           container_name: "{{ service_name }}-check"
           image: mazzolino/restic
+          restart: always
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "false"
