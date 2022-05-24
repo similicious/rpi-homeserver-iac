@@ -25,3 +25,7 @@ samba_shares:
     path: "{{ docker_service_conf_dir }}/paperless-ngx/consume"
     group: "{{ username }}"
     write_list: "{{ username }}"
+  - name: photoprism-import
+    path: "{{ docker_service_conf_dir }}/photoprism/import"
+    group: "{{ username }}"
+    write_list: "{{ username }}"
