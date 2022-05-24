@@ -16,6 +16,7 @@
 - name: Make sure restic backup is running
   docker_compose:
     project_name: "{{ service_name }}"
+    pull: true
     definition:
       version: "3.3"
 
