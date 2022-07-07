@@ -1,0 +1,10 @@
+---
+- name: Setup hetzner server
+  become: true
+  hosts: sleepy
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
+    - traefik
+    - portainer

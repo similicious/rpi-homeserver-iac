@@ -1,0 +1,21 @@
+# essentials
+hostname: sleepy
+public_domain: "{{ vault_traefik_domain }}"
+username: similicious
+
+# geerlingguy.security
+security_ssh_port: 57369
+security_sudoers_passwordless:
+  - "{{ username }}"
+
+# traefik
+traefik_args: >
+  --entrypoints.https.http.tls.certResolver=letsencrypt
+  --entrypoints.https.http.tls.domains[0].main={{ vault_traefik_domain }}
+  --entrypoints.https.http.tls.domains[0].sans=*.{{ vault_traefik_domain }}
+  --certificatesresolvers.letsencrypt.acme.email={{ vault_email }}
+  --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+  --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=193.47.99.5:53,213.133.100.98:53
+  --certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=10
+  --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=hetzner
+  --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json

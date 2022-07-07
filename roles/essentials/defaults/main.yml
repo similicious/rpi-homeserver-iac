@@ -4,3 +4,6 @@ essential_packages:
   - neofetch
   - iperf
   - mc
+  - bat
+  - exa
+  - zoxide

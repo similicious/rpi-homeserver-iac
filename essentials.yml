@@ -1,0 +1,8 @@
+---
+- name: Essential configuration and security
+  become: true
+  hosts: all
+
+  roles:
+    - essentials
+    - geerlingguy.security

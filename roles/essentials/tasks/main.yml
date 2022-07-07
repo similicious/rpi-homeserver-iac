@@ -3,12 +3,17 @@
   hostname:
     name: "{{ hostname }}"
 
-- name: "Ensure passwordless sudo is enabled for user {{ username }}"
-  lineinfile:
-    dest: /etc/sudoers
-    regexp: "^%wheel"
-    line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
-    validate: "/usr/sbin/visudo -cf %s"
+- name: "Ensure the user {{ username }} exists and is in sudo group"
+  user:
+    name: "{{ username }}"
+    group: sudo
+    shell: /bin/bash
+
+- name: "Ensure the public key is authorized to login as {{ username }}"
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', '/home/similicious/.ssh/id_rsa.pub') }}"
 
 - name: Ensure all packages are updated to their latest version
   apt:
