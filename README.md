@@ -17,3 +17,32 @@ ansible-playbook sleepy.yml --ask-vault-pass
 ```
 ansible-playbook main.yml --ask-vault-pass
 ```
+
+## Apps
+
+#### Restore
+Get snapshot id to restore, use env file from ~/docker-services/resticker
+```
+docker run --env-file .env mazzolino/restic snapshots
+```
+Execute restore
+```
+docker run -v recipes_recipes_mediafiles:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore --include /backup/recipes_mediafiles 
+```
+### Paperless
+
+#### Restore
+Get snapshot id to restore, use env file from ~/docker-services/resticker
+```
+docker run --env-file .env mazzolino/restic snapshots
+```
+Execute restore
+```
+docker run -v paperless-ngx_paperless-ngx-app_media:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore
+```
+
+## Useful stuff
+Run midnight commander in docker
+```
+docker run -it --name=mc -v paperless-ngx_paperless-ngx-app_media:/restore blackvoidclub/midnight-commander
+```

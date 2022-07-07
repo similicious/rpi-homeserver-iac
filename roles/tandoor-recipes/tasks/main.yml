@@ -23,19 +23,20 @@
 - name: Ensure the tandoor-recipes stack is running
   docker_compose:
     project_name: recipes
+    pull: true
     definition:
       version: "3"
       services:
         app:
           container_name: recipes-app
-          image: vabene1111/recipes
+          image: vabene1111/recipes:1.1.1
           restart: always
           env_file:
             - "{{ docker_service_conf_dir }}/recipes/.env"
           volumes:
             - "recipes_staticfiles:/opt/recipes/staticfiles"
             - "recipes_nginx_config:/opt/recipes/nginx/conf.d"
-            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/opt/recipes/mediafiles"
+            - "recipes_mediafiles:/opt/recipes/mediafiles"
           networks:
             - app
             - postgres
@@ -54,10 +55,10 @@
           volumes:
             - "recipes_staticfiles:/static"
             - "recipes_nginx_config:/etc/nginx/conf.d:ro"
-            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/media"
+            - "recipes_mediafiles:/media"
           labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ hostname }}`)"
+            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ public_domain }}`)"
             - "traefik.docker.network={{ traefik_network_name }}"
           depends_on:
             - app
@@ -75,6 +76,7 @@
       volumes:
         recipes_staticfiles:
         recipes_nginx_config:
+        recipes_mediafiles:
 
       networks:
         app:
