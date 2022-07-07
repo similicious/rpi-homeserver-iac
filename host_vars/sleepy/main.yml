@@ -1,6 +1,6 @@
 # essentials
 hostname: sleepy
-public_domain: "{{ vault_traefik_domain }}"
+public_domain: "{{ vault_sleepy_public_domain }}"
 username: similicious
 
 # geerlingguy.security
@@ -10,13 +10,13 @@ security_sudoers_passwordless:
 
 # githubixx.ansible_role_wireguard
 wireguard_address: "10.10.0.5/24"
-wireguard_endpoint: "{{ vault_traefik_domain }}"
+wireguard_endpoint: "{{ public_domain }}"
 
 # traefik
 traefik_args: >
   --entrypoints.https.http.tls.certResolver=letsencrypt
-  --entrypoints.https.http.tls.domains[0].main={{ vault_traefik_domain }}
-  --entrypoints.https.http.tls.domains[0].sans=*.{{ vault_traefik_domain }}
+  --entrypoints.https.http.tls.domains[0].main={{ public_domain }}
+  --entrypoints.https.http.tls.domains[0].sans=*.{{ public_domain }}
   --certificatesresolvers.letsencrypt.acme.email={{ vault_email }}
   --certificatesresolvers.letsencrypt.acme.dnschallenge=true
   --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=193.47.99.5:53,213.133.100.98:53

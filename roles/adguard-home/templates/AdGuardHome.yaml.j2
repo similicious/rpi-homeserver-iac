@@ -75,7 +75,7 @@ dns:
   parental_cache_size: 1048576
   cache_time: 30
   rewrites:
-  - domain: '*.{{ vault_public_domain }}'
+  - domain: '*.{{ public_domain }}'
     answer: {{ hostname }}
   - domain: '*.{{ hostname }}'
     answer: {{ hostname }}
@@ -83,6 +83,10 @@ dns:
     answer: 10.10.0.1
   - domain: 'jerry'
     answer: 10.10.0.1
+  - domain: '*.{{ vault_sleepy_public_domain }}'
+    answer: 10.10.0.5
+  - domain: '{{ vault_sleepy_public_domain }}'
+    answer: 10.10.0.5
   blocked_services: []
   upstream_timeout: 10s
   local_domain_name: lan
