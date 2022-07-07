@@ -2,7 +2,7 @@
 # essentials
 hostname: beth
 username: pi
-public_domain: "{{ hostname }}"
+public_domain: "{{ vault_public_domain }}"
 
 # githubixx.ansible_role_wireguard
 wireguard_address: "10.10.0.2/24"

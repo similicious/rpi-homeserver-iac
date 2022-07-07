@@ -9,6 +9,9 @@ pip_install_packages:
   - name: docker
   - name: docker-compose
 
+# traefik
+traefik_internal_client_ip: "ClientIP(`10.10.0.0/16`, `192.168.178.0/24`, `127.0.0.1`, `::1`)"
+
 # A list of system users to be added to the docker group
 docker_users:
   - "{{ username }}"

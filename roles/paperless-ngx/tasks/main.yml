@@ -1,4 +1,11 @@
 ---
+- name: Ensure the config directory exists
+  file:
+    path: "{{ docker_service_conf_dir }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
 - name: "Ensure the config subfolder for {{ service_name }} exists"
   file:
     path: "{{ docker_service_conf_dir }}/{{ service_name }}"
@@ -54,10 +61,10 @@
             USERMAP_GID: 1000
             PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
             PAPERLESS_OCR_LANGUAGE: "deu+eng"
-            PAPERLESS_URL: "http://paperless.{{ hostname }}"
+            PAPERLESS_URL: "https://paperless.{{ public_domain }}"
           labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.paperless.rule=Host(`paperless.{{ hostname }}`)"
+            - "traefik.http.routers.paperless.rule=Host(`paperless.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
             - "traefik.docker.network={{ traefik_network_name }}"
           networks:
             - app
