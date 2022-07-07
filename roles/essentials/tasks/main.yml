@@ -3,10 +3,19 @@
   hostname:
     name: "{{ hostname }}"
 
+- name: "Ensure the group {{ username }} exists and it id 1000"
+  group:
+    name: "{{ username }}"
+    state: "present"
+    gid: 1000
+
 - name: "Ensure the user {{ username }} exists and is in sudo group"
   user:
     name: "{{ username }}"
-    group: sudo
+    group: "{{ username }}"
+    groups:
+      - sudo
+    append: true
     shell: /bin/bash
 
 - name: "Ensure the public key is authorized to login as {{ username }}"
