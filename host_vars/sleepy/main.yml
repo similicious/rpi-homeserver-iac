@@ -8,6 +8,10 @@ security_ssh_port: 57369
 security_sudoers_passwordless:
   - "{{ username }}"
 
+# githubixx.ansible_role_wireguard
+wireguard_address: "10.10.0.5/24"
+wireguard_endpoint: "{{ vault_traefik_domain }}"
+
 # traefik
 traefik_args: >
   --entrypoints.https.http.tls.certResolver=letsencrypt

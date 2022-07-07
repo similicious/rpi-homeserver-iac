@@ -4,6 +4,7 @@
   hosts:
     - jerry
     - beth
+    - sleepy
 
   roles:
     - githubixx.ansible_role_wireguard
