@@ -85,7 +85,9 @@ dns:
     answer: 10.10.0.1
   - domain: '*.{{ vault_sleepy_public_domain }}'
     answer: 10.10.0.5
-  - domain: '{{ vault_sleepy_public_domain }}'
+  - domain: 'sleepy'
+    answer: 10.10.0.5
+  - domain: '*.sleepy'
     answer: 10.10.0.5
   blocked_services: []
   upstream_timeout: 10s
