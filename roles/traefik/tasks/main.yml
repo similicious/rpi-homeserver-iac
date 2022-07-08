@@ -14,7 +14,9 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_ssl_certs:/ssl-certs
-    command: "{{ traefik_common_args + traefik_args }}"
+    command: >
+      {{ traefik_common_args }}
+      {{ traefik_args }}
     networks:
       - name: "{{ traefik_network_name }}"
     env:

@@ -14,6 +14,9 @@ wireguard_endpoint: "{{ public_domain }}"
 
 # traefik
 traefik_args: >
+  --entrypoints.http.http.redirections.entryPoint.to=https
+  --entrypoints.http.http.redirections.entryPoint.scheme=https
+  --entrypoints.http.http.redirections.entrypoint.permanent=true
   --entrypoints.https.http.tls.certResolver=letsencrypt
   --entrypoints.https.http.tls.domains[0].main={{ public_domain }}
   --entrypoints.https.http.tls.domains[0].sans=*.{{ public_domain }}
