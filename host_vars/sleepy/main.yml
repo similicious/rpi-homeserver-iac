@@ -29,8 +29,9 @@ traefik_args: >
 
 traefik_labels:
   traefik.enable: "true"
-  traefik.http.routers.base-domain.rule: "Host(`{{ public_domain }}`) || Host(`www.{{ public_domain }}`)"
-  traefik.http.routers.base-domain.middlewares: "redirect-base-domain"
-  traefik.http.middlewares.redirect-base-domain.redirectregex.regex: ".*{{ public_domain }}.*"
-  traefik.http.middlewares.redirect-base-domain.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
-  traefik.http.middlewares.redirect-base-domain.redirectregex.permanent: "true"
+  traefik.http.routers.catch-all.rule: "PathPrefix(`/`)"
+  traefik.http.routers.catch-all.priority: "1"
+  traefik.http.routers.catch-all.middlewares: "redirect-catch-all"
+  traefik.http.middlewares.redirect-catch-all.redirectregex.regex: ".*{{ public_domain }}.*"
+  traefik.http.middlewares.redirect-catch-all.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
+  traefik.http.middlewares.redirect-catch-all.redirectregex.permanent: "true"
