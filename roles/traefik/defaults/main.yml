@@ -8,3 +8,4 @@ traefik_common_args: >
   --entryPoints.http.address=:80
   --entryPoints.https.address=:443
   --entrypoints.https.http.tls=true
+traefik_labels:

@@ -19,6 +19,7 @@
       {{ traefik_args }}
     networks:
       - name: "{{ traefik_network_name }}"
+    labels: "{{ traefik_labels }}"
     env:
       HETZNER_API_KEY: "{{ vault_hetzner_api_key }}"
     restart_policy: always

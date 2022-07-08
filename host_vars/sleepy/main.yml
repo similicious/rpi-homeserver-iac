@@ -26,3 +26,11 @@ traefik_args: >
   --certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=10
   --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=hetzner
   --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json
+
+traefik_labels:
+  traefik.enable: "true"
+  traefik.http.routers.base-domain.rule: "Host(`{{ public_domain }}`) || Host(`www.{{ public_domain }}`)"
+  traefik.http.routers.base-domain.middlewares: "redirect-base-domain"
+  traefik.http.middlewares.redirect-base-domain.redirectregex.regex: ".*{{ public_domain }}.*"
+  traefik.http.middlewares.redirect-base-domain.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
+  traefik.http.middlewares.redirect-base-domain.redirectregex.permanent: "true"
