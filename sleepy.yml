@@ -8,6 +8,6 @@
     - geerlingguy.docker
     - traefik
     - portainer
-    - paperless
+    - paperless-ngx
     - tandoor-recipes
-    # - resticker
+    - resticker
