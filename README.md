@@ -13,25 +13,10 @@ ansible-playbook essentials.yml --limit sleepy -e ansible_port=22 -e ansible_use
 ansible-playbook sleepy.yml --ask-vault-pass
 ```
 
-## Run 
-```
-ansible-playbook main.yml --ask-vault-pass
-```
-
 ## Apps
-
-#### Restore
-Get snapshot id to restore, use env file from ~/docker-services/resticker
-```
-docker run --env-file .env mazzolino/restic snapshots
-```
-Execute restore
-```
-docker run -v recipes_recipes_mediafiles:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore --include /backup/recipes_mediafiles 
-```
 ### Paperless
-
 #### Restore
+##### Database
 Get snapshot id to restore, use env file from ~/docker-services/resticker
 ```
 docker run --env-file .env mazzolino/restic snapshots
@@ -40,6 +25,24 @@ Execute restore
 ```
 docker run -v paperless-ngx_paperless-ngx-app_media:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore
 ```
+
+### Recipes
+#### Restore
+##### Mediafiles
+Get snapshot id to restore, use env file from ~/docker-services/resticker
+```
+docker run --env-file .env mazzolino/restic snapshots
+```
+Execute restore
+```
+docker run -v recipes_recipes_mediafiles:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore --include /backup/recipes_mediafiles 
+```
+##### Database
+Create empty recipes database and run recipe app to create the database schema. Then delete all tables and restore backup:
+```
+psql -U postgres -d recipes < recipes.sql 
+```
+
 
 ## Useful stuff
 Run midnight commander in docker
