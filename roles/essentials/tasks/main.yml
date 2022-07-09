@@ -18,11 +18,12 @@
     append: true
     shell: /bin/bash
 
-- name: "Ensure the public key is authorized to login as {{ username }}"
+- name: "Ensure my public keys are authorized to login as {{ username }}"
   authorized_key:
     user: "{{ username }}"
     state: present
-    key: "{{ lookup('file', '/home/similicious/.ssh/id_rsa.pub') }}"
+    key: "{{ item }}"
+  with_items: "{{ ssh_keys }}"
 
 - name: Ensure all packages are updated to their latest version
   apt:
