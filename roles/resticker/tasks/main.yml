@@ -37,11 +37,21 @@
               --keep-daily 7
               --keep-weekly 5
               --keep-monthly 12
+            PRE_COMMANDS: |-
+              docker exec postgres pg_dump -U postgres paperless > /backup/paperless/paperless.sql
+              docker exec postgres pg_dump -U postgres recipes > /backup/recipes/recipes.sql
+            POST_COMMANDS_SUCCESS: |-
+              curl -m 10 https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
+            POST_COMMANDS_FAILURE: |-
+              curl -fsS -m 10 --data-raw "Backup failed" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
+            POST_COMMANDS_INCOMPLETE: |-
+              curl -fsS -m 10 --data-raw "Backup incomplete" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
           env_file:
             - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
           volumes:
-            - paperless-ngx_paperless-ngx-app_media:/backup/paperless_media:ro
-            - "{{ docker_service_conf_dir }}/recipes/mediafiles:/backup/recipes_mediafiles:ro"
+            - paperless-ngx_paperless-ngx-app_media:/backup/paperless/media:ro
+            - recipes_recipes_mediafiles:/backup/recipes/media:ro
+            - /var/run/docker.sock:/var/run/docker.sock
           logging:
             driver: "json-file"
             options:
@@ -81,35 +91,8 @@
             options:
               max-size: "200k"
               max-file: "10"
-
-        postgres:
-          container_name: "{{ service_name }}-postgres"
-          image: interaction/restic-pg-dump
-          restart: always
-          hostname: "{{ hostname }}"
-          environment:
-            BACKUP_SCHEDULE: "0 3 * * *"
-            PRUNE_SCHEDULE: ""
-            PGHOST: postgres
-            PGUSER: postgres
-            PGPASSWORD: "{{ vault_postgres_password }}"
-            PGPORT: 5432
-            AWS_ACCESS_KEY_ID: "no_using" # setting env for script to work
-            AWS_SECRET_ACCESS_KEY: "aws" # but we don't need it
-          env_file:
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-          networks:
-            - postgres
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
-
       volumes:
         paperless-ngx_paperless-ngx-app_media:
           external: true
-
-      networks:
-        postgres:
+        recipes_recipes_mediafiles:
           external: true
