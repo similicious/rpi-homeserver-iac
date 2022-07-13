@@ -25,6 +25,10 @@ Execute restore
 ```
 docker run -v paperless-ngx_paperless-ngx-app_media:/restore --env-file .env mazzolino/restic restore <snapshot_id> --target /restore
 ```
+and recreate the document index
+```
+python manage.py document_index reindex
+```
 
 ### Recipes
 #### Restore

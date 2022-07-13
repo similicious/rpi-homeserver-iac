@@ -35,3 +35,14 @@ traefik_labels:
   traefik.http.middlewares.redirect-catch-all.redirectregex.regex: ".*{{ public_domain }}.*"
   traefik.http.middlewares.redirect-catch-all.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
   traefik.http.middlewares.redirect-catch-all.redirectregex.permanent: "true"
+
+# bertvv.samba
+samba_users:
+  - name: "{{ username }}"
+    password: "{{ vault_samba_user_password }}"
+
+samba_shares:
+  - name: paperless-consume
+    path: "{{ docker_service_conf_dir }}/paperless-ngx/consume"
+    group: "{{ username }}"
+    write_list: "{{ username }}"
