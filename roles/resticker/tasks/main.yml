@@ -41,11 +41,11 @@
               docker exec postgres pg_dump -U postgres paperless > /backup/paperless/paperless.sql
               docker exec postgres pg_dump -U postgres recipes > /backup/recipes/recipes.sql
             POST_COMMANDS_SUCCESS: |-
-              curl -m 10 https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
+              curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
             POST_COMMANDS_FAILURE: |-
-              curl -fsS -m 10 --data-raw "Backup failed" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
+              curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
             POST_COMMANDS_INCOMPLETE: |-
-              curl -fsS -m 10 --data-raw "Backup incomplete" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
+              curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
           env_file:
             - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
           volumes:
