@@ -24,8 +24,14 @@ docker_users:
 
 # Path for docker containers to mount configs etc.
 docker_service_conf_dir: "/home/{{ username }}/docker-services"
+
+# traefik
 traefik_network_name: traefik
 
+# postgres
+postgres_network_name: postgres
+
+# wireguard
 wireguard_unmanaged_peers:
   smartphone:
     public_key: jHqz4lrMWR04e/7GxA5EvrV20ztKuIeLAUnb00XkLgY=

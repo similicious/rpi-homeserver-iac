@@ -20,4 +20,4 @@
       max-file: "10"
     labels:
     networks:
-      - name: "{{ service_name }}"
+      - name: "{{ postgres_network_name }}"

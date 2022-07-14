@@ -1,0 +1,27 @@
+---
+- name: "Make sure {{ service_name }} is running as a container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: nextcloud:24
+    pull: true
+    volumes:
+      - "{{ service_name }}_data:/var/www/html/data"
+      - "{{ service_name }}_config:/var/www/html/config"
+    env:
+      POSTGRES_HOST: postgres:5432
+      POSTGRES_DB: "{{ service_name }}"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "{{ service_name }}.{{ public_domain }}"
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: "200k"
+      max-file: "10"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.nextcloud.rule: "Host(`{{ service_name }}.{{ public_domain }}`)"
+      traefik.docker.network: "{{ traefik_network_name }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
+      - name: "{{ postgres_network_name }}"
