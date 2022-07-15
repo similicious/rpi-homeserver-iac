@@ -5,14 +5,17 @@
     image: nextcloud:24
     pull: true
     volumes:
+      - "{{ service_name }}_app:/var/www/html"
       - "{{ service_name }}_data:/var/www/html/data"
       - "{{ service_name }}_config:/var/www/html/config"
     env:
-      POSTGRES_HOST: postgres:5432
+      POSTGRES_HOST: postgres
       POSTGRES_DB: "{{ service_name }}"
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
       NEXTCLOUD_TRUSTED_DOMAINS: "{{ service_name }}.{{ public_domain }}"
+      NEXTCLOUD_ADMIN_USER: admin
+      NEXTCLOUD_ADMIN_PASSWORD: "{{ vault_nextcloud_admin_password }}"
     restart_policy: always
     log_driver: json-file
     log_options:
