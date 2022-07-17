@@ -1,8 +1,7 @@
 ---
-- name: Setup wireguard vpn between beth and jerry
+- name: Setup wireguard vpn between beth and sleepy
   become: true
   hosts:
-    - jerry
     - beth
     - sleepy
 

@@ -4,12 +4,12 @@
   hosts: sleepy
 
   roles:
-    - geerlingguy.pip
-    - geerlingguy.docker
-    - traefik
-    - portainer
-    - paperless-ngx
-    - tandoor-recipes
+    # - geerlingguy.pip
+    # - geerlingguy.docker
+    # - traefik
+    # - portainer
+    # - paperless-ngx
+    # - tandoor-recipes
     - nextcloud
-    - resticker
-    - bertvv.samba
+    # - resticker
+    # - bertvv.samba

@@ -1,6 +1,5 @@
 
-beth ansible_host=192.168.178.70 ansible_user=pi 
-jerry ansible_host=20.113.37.122 ansible_port=62748 ansible_user=similicious
+beth ansible_host=192.168.178.70 ansible_user=pi
 sleepy ansible_host=138.201.172.4 ansible_port=57369 ansible_user=similicious
 
 [all]
