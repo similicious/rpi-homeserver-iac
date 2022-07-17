@@ -41,6 +41,7 @@
               docker exec postgres pg_dump -U postgres paperless > /backup/paperless/paperless.sql
               docker exec postgres pg_dump -U postgres recipes > /backup/recipes/recipes.sql
               docker exec postgres pg_dump -U postgres nextcloud > /backup/nextcloud/nextcloud.sql
+              docker exec postgres pg_dumpall -U postgres --globals-only > /backup/postgres-globals.sql
             POST_COMMANDS_SUCCESS: |-
               curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
             POST_COMMANDS_FAILURE: |-
