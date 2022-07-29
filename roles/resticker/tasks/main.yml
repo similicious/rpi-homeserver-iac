@@ -53,6 +53,7 @@
           volumes:
             - paperless-ngx_paperless-ngx-app_media:/backup/paperless/media:ro
             - recipes_recipes_mediafiles:/backup/recipes/media:ro
+            - nextcloud_app:/backup/nextcloud/app:ro
             - nextcloud_data:/backup/nextcloud/data:ro
             - nextcloud_config:/backup/nextcloud/config:ro
             - /var/run/docker.sock:/var/run/docker.sock
@@ -99,6 +100,8 @@
         paperless-ngx_paperless-ngx-app_media:
           external: true
         recipes_recipes_mediafiles:
+          external: true
+        nextcloud_app:
           external: true
         nextcloud_config:
           external: true
