@@ -2,7 +2,7 @@
 - name: "Make sure {{ service_name }} is running as a container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: nextcloud:24
+    image: nextcloud:25
     pull: true
     volumes:
       - "{{ service_name }}_app:/var/www/html"
