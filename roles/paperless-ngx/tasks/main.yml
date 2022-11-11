@@ -37,7 +37,7 @@
 
         app:
           container_name: "{{ service_name }}-app"
-          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          image: ghcr.io/paperless-ngx/paperless-ngx:1.9
           restart: unless-stopped
           depends_on:
             - broker
