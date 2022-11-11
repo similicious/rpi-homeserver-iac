@@ -5,7 +5,7 @@
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 28800 --monitor-only --no-startup-message
+    command: --interval 28800 --cleanup --no-startup-message
     env:
       WATCHTOWER_NOTIFICATIONS: "shoutrrr"
       WATCHTOWER_NOTIFICATION_URL: "generic+https://ntfy.sh/{{ vault_ntfy_topic }}?title=WatchtowerOnSleepy"
