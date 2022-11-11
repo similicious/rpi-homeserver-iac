@@ -8,6 +8,7 @@
     - geerlingguy.docker
     - traefik
     - portainer
+    - postgres
     - paperless-ngx
     - tandoor-recipes
     - nextcloud
