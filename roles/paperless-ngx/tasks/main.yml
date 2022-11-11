@@ -23,7 +23,7 @@
       services:
         broker:
           container_name: "{{ service_name }}-broker"
-          image: redis:6.0
+          image: redis:6
           restart: unless-stopped
           volumes:
             - "{{ service_name }}-broker_data:/data"
