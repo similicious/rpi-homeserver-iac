@@ -39,3 +39,6 @@ wireguard_unmanaged_peers:
   ipad:
     public_key: ZEzpus8c+2+UNO94LWTH+8a+l3zZdiqE+nztYDuBagQ=
     allowed_ips: 10.10.0.6/32
+  thinkpad:
+    public_key: UelAtkmNY1eTXFAYysV9oDHMXJmYlrFTaVlHOUFbAhE=
+    allowed_ips: 10.10.0.4/32
