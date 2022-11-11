@@ -23,7 +23,7 @@
       services:
         backup:
           container_name: "{{ service_name }}-backup"
-          image: mazzolino/restic
+          image: mazzolino/restic:1.6.0
           restart: always
           hostname: "{{ hostname }}"
           environment:
@@ -65,11 +65,11 @@
 
         prune:
           container_name: "{{ service_name }}-prune"
-          image: mazzolino/restic
+          image: mazzolino/restic:1.6.0
           restart: always
           hostname: "{{ hostname }}"
           environment:
-            RUN_ON_STARTUP: "true"
+            RUN_ON_STARTUP: "false"
             PRUNE_CRON: "0 0 4 * * *"
           env_file:
             - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
@@ -81,7 +81,7 @@
 
         check:
           container_name: "{{ service_name }}-check"
-          image: mazzolino/restic
+          image: mazzolino/restic:1.6.0
           restart: always
           hostname: "{{ hostname }}"
           environment:
