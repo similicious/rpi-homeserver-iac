@@ -47,6 +47,7 @@
       #
       # All commands may have to be prefixed with "sudo" when not running as root.
       # This will point the home directory shortcut ~ to /root in volume mounts.
+      
       services:
         photoprism:
           container_name: "{{ service_name }}-app"
@@ -114,6 +115,7 @@
           networks:
             - app
             - traefik
+
         mariadb:
           restart: unless-stopped
           image: mariadb:10.9
