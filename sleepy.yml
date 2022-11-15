@@ -4,6 +4,7 @@
   hosts: sleepy
 
   roles:
+    - geerlingguy.swap
     - geerlingguy.pip
     - geerlingguy.docker
     - traefik

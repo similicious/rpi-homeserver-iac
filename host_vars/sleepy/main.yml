@@ -3,6 +3,9 @@ hostname: sleepy
 public_domain: "{{ vault_sleepy_public_domain }}"
 username: similicious
 
+# geerlingguy.swap
+swap_file_size_mb: '4096'
+
 # geerlingguy.security
 security_ssh_port: 57369
 security_sudoers_passwordless:
