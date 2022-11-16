@@ -42,6 +42,7 @@
               docker exec postgres pg_dump -U postgres recipes > /backup/recipes/recipes.sql
               docker exec postgres pg_dump -U postgres nextcloud > /backup/nextcloud/nextcloud.sql
               docker exec postgres pg_dumpall -U postgres --globals-only > /backup/postgres-globals.sql
+              docker exec photoprism-app photoprism backup -i - > /backup/photoprism/photoprism-db.sql
             POST_COMMANDS_SUCCESS: |-
               curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
             POST_COMMANDS_FAILURE: |-
@@ -56,6 +57,7 @@
             - nextcloud_app:/backup/nextcloud/app:ro
             - nextcloud_data:/backup/nextcloud/data:ro
             - nextcloud_config:/backup/nextcloud/config:ro
+            - photoprism_photoprism-app_originals:/backup/photoprism/originals
             - /var/run/docker.sock:/var/run/docker.sock
           logging:
             driver: "json-file"
@@ -106,4 +108,6 @@
         nextcloud_config:
           external: true
         nextcloud_data:
+          external: true
+        photoprism_photoprism-app_originals:
           external: true
