@@ -4,7 +4,7 @@ public_domain: "{{ vault_sleepy_public_domain }}"
 username: similicious
 
 # geerlingguy.swap
-swap_file_size_mb: '4096'
+swap_file_size_mb: "4096"
 
 # geerlingguy.security
 security_ssh_port: 57369
@@ -38,6 +38,8 @@ traefik_labels:
   traefik.http.middlewares.redirect-catch-all.redirectregex.regex: ".*{{ public_domain }}.*"
   traefik.http.middlewares.redirect-catch-all.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
   traefik.http.middlewares.redirect-catch-all.redirectregex.permanent: "true"
+  traefik.http.routers.api.rule: "Host(`traefik.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+  traefik.http.routers.api.service: "api@internal"
 
 # bertvv.samba
 samba_users:
