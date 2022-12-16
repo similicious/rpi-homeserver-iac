@@ -8,7 +8,7 @@
     command: --interval 28800 --cleanup --no-startup-message
     env:
       WATCHTOWER_NOTIFICATIONS: "shoutrrr"
-      WATCHTOWER_NOTIFICATION_URL: "generic+https://ntfy.sh/{{ vault_ntfy_topic }}?title=WatchtowerOnSleepy"
+      WATCHTOWER_NOTIFICATION_URL: "generic+https://ntfy.sh/{{ vault_ntfy_topic }}?title=WatchtowerOn{{ hostname|title }}"
     restart_policy: unless-stopped
     log_driver: json-file
     log_options:
