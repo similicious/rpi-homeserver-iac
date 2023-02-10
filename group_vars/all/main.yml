@@ -22,6 +22,9 @@ traefik_internal_client_ip: "ClientIP(`10.10.0.0/16`, `192.168.178.0/24`, `127.0
 docker_users:
   - "{{ username }}"
 
+docker_daemon_options:
+  log-driver: "local"
+
 # Path for docker containers to mount configs etc.
 docker_service_conf_dir: "/home/{{ username }}/docker-services"
 
