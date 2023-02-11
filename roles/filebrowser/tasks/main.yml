@@ -13,13 +13,6 @@
     owner: "{{ filebrowser_puid | int }}"
     group: "{{ filebrowser_pgid | int }}"
 
-- name: "Ensure empty database for {{ service_name }} is present"
-  ansible.builtin.file:
-    path: "{{ docker_container_data_root }}/{{ service_name }}/filebrowser.db"
-    owner: "{{ filebrowser_puid | int }}"
-    group: "{{ filebrowser_pgid | int }}"
-    state: touch
-
 - name: "Ensure {{ service_name }} is running as a container"
   community.docker.docker_container:
     name: "{{ service_name }}"
