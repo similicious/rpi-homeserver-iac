@@ -1,6 +1,7 @@
 
 beth ansible_host=192.168.178.70 ansible_user=pi
 sleepy ansible_host=138.201.172.4 ansible_port=57369 ansible_user=similicious
+mrmeeseeks ansible_host=192.168.178.80 ansible_user=root
 
 [all]
 ansible_ssh_private_key_file=~/.ssh/id_rsa
