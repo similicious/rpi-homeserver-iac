@@ -10,7 +10,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.portainer.rule: "Host(`portainer.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
     networks:
       - name: "{{ traefik_network_name }}"
