@@ -7,11 +7,7 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+    restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
