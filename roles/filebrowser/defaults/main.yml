@@ -1,0 +1,11 @@
+---
+service_name: filebrowser
+
+filebrowser_puid: 1000
+filebrowser_pgid: 1000
+
+filebrowser_mounts:
+filebrowser_mounts_default:
+  - /var/run/docker.sock:/var/run/docker.sock
+  - "{{ docker_container_data_root }}/{{ service_name }}/filebrowser.db:/database/filebrowser.db"
+  - "{{ docker_container_data_root }}/{{ service_name }}/settings.json:/config/settings.json"

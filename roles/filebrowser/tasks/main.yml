@@ -1,0 +1,37 @@
+---
+- name: "Ensure the appdata directory for {{ service_name }} exists"
+  file:
+    path: "{{ docker_container_data_root }}/{{ service_name }}"
+    state: directory
+    owner: "{{ filebrowser_puid | int }}"
+    group: "{{ filebrowser_pgid | int }}"
+
+- name: "Ensure configuration for {{ service_name }} is present"
+  copy:
+    src: settings.json
+    dest: "{{ docker_container_data_root }}/{{ service_name }}/settings.json"
+    owner: "{{ filebrowser_puid | int }}"
+    group: "{{ filebrowser_pgid | int }}"
+
+- name: "Ensure empty database for {{ service_name }} is present"
+  ansible.builtin.file:
+    path: "{{ docker_container_data_root }}/{{ service_name }}/filebrowser.db"
+    owner: "{{ filebrowser_puid | int }}"
+    group: "{{ filebrowser_pgid | int }}"
+    state: touch
+
+- name: "Ensure {{ service_name }} is running as a container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: filebrowser/filebrowser:s6
+    volumes: "{{ filebrowser_mounts_default + filebrowser_mounts}}"
+    env:
+      PUID: "{{ filebrowser_puid | string }}"
+      PGID: "{{ filebrowser_pgid | string }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.filebrowser.rule: "Host(`filebrowser.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      # traefik.http.services.filebrowser.loadbalancer.server.port: "80"
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ traefik_network_name }}"
