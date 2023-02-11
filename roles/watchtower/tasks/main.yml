@@ -10,7 +10,3 @@
       WATCHTOWER_NOTIFICATIONS: "shoutrrr"
       WATCHTOWER_NOTIFICATION_URL: "generic+https://ntfy.sh/{{ vault_ntfy_topic }}?title=WatchtowerOn{{ hostname|title }}"
     restart_policy: unless-stopped
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
