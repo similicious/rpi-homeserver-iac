@@ -1,0 +1,26 @@
+# essentials
+hostname: mrmeeseeks
+public_domain: "{{ vault_public_domain }}"
+username: similicious
+
+# geerlingguy.swap
+swap_file_size_mb: "4096"
+
+# geerlingguy.security
+security_sudoers_passwordless:
+  - "{{ username }}"
+
+# githubixx.ansible_role_wireguard
+wireguard_address: "10.10.0.5/24"
+wireguard_endpoint: "{{ public_domain }}"
+
+# traefik
+traefik_ssl_certs_dir: "/media/SSD/appdata/traefik/certificates"
+traefik_labels:
+# traefik.http.routers.catch-all.rule: "PathPrefix(`/`)"
+# traefik.http.routers.catch-all.priority: "1"
+# traefik.http.routers.catch-all.middlewares: "redirect-catch-all"
+# traefik.http.middlewares.redirect-catch-all.redirectregex.regex: ".*{{ public_domain }}.*"
+# traefik.http.middlewares.redirect-catch-all.redirectregex.replacement: "{{ vault_traefik_base_domain_redirect_target }}"
+# traefik.http.middlewares.redirect-catch-all.redirectregex.permanent: "true"
+

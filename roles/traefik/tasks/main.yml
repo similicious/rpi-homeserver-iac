@@ -12,17 +12,12 @@
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik_ssl_certs:/ssl-certs
+      - "{{ traefik_ssl_certs_dir }}:/ssl-certs"
     command: >
-      {{ traefik_common_args }}
+      {{ traefik_args_default }}
       {{ traefik_args }}
     networks:
       - name: "{{ traefik_network_name }}"
-    labels: "{{ traefik_labels }}"
-    env:
-      HETZNER_API_KEY: "{{ vault_hetzner_api_key }}"
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+    labels: "{{ traefik_labels_default | combine(traefik_labels) }}"
+    env: "{{ traefik_env }}"
+    restart_policy: unless-stopped

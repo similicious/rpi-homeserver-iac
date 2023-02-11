@@ -1,0 +1,7 @@
+---
+- name: Setup home server
+  hosts: mrmeeseeks
+  become: true
+
+  roles:
+    - traefik

@@ -1,6 +1,8 @@
 ---
 traefik_network_name: traefik
-traefik_common_args: >
+
+traefik_args:
+traefik_args_default: >
   --api.insecure=true
   --providers.docker
   --providers.docker.exposedByDefault=false
@@ -8,4 +10,15 @@ traefik_common_args: >
   --entryPoints.http.address=:80
   --entryPoints.https.address=:443
   --entrypoints.https.http.tls=true
+
 traefik_labels:
+traefik_labels_default:
+  # Expose traefik dashboard on subdomain
+  traefik.enable: "true"
+  traefik.http.routers.api.rule: "Host(`traefik.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+  traefik.http.routers.api.service: "api@internal"
+
+traefik_env:
+
+# Per default, a docker volume is used to store certs
+traefik_ssl_certs_dir: "traefik_ssl_certs"
