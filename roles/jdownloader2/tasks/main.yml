@@ -1,0 +1,18 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: jlesage/jdownloader-2
+    volumes:
+      - "{{ docker_container_data_root }}/{{ service_name }}:/config"
+      - "{{ jdownloader_download_dir }}:/output"
+    restart_policy: unless-stopped
+    env:
+      USER_ID: "{{ docker_container_puid | string }}"
+      GROUP_ID: "{{ docker_container_pgid | string }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.jdownloader.rule: "Host(`jdownloader.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.jdownloader.loadbalancer.server.port: "5800"
+    networks:
+      - name: "{{ traefik_network_name }}"

@@ -16,6 +16,8 @@ wireguard_endpoint: "{{ public_domain }}"
 
 # all docker services
 docker_container_data_root: "/media/SSD/appdata"
+docker_container_puid: 1000
+docker_container_pgid: 100
 
 # traefik
 traefik_ssl_certs_dir: "/media/SSD/appdata/traefik/certificates"
@@ -31,5 +33,6 @@ traefik_labels:
 filebrowser_mounts:
   - /media/Media/Media:/srv/Media
   - /media/SSD:/srv/SSD
-filebrowser_puid: 1000
-filebrowser_pgid: 100
+
+# jdownloader
+jdownloader_download_dir: "/media/SSD/Downloads"
