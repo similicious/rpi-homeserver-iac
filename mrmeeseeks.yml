@@ -4,8 +4,10 @@
   become: true
 
   roles:
+    - geerlingguy.pip
     - traefik
     - portainer
     - watchtower
     - filebrowser
     - jdownloader2
+    - nzb

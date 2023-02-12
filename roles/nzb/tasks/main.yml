@@ -1,0 +1,64 @@
+---
+- name: "Ensure the appdata directory for services exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  with_items:
+    - "{{ nzb_sabnzbd_config_dir }}"
+    - "{{ nzb_sonarr_config_dir }}"
+
+- name: "Ensure the {{ service_name }} stack is running"
+  docker_compose:
+    project_name: "{{ service_name }}"
+    definition:
+      version: "3.4"
+
+      services:
+        sabnzbd:
+          container_name: "sabnzbd"
+          image: linuxserver/sabnzbd
+          restart: unless-stopped
+          volumes:
+            - "{{ nzb_sabnzbd_config_dir }}:/config"
+            - "{{ nzb_sabnzbd_complete_dir }}:/downloads"
+            - "{{ nzb_sabnzbd_incomplete_dir }}:/incomplete-downloads"
+          networks:
+            - nzb
+            - "{{ traefik_network_name }}"
+          environment:
+            TZ: Europe/Berlin
+            PUID: "{{ docker_container_puid }}"
+            PGID: "{{ docker_container_pgid }}"
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            - "traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
+            - "traefik.docker.network={{ traefik_network_name }}"
+
+        sonarr:
+          container_name: "sonarr"
+          image: linuxserver/sonarr
+          restart: unless-stopped
+          volumes:
+            - "{{ nzb_sonarr_config_dir }}:/config"
+            - "{{ nzb_sabnzbd_complete_dir }}:/downloads"
+            - "{{ nzb_sonarr_tv_dir }}:/storage/TV"
+          networks:
+            - nzb
+            - "{{ traefik_network_name }}"
+          environment:
+            TZ: Europe/Berlin
+            PUID: "{{ docker_container_puid }}"
+            PGID: "{{ docker_container_pgid }}"
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.sonarr.rule=Host(`sonarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+            - "traefik.docker.network={{ traefik_network_name }}"
+
+      networks:
+        nzb:
+        traefik:
+          external: true
