@@ -41,6 +41,7 @@ jdownloader_download_dir: "/media/SSD/Downloads"
 nzb_sabnzbd_complete_dir: "/media/SSD/Downloads/complete"
 nzb_sabnzbd_incomplete_dir: "/media/SSD/Downloads/incomplete"
 nzb_sonarr_tv_dir: "/media/Media/Media/Serien"
+nzb_radarr_movie_dir: "/media/Media/Media/Filme"
 
 # jellyfin
 jellyfin_media_mounts:
