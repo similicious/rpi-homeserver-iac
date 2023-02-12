@@ -1,0 +1,6 @@
+---
+service_name: "jellyfin"
+jellyfin_config_dir: "{{ docker_container_data_root }}/jellyfin"
+jellyfin_config_mount:
+  - "{{ jellyfin_config_dir }}:/config"
+jellyfin_media_mounts:

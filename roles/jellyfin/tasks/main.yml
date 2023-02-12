@@ -1,0 +1,22 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: linuxserver/jellyfin
+    volumes: "{{ jellyfin_media_mounts + jellyfin_config_mount }}"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.jellyfin.loadbalancer.server.port: "8096"
+    ports:
+      - "8096:8096"
+    env:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    networks:
+      - name: "{{ traefik_network_name }}"
