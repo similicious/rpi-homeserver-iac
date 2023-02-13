@@ -3,7 +3,7 @@ traefik_network_name: traefik
 
 traefik_args:
 traefik_args_default: >
-  --api.insecure=true
+  --api.dashboard=true
   --providers.docker
   --providers.docker.exposedByDefault=false
   --accesslog=true
