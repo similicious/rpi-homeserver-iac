@@ -10,3 +10,5 @@ nzb_sonarr_tv_dir:
 
 nzb_radarr_config_dir: "{{ docker_container_data_root }}/radarr"
 nzb_radarr_movie_dir:
+
+nzb_bazarr_config_dir: "{{ docker_container_data_root }}/bazarr"
