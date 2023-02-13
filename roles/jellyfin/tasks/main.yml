@@ -1,6 +1,7 @@
 ---
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
+    hostname: "{{ service_name }}"
     name: "{{ service_name }}"
     image: linuxserver/jellyfin
     volumes: "{{ jellyfin_media_mounts + jellyfin_config_mount }}"
@@ -13,6 +14,10 @@
       TZ: Europe/Berlin
       PUID: "{{ docker_container_puid | string }}"
       PGID: "{{ docker_container_pgid | string }}"
+      JELLYFIN_PublishedServerUrl: "https://jellyfin.{{ public_domain }}"
+    ports:
+      - 7359:7359/udp
+      - 1900:1900/udp
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dri/card0:/dev/dri/card0
