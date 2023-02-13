@@ -8,7 +8,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ public_domain }}`)"
       traefik.http.services.jellyfin.loadbalancer.server.port: "8096"
     env:
       TZ: Europe/Berlin
