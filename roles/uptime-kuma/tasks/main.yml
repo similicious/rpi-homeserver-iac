@@ -1,17 +1,12 @@
 ---
-- name: Ensure uptime-kuma is running as a container
+- name: "Ensure {{ service_name }} is running as a container"
   community.docker.docker_container:
-    name: uptime-kuma
+    name: "{{ service_name }}"
     image: louislam/uptime-kuma
     volumes:
-      - "uptime-kuma_data:/app/data"
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+      - "{{ uptime_kuma_data_dir }}:/app/data"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.uptime.rule: "Host(`{{ uptime_kuma_http_subdomain }}.{{ hostname }}`)"
+      traefik.http.routers.uptime.rule: "Host(`uptime.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
     networks:
       - name: "{{ traefik_network_name }}"

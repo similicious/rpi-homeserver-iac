@@ -1,2 +1,4 @@
 ---
-uptime_kuma_http_subdomain: "uptime"
+service_name: "uptime-kuma"
+
+uptime_kuma_data_dir: "{{ docker_container_data_root }}/uptimekuma"
