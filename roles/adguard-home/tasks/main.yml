@@ -1,50 +1,44 @@
 ---
-- name: Ensure the config directory exists
+- name: "Ensure the folder structure for {{ service_name }} exists"
   file:
-    path: "{{ docker_service_conf_dir }}"
+    path: "{{ item }}"
     state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  with_items:
+    - "{{ adguard_config_dir }}"
+    - "{{ adguard_config_dir }}/conf"
+    - "{{ adguard_config_dir }}/work"
 
-- name: Ensure the config subfolder for adguard-home exists
-  file:
-    path: "{{ docker_service_conf_dir }}/adguard-home"
-    state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
-
-- name: Ensure the config for adguard-home is present
+- name: "Ensure the config for {{ service_name }} is present"
   template:
     src: AdGuardHome.yaml.j2
-    dest: "{{ docker_service_conf_dir }}/adguard-home/AdGuardHome.yaml"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-  notify: restart_adguard-home
+    dest: "{{ adguard_config_dir }}/conf/AdGuardHome.yaml"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  notify: restart_adguard
 
 - name: Ensure adguard-home docker image is downloaded
   docker_image:
     name: adguard/adguardhome
+    source: pull
 
 - import_tasks: ./deactivate-dnsstublistener.yml
 
 - name: Ensure adguard-home is running as a docker container
   community.docker.docker_container:
-    name: adguard-home
+    name: "{{ service_name }}"
     image: adguard/adguardhome
     ports:
       - 53:53/tcp
       - 53:53/udp
     volumes:
-      - adguardhome-work:/opt/adguardhome/work
-      - "{{ docker_service_conf_dir }}/adguard-home:/opt/adguardhome/conf"
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
+      - "{{ adguard_config_dir }}/work:/opt/adguardhome/work"
+      - "{{ adguard_config_dir }}/conf:/opt/adguardhome/conf"
+    restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.adguard.rule: "Host(`{{ adguard_subdomain }}.{{ hostname }}`)"
+      traefik.http.routers.adguard.rule: "Host(`adguard.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.adguard.loadbalancer.server.port: "80"
     networks:
       - name: "{{ traefik_network_name }}"

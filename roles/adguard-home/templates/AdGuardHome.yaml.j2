@@ -1,6 +1,5 @@
 bind_host: 0.0.0.0
 bind_port: 80
-beta_bind_port: 0
 users:
   - name: similicious
     password: {{ vault_adguard_password }}
@@ -8,17 +7,13 @@ auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
 language: ""
+theme: auto
 debug_pprof: false
 web_session_ttl: 720
 dns:
   bind_hosts:
-  - 0.0.0.0
+    - 0.0.0.0
   port: 53
-  statistics_interval: 1
-  querylog_enabled: true
-  querylog_file_enabled: true
-  querylog_interval: 2160h
-  querylog_size_memory: 1000
   anonymize_client_ip: false
   protection_enabled: true
   blocking_mode: default
@@ -31,28 +26,28 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
-  - https://dns10.quad9.net/dns-query
-  - tls://dns2.digitalcourage.de
-  - '[//]192.168.178.1'
-  - '[/fritz.box/]192.168.178.1'
+    - https://dns10.quad9.net/dns-query
+    - tls://dns2.digitalcourage.de
+    - '[//]192.168.178.1'
+    - '[/fritz.box/]192.168.178.1'
   upstream_dns_file: ""
   bootstrap_dns:
-  - 9.9.9.10
-  - 149.112.112.10
-  - 2620:fe::10
-  - 2620:fe::fe:10
+    - 9.9.9.10
+    - 149.112.112.10
+    - 2620:fe::10
+    - 2620:fe::fe:10
   all_servers: false
   fastest_addr: false
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
   blocked_hosts:
-  - version.bind
-  - id.server
-  - hostname.bind
+    - version.bind
+    - id.server
+    - hostname.bind
   trusted_proxies:
-  - 127.0.0.0/8
-  - ::1/128
+    - 127.0.0.0/8
+    - ::1/128
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
@@ -75,23 +70,17 @@ dns:
   parental_cache_size: 1048576
   cache_time: 30
   rewrites:
-  - domain: '*.{{ public_domain }}'
-    answer: {{ hostname }}
-  - domain: '*.{{ hostname }}'
-    answer: {{ hostname }}
-  - domain: '*.{{ vault_sleepy_public_domain }}'
-    answer: 10.10.0.5
-  - domain: sleepy
-    answer: 10.10.0.5
-  - domain: '*.sleepy'
-    answer: 10.10.0.5
-  - domain: '*.mrmeeseeks'
-    answer: 192.168.178.80
+{% for rewrite in adguard_rewrites %}
+    - domain: '{{ rewrite.domain }}'
+      answer: {{ rewrite.answer }}
+{% endfor %}
   blocked_services: []
   upstream_timeout: 10s
   private_networks: []
   use_private_ptr_resolvers: true
   local_ptr_upstreams: []
+  use_dns64: false
+  dns64_prefixes: []
   serve_http3: false
   use_http3_upstreams: false
 tls:
@@ -109,31 +98,41 @@ tls:
   certificate_path: ""
   private_key_path: ""
   strict_sni_check: false
+querylog:
+  enabled: true
+  file_enabled: true
+  interval: 2160h
+  size_memory: 1000
+  ignored: []
+statistics:
+  enabled: true
+  interval: 1
+  ignored: []
 filters:
-- enabled: true
-  url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
-  name: AdGuard DNS filter
-  id: 1
-- enabled: true
-  url: https://adaway.org/hosts.txt
-  name: AdAway Default Blocklist
-  id: 2
-- enabled: true
-  url: https://easylist.to/easylist/easylist.txt
-  name: EasyList
-  id: 1620480499
-- enabled: true
-  url: https://easylist.to/easylistgermany/easylistgermany.txt
-  name: EasyList Germany
-  id: 1620480500
-- enabled: true
-  url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-  name: StevenBlack
-  id: 1620480501
-- enabled: true
-  url: https://easylist.to/easylist/easyprivacy.txt
-  name: EasyPrivacy
-  id: 1620480502
+  - enabled: true
+    url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: true
+    url: https://adaway.org/hosts.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: true
+    url: https://easylist.to/easylist/easylist.txt
+    name: EasyList
+    id: 1620480499
+  - enabled: true
+    url: https://easylist.to/easylistgermany/easylistgermany.txt
+    name: EasyList Germany
+    id: 1620480500
+  - enabled: true
+    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    name: StevenBlack
+    id: 1620480501
+  - enabled: true
+    url: https://easylist.to/easylist/easyprivacy.txt
+    name: EasyPrivacy
+    id: 1620480502
 whitelist_filters: []
 user_rules:
   - '@@||jobs.ebayclassifiedsgroup.com^$important'
@@ -174,4 +173,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 14
+schema_version: 16

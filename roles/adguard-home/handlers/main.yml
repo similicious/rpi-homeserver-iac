@@ -1,5 +1,6 @@
 ---
-- name: restart_adguard-home
+- name: restart_adguard
   community.docker.docker_container:
-    name: adguard-home
+    name: "{{ service_name }}"
+    state: started
     restart: true

@@ -18,6 +18,18 @@
     name: systemd-resolved
     state: restarted
 
+- name: Ensure a backup /etc/resolv.conf of /etc/resolv.conf exists
+  ansible.builtin.copy:
+    src: /etc/resolv.conf
+    dest: /etc/resolv.conf.bak
+    mode: preserve
+    force: false
+
+- name: Ensure /etc/resolv.conf is deleted
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+
 - name: Ensure /etc/resolv.conf links to /run/systemd/resolve/resolv.conf
   file:
     src: /run/systemd/resolve/resolv.conf
