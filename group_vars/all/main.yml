@@ -47,4 +47,4 @@ wireguard_unmanaged_peers:
     allowed_ips: 10.10.0.4/32
   work:
     public_key: Gd60IXyqCxDjOXhylb4oMla6xFCtSFNXyMbCx7zGfkg=
-    allowed_ips: 10.10.0.2/32
+    allowed_ips: 10.10.0.7/32
