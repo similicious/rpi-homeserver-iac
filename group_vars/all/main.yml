@@ -34,7 +34,7 @@ traefik_network_name: traefik
 # postgres
 postgres_network_name: postgres
 
-# wireguard
+# githubixx.ansible_role_wireguard
 wireguard_unmanaged_peers:
   smartphone:
     public_key: jHqz4lrMWR04e/7GxA5EvrV20ztKuIeLAUnb00XkLgY=
