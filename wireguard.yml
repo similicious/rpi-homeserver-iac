@@ -2,7 +2,7 @@
 - name: Setup wireguard vpn between beth and sleepy
   become: true
   hosts:
-    - beth
+    - mrmeeseeks
     - sleepy
 
   roles:

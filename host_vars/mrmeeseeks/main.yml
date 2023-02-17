@@ -10,10 +10,6 @@ swap_file_size_mb: "4096"
 security_sudoers_passwordless:
   - "{{ username }}"
 
-# githubixx.ansible_role_wireguard
-wireguard_address: "10.10.0.5/24"
-wireguard_endpoint: "{{ public_domain }}"
-
 # all docker services
 docker_container_data_root: "/media/SSD/appdata"
 docker_container_puid: 1000
@@ -68,3 +64,7 @@ adguard_rewrites:
     answer: "192.168.178.80"
   - domain: "*.{{ vault_public_domain }}"
     answer: "192.168.178.80"
+
+# githubixx.ansible_role_wireguard
+wireguard_address: "10.10.0.1/24"
+wireguard_endpoint: "jellyfin.{{ public_domain }}"
