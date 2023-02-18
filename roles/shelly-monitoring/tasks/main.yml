@@ -1,6 +1,6 @@
 ---
-- name: "Ensure the config folders for {{ service_name }} exists"
-  file:
+- name: "Ensure the config folders exists for {{ service_name }}"
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ docker_container_puid | int }}"
@@ -13,13 +13,13 @@
     - "{{ shelly_grafana_config_dir }}"
 
 - name: "Ensure the config files are present"
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
   with_items:
-    - src: "mosquittor.conf"
+    - src: "mosquitto.conf"
       dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
     - src: "telegraf.conf"
       dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
@@ -34,6 +34,7 @@
         mosquitto:
           container_name: mosquitto
           image: eclipse-mosquitto
+          restart: unless-stopped
           ports:
             - 1883:1883
           volumes:
@@ -43,6 +44,7 @@
 
         influxdb:
           container_name: influxdb
+          restart: unless-stopped
           image: influxdb:1.8
           volumes:
             - "{{ shelly_influxdb_data_dir }}:/var/lib/influxdb"
@@ -51,6 +53,7 @@
 
         telegraf:
           container_name: telegraf
+          restart: unless-stopped
           image: telegraf
           volumes:
             - "{{ shelly_telegraf_config_dir }}/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
@@ -59,6 +62,8 @@
 
         grafana:
           container_name: grafana
+          restart: unless-stopped
+          user: "{{ docker_container_puid | int }}:{{ docker_container_pgid | int }}"
           image: grafana/grafana
           volumes:
             - "{{ shelly_grafana_config_dir }}:/var/lib/grafana"
@@ -69,7 +74,7 @@
             traefik.docker.network: "{{ traefik_network_name }}"
           networks:
             - shelly
-            - traefik
+            - "{{ traefik_network_name }}"
 
       networks:
         shelly:
