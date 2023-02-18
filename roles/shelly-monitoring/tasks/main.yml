@@ -13,9 +13,9 @@
     - "{{ shelly_grafana_config_dir }}"
 
 - name: "Ensure the config files are present"
-  copy: 
-   src: "{{ item.src }}"
-   dest: "{{ item.dest }}"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
   with_items:
