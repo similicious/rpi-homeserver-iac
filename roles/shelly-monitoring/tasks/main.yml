@@ -1,0 +1,77 @@
+---
+- name: "Ensure the config folders for {{ service_name }} exists"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  with_items:
+    - "{{ shelly_config_root }}"
+    - "{{ shelly_mosquitto_config_dir }}"
+    - "{{ shelly_telegraf_config_dir }}"
+    - "{{ shelly_influxdb_data_dir }}"
+    - "{{ shelly_grafana_config_dir }}"
+
+- name: "Ensure the config files are present"
+  copy: 
+   src: "{{ item.src }}"
+   dest: "{{ item.dest }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  with_items:
+    - src: "mosquittor.conf"
+      dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
+    - src: "telegraf.conf"
+      dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
+
+- name: "Ensure the {{ service_name }} stack is running"
+  docker_compose:
+    project_name: "{{ service_name }}"
+    definition:
+      version: "3.4"
+
+      services:
+        mosquitto:
+          container_name: mosquitto
+          image: eclipse-mosquitto
+          ports:
+            - 1883:1883
+          volumes:
+            - "{{ shelly_mosquitto_config_dir }}/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+          networks:
+            - shelly
+
+        influxdb:
+          container_name: influxdb
+          image: influxdb:1.8
+          volumes:
+            - "{{ shelly_influxdb_data_dir }}:/var/lib/influxdb"
+          networks:
+            - shelly
+
+        telegraf:
+          container_name: telegraf
+          image: telegraf
+          volumes:
+            - "{{ shelly_telegraf_config_dir }}/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+          networks:
+            - shelly
+
+        grafana:
+          container_name: grafana
+          image: grafana/grafana
+          volumes:
+            - "{{ shelly_grafana_config_dir }}:/var/lib/grafana"
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.grafana.rule: "Host(`grafana.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            traefik.http.services.grafana.loadbalancer.server.port: "3000"
+            traefik.docker.network: "{{ traefik_network_name }}"
+          networks:
+            - shelly
+            - traefik
+
+      networks:
+        shelly:
+        traefik:
+          external: true
