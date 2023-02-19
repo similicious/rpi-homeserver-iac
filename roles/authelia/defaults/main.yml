@@ -1,0 +1,4 @@
+---
+service_name: authelia
+
+authelia_config_dir: "{{ docker_container_data_root }}/authelia"

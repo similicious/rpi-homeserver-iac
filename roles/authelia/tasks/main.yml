@@ -1,0 +1,41 @@
+---
+- name: "Ensure the appdata directory for {{ service_name }} exist"
+  file:
+    path: "{{ authelia_config_dir }}"
+    state: directory
+    # owner: "{{ docker_container_puid | int }}"
+    # group: "{{ docker_container_pgid | int }}"
+
+- name: "Ensure the configuration for {{ service_name }} is in place"
+  ansible.builtin.template:
+    src: "configuration.yml.j2"
+    dest: "{{ authelia_config_dir }}/configuration.yml"
+    # owner: "{{ docker_container_puid | int }}"
+    # group: "{{ docker_container_pgid | int }}"
+
+- name: "Ensure the user database for {{ service_name }} is in place"
+  ansible.builtin.copy:
+    src: "users_database.yml"
+    dest: "{{ authelia_config_dir }}/users_database.yml"
+    # owner: "{{ docker_container_puid | int }}"
+    # group: "{{ docker_container_pgid | int }}"
+
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: authelia/authelia
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ authelia_config_dir }}:/config"
+    networks:
+      - name: "{{ traefik_network_name }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.authelia.rule: "Host(`authelia.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://authelia.{{ public_domain }}"
+      traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: "true"
+      traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+    env:
+      TZ: Europe/Berlin
+      # PGID: "{{ docker_container_puid | string }}"
+      # PUID: "{{ docker_container_pgid | string }}"
