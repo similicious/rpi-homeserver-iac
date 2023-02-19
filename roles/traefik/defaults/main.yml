@@ -11,6 +11,9 @@ traefik_args_default: >
   --entryPoints.https.address=:443
   --entrypoints.https.http.tls=true
 
+# for debug logging, add the following to args:
+#  --log.level=DEBUG
+
 traefik_labels:
 traefik_labels_default:
   # Expose traefik dashboard on subdomain
