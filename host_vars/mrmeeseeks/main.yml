@@ -32,6 +32,8 @@ traefik_args: >
   --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json
 traefik_env:
   HETZNER_API_KEY: "{{ vault_hetzner_api_key }}"
+traefik_labels:
+  traefik.http.routers.api.middlewares: "authelia@docker"
 
 # filebrowser
 filebrowser_mounts:

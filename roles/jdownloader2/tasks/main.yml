@@ -13,6 +13,7 @@
     labels:
       traefik.enable: "true"
       traefik.http.routers.jdownloader.rule: "Host(`jdownloader.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.jdownloader.middlewares: "authelia@docker"
       traefik.http.services.jdownloader.loadbalancer.server.port: "5800"
     networks:
       - name: "{{ traefik_network_name }}"
