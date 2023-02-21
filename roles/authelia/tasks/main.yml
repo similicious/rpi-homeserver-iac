@@ -31,8 +31,8 @@
       - name: "{{ traefik_network_name }}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.authelia.rule: "Host(`authelia.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
-      traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://authelia.{{ public_domain }}"
+      traefik.http.routers.authelia.rule: "Host(`auth.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://auth.{{ public_domain }}"
       traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: "true"
       traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
     env:
