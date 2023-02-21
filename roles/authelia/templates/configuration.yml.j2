@@ -32,6 +32,10 @@ access_control:
   rules:
     - domain: jellyfin.{{ public_domain }}
       policy: bypass
+    - domain: "sabnzbd.{{public_domain}}"
+      policy: bypass
+      resources:
+        - '^/sabnzbd/api'
     - domain: "*.{{ public_domain }}"
       policy: two_factor
 

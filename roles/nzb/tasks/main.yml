@@ -34,6 +34,7 @@
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            - "traefik.http.routers.sabnzbd.middlewares=authelia@docker"
             - "traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
             - "traefik.docker.network={{ traefik_network_name }}"
 
