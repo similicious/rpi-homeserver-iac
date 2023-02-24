@@ -1,17 +1,10 @@
 ---
-- name: Ensure the config directory exists
+- name: "Ensure the data subfolder for {{ service_name }} exists"
   file:
-    path: "{{ docker_service_conf_dir }}"
+    path: "{{ paperless_dir }}"
     state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
-
-- name: "Ensure the config subfolder for {{ service_name }} exists"
-  file:
-    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
-    state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -26,14 +19,9 @@
           image: redis:7
           restart: unless-stopped
           volumes:
-            - "{{ service_name }}-broker_data:/data"
+            - "{{ paperless_redis_data_dir }}:/data"
           networks:
             - app
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
 
         app:
           container_name: "{{ service_name }}-app"
@@ -47,18 +35,18 @@
             timeout: 10s
             retries: 5
           volumes:
-            - "{{ service_name }}-app_data:/usr/src/paperless/data"
-            - "{{ service_name }}-app_media:/usr/src/paperless/media"
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/export:/usr/src/paperless/export"
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/consume:/usr/src/paperless/consume"
+            - "{{ paperless_app_data_dir }}:/usr/src/paperless/data"
+            - "{{ paperless_app_media_dir }}:/usr/src/paperless/media"
+            - "{{ paperless_app_export_dir }}:/usr/src/paperless/export"
+            - "{{ paperless_app_consume_dir }}/:/usr/src/paperless/consume"
           environment:
             COMPOSE_PROJECT_NAME: "{{ service_name }}"
             PAPERLESS_REDIS: redis://broker:6379
-            PAPERLESS_DBHOST: postgres
-            PAPERLESS_DBUSER: postgres
+            PAPERLESS_DBHOST: db
+            PAPERLESS_DBUSER: paperless
             PAPERLESS_DBPASS: "{{ vault_postgres_password }}"
-            USERMAP_UID: 1000
-            USERMAP_GID: 1000
+            USERMAP_UID: "{{ docker_container_puid }}"
+            USERMAP_GID: "{{ docker_container_pgid }}"
             PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
             PAPERLESS_OCR_LANGUAGE: "deu+eng"
             PAPERLESS_URL: "https://paperless.{{ public_domain }}"
@@ -69,21 +57,21 @@
           networks:
             - app
             - traefik
-            - postgres
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
 
-      volumes:
-        paperless-ngx-app_data:
-        paperless-ngx-app_media:
-        paperless-ngx-broker_data:
+        db:
+          image: docker.io/library/postgres:13
+          container_name: "{{ service_name }}-db"
+          restart: unless-stopped
+          volumes:
+            - "{{ paperless_postgres_data_dir }}:/var/lib/postgresql/data"
+          environment:
+            POSTGRES_DB: paperless
+            POSTGRES_USER: paperless
+            POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
+          networks:
+            - app
 
       networks:
         app:
         traefik:
-          external: true
-        postgres:
           external: true

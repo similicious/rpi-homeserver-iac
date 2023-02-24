@@ -1,2 +1,13 @@
 ---
 service_name: paperless-ngx
+
+paperless_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+
+paperless_redis_data_dir: "{{ paperless_dir }}/redis"
+
+paperless_postgres_data_dir: "{{ paperless_dir }}/postgres"
+
+paperless_app_data_dir: "{{ paperless_dir }}/app/data"
+paperless_app_media_dir: "{{ paperless_dir }}/app/media"
+paperless_app_consume_dir: "{{ paperless_dir }}/app/consume"
+paperless_app_export_dir: "{{ paperless_dir }}/app/export"
