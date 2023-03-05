@@ -1,17 +1,17 @@
 ---
 - name: "Ensure the config subfolder for {{ service_name }} exists"
   file:
-    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
+    path: "{{ resticker_dir }}"
     state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure .env file for {{ service_name }} exists"
   template:
     src: .env.j2
-    dest: "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    dest: "{{ resticker_dir }}/.env"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
 - name: Make sure restic backup is running
   docker_compose:
@@ -23,8 +23,8 @@
       services:
         backup:
           container_name: "{{ service_name }}-backup"
-          image: mazzolino/restic:1.6.0
-          restart: always
+          image: mazzolino/restic:1.7.0
+          restart: unless-stopped
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "true"
@@ -38,11 +38,8 @@
               --keep-weekly 5
               --keep-monthly 12
             PRE_COMMANDS: |-
-              docker exec postgres pg_dump -U postgres paperless > /backup/paperless/paperless.sql
-              docker exec postgres pg_dump -U postgres recipes > /backup/recipes/recipes.sql
-              docker exec postgres pg_dump -U postgres nextcloud > /backup/nextcloud/nextcloud.sql
-              docker exec postgres pg_dumpall -U postgres --globals-only > /backup/postgres-globals.sql
-              docker exec photoprism-app photoprism backup -i - > /backup/photoprism/photoprism-db.sql
+              docker exec paperless-ngx-db pg_dump -U paperless paperless > /backup/paperless/paperless.sql
+              docker exec paperless-ngx-db pg_dumpall -U paperless --globals-only > /backup/paperless/paperless-postgres-globals.sql
             POST_COMMANDS_SUCCESS: |-
               curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
             POST_COMMANDS_FAILURE: |-
@@ -50,41 +47,26 @@
             POST_COMMANDS_INCOMPLETE: |-
               curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}/fail
           env_file:
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
+            - "{{ resticker_dir }}/.env"
           volumes:
-            - paperless-ngx_paperless-ngx-app_media:/backup/paperless/media:ro
-            - recipes_recipes_mediafiles:/backup/recipes/media:ro
-            - nextcloud_app:/backup/nextcloud/app:ro
-            - nextcloud_data:/backup/nextcloud/data:ro
-            - nextcloud_config:/backup/nextcloud/config:ro
-            - photoprism_photoprism-app_originals:/backup/photoprism/originals
+            - "{{ docker_container_data_root }}/paperless-ngx/app/media:/backup/paperless/media:ro"
             - /var/run/docker.sock:/var/run/docker.sock
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
 
         prune:
           container_name: "{{ service_name }}-prune"
-          image: mazzolino/restic:1.6.0
-          restart: always
+          image: mazzolino/restic:1.7.0
+          restart: unless-stopped
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "false"
             PRUNE_CRON: "0 0 4 * * *"
           env_file:
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
+            - "{{ resticker_dir }}/.env"
 
         check:
           container_name: "{{ service_name }}-check"
-          image: mazzolino/restic:1.6.0
-          restart: always
+          image: mazzolino/restic:1.7.0
+          restart: unless-stopped
           hostname: "{{ hostname }}"
           environment:
             RUN_ON_STARTUP: "false"
@@ -92,22 +74,4 @@
             RESTIC_CHECK_ARGS: >-
               --read-data-subset=10%
           env_file:
-            - "{{ docker_service_conf_dir }}/{{ service_name }}/.env"
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
-      volumes:
-        paperless-ngx_paperless-ngx-app_media:
-          external: true
-        recipes_recipes_mediafiles:
-          external: true
-        nextcloud_app:
-          external: true
-        nextcloud_config:
-          external: true
-        nextcloud_data:
-          external: true
-        photoprism_photoprism-app_originals:
-          external: true
+            - "{{ resticker_dir }}/.env"
