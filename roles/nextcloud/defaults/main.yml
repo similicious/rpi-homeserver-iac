@@ -1,2 +1,4 @@
 ---
 service_name: nextcloud
+
+nextcloud_dir: "{{ docker_container_data_root }}/{{ service_name }}"

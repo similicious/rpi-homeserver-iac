@@ -1,32 +1,52 @@
 ---
 - name: "Make sure {{ service_name }} is running as a container"
-  community.docker.docker_container:
-    name: "{{ service_name }}"
-    image: nextcloud:25
-    pull: true
-    volumes:
-      - "{{ service_name }}_app:/var/www/html"
-      - "{{ service_name }}_data:/var/www/html/data"
-      - "{{ service_name }}_config:/var/www/html/config"
-    env:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: "{{ service_name }}"
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
-      NEXTCLOUD_TRUSTED_DOMAINS: "{{ service_name }}.{{ public_domain }}"
-      NEXTCLOUD_ADMIN_USER: admin
-      NEXTCLOUD_ADMIN_PASSWORD: "{{ vault_nextcloud_admin_password }}"
-      OVERWRITECLIURL: "{{ service_name }}.{{ public_domain }}"
-      OVERWRITEPROTOCOL: https
-    restart_policy: always
-    log_driver: json-file
-    log_options:
-      max-size: "200k"
-      max-file: "10"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.nextcloud.rule: "Host(`{{ service_name }}.{{ public_domain }}`)"
-      traefik.docker.network: "{{ traefik_network_name }}"
-    networks:
-      - name: "{{ traefik_network_name }}"
-      - name: "{{ postgres_network_name }}"
+  community.docker.docker_compose:
+    project_name: "{{ service_name }}"
+
+    definition:
+      version: "3.3"
+
+      services:
+        nextcloud:
+          container_name: "{{ service_name }}-app"
+          image: nextcloud:25
+          volumes:
+            - "{{ nextcloud_dir }}/app/app:/var/www/html"
+            - "{{ nextcloud_dir }}/app/data:/var/www/html/data"
+            - "{{ nextcloud_dir }}/app/config:/var/www/html/config"
+          environment:
+            POSTGRES_HOST: db
+            POSTGRES_DB: nextcloud
+            POSTGRES_USER: nextcloud
+            POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
+            NEXTCLOUD_TRUSTED_DOMAINS: "{{ service_name }}.{{ public_domain }}"
+            NEXTCLOUD_ADMIN_USER: admin
+            NEXTCLOUD_ADMIN_PASSWORD: "{{ vault_nextcloud_admin_password }}"
+            OVERWRITECLIURL: "{{ service_name }}.{{ public_domain }}"
+            OVERWRITEPROTOCOL: https
+          restart: unless-stopped
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.nextcloud.rule: "Host(`{{ service_name }}.{{ public_domain }}`)"
+            traefik.docker.network: "{{ traefik_network_name }}"
+          networks:
+            - app
+            - "{{ traefik_network_name }}"
+
+        db:
+          image: docker.io/library/postgres:13
+          container_name: "{{ service_name }}-db"
+          restart: unless-stopped
+          volumes:
+            - "{{ nextcloud_dir }}/db:/var/lib/postgresql/data"
+          environment:
+            POSTGRES_DB: nextcloud
+            POSTGRES_USER: nextcloud
+            POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
+          networks:
+            - app
+
+      networks:
+        app:
+        traefik:
+          external: true
