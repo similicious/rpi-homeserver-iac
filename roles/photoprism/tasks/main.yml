@@ -1,10 +1,10 @@
 ---
 - name: "Ensure the config subfolder for {{ service_name }} exists"
   file:
-    path: "{{ docker_service_conf_dir }}/{{ service_name }}"
+    path: "{{ photoprism_dir }}"
     state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -89,43 +89,40 @@
             PHOTOPRISM_SITE_DESCRIPTION: "" # meta site description
             PHOTOPRISM_SITE_AUTHOR: "" # meta site author
             ## Run/install on first startup (options: update https gpu tensorflow davfs clitools clean):
-            # PHOTOPRISM_INIT: "https gpu tensorflow"
+            PHOTOPRISM_INIT: "intel tensorflow"
             ## Hardware Video Transcoding:
-            # PHOTOPRISM_FFMPEG_ENCODER: "software"        # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry")
+            PHOTOPRISM_FFMPEG_ENCODER: "intel" # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry")
             # PHOTOPRISM_FFMPEG_BITRATE: "32"              # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
             ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-          #   PHOTOPRISM_UID: 1000
-          #   PHOTOPRISM_GID: 1000
-          #   PHOTOPRISM_UMASK: 0000
-          # user: "1000:1000"
+            PHOTOPRISM_UID: "{{ docker_container_puid | int }}"
+            PHOTOPRISM_GID: "{{ docker_container_pgid | int }}"
+            PHOTOPRISM_UMASK: 0000
+          user: "{{ docker_container_puid }}:{{ docker_container_pgid }}"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.photoprism.rule=Host(`{{ service_name }}.{{ public_domain }}`)"
             - "traefik.docker.network={{ traefik_network_name }}"
           working_dir: "/photoprism"
           volumes:
-            - "{{ service_name }}-app_originals:/photoprism/originals" # original media files (photos and videos)
-            - "{{ service_name }}-app_storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
-            - "{{ service_name }}-app_import:/photoprism/import" # *writable* storage folder for cache, database, and sidecar files (never remove)
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
+            - "{{ photoprism_app_dir }}/originals:/photoprism/originals" # original media files (photos and videos)
+            - "{{ photoprism_app_dir }}/storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
+            - "{{ photoprism_app_dir }}/import:/photoprism/import" # *writable* storage folder for cache, database, and sidecar files (never remove)
           networks:
             - app
             - traefik
+          devices:
+            - /dev/dri:/dev/dri
 
         mariadb:
           container_name: "{{ service_name }}-mariadb"
           restart: unless-stopped
-          image: mariadb:10.9
+          image: mariadb:10.10
           security_opt:
             - seccomp:unconfined
             - apparmor:unconfined
           command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
           volumes:
-            - "{{ service_name }}-db_data:/var/lib/mysql"
+            - "{{ photoprism_db_dir }}:/var/lib/mysql"
           environment:
             MARIADB_AUTO_UPGRADE: "1"
             MARIADB_INITDB_SKIP_TZINFO: "1"
@@ -133,19 +130,8 @@
             MARIADB_USER: "{{ service_name }}"
             MARIADB_PASSWORD: "{{ vault_photoprism_database_password }}"
             MARIADB_ROOT_PASSWORD: "{{ vault_photoprism_database_root_password }}"
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
           networks:
             - app
-
-      volumes:
-        photoprism-app_storage:
-        photoprism-app_import:
-        photoprism-app_originals:
-        photoprism-db_data:
 
       networks:
         app:

@@ -1,2 +1,7 @@
 ---
 service_name: photoprism
+
+photoprism_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+
+photoprism_app_dir: "{{ photoprism_dir }}/app"
+photoprism_db_dir: "{{ photoprism_dir }}/db"
