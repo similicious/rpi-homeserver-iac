@@ -42,6 +42,7 @@
               docker exec paperless-ngx-db pg_dumpall -U paperless --globals-only > /backup/paperless/paperless-postgres-globals.sql
               docker exec nextcloud-db pg_dump -U nextcloud nextcloud > /backup/nextcloud/nextcloud.sql
               docker exec nextcloud-db pg_dumpall -U nextcloud --globals-only > /backup/nextcloud/nextcloud-postgres-globals.sql
+              docker exec photoprism-app photoprism backup -i - > /backup/photoprism/photoprism-db.sql
             POST_COMMANDS_SUCCESS: |-
               curl -fsS -m 10 --data-raw "$$(docker logs resticker-backup --since 1h)" https://hc-ping.com/{{ vault_resticker_healthcheck_id }}
             POST_COMMANDS_FAILURE: |-
@@ -53,8 +54,8 @@
           volumes:
             - "{{ docker_container_data_root }}/paperless-ngx/app/media:/backup/paperless/media:ro"
             - "{{ docker_container_data_root }}/nextcloud/app:/backup/nextcloud/app"
+            - "{{ docker_container_data_root }}/photoprism/app/originals:/backup/photoprism/originals"
             - /var/run/docker.sock:/var/run/docker.sock
-
         prune:
           container_name: "{{ service_name }}-prune"
           image: mazzolino/restic:1.7.0
