@@ -1,9 +1,8 @@
 ---
-- name: Setup wireguard vpn between beth and sleepy
+- name: Setup wireguard vpn
   become: true
   hosts:
     - mrmeeseeks
-    - sleepy
 
   roles:
     - githubixx.ansible_role_wireguard

@@ -56,12 +56,6 @@ jellyfin_media_mounts:
 
 # adguard
 adguard_rewrites:
-  - domain: "*.{{ vault_sleepy_public_domain }}"
-    answer: "10.10.0.5"
-  - domain: "sleepy"
-    answer: "10.10.0.5"
-  - domain: "*.sleepy"
-    answer: "10.10.0.5"
   - domain: "{{ vault_public_domain }}"
     answer: "192.168.178.80"
   - domain: "*.{{ vault_public_domain }}"
