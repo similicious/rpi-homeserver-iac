@@ -1,86 +1,82 @@
 ---
-- name: Ensure the config directory exists
+- name: "Ensure the config subfolder for {{ service_name }} exists"
   file:
-    path: "{{ docker_service_conf_dir }}"
+    path: "{{ recipes_dir }}"
     state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
-
-- name: "Ensure the config subfolder for recipes exists"
-  file:
-    path: "{{ docker_service_conf_dir }}/recipes"
-    state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure the environment file exists"
   template:
     src: .env.j2
-    dest: "{{ docker_service_conf_dir }}/recipes/.env"
-    owner: "{{ username }}"
-    group: "{{ username }}"
+    dest: "{{ recipes_dir }}/.env"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
 
-- name: Ensure the tandoor-recipes stack is running
+- name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
-    project_name: recipes
+    project_name: "{{ service_name }}"
     pull: true
     definition:
       version: "3"
       services:
         app:
-          container_name: recipes-app
-          image: vabene1111/recipes:1.1.4
-          restart: always
+          container_name: "{{ service_name }}-app"
+          image: vabene1111/recipes:1.4.7
+          restart: unless-stopped
           env_file:
-            - "{{ docker_service_conf_dir }}/recipes/.env"
+            - "{{ recipes_dir }}/.env"
           volumes:
-            - "recipes_staticfiles:/opt/recipes/staticfiles"
-            - "recipes_nginx_config:/opt/recipes/nginx/conf.d"
-            - "recipes_mediafiles:/opt/recipes/mediafiles"
+            - "staticfiles:/opt/recipes/staticfiles"
+            - "nginx_config:/opt/recipes/nginx/conf.d"
+            - "{{ recipes_dir }}/app/mediafiles:/opt/recipes/mediafiles"
           networks:
             - app
-            - postgres
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
+          depends_on:
+            - db
 
         web:
-          container_name: recipes-web
+          container_name: "{{ service_name }}-web"
           image: nginx:mainline-alpine
-          restart: always
+          restart: unless-stopped
           env_file:
-            - "{{ docker_service_conf_dir }}/recipes/.env"
+            - "{{ recipes_dir }}/.env"
           volumes:
-            - "recipes_staticfiles:/static"
-            - "recipes_nginx_config:/etc/nginx/conf.d:ro"
-            - "recipes_mediafiles:/media"
+            - "staticfiles:/static:ro"
+            - "nginx_config:/etc/nginx/conf.d:ro"
+            - "{{ recipes_dir }}/app/mediafiles:/media:ro"
           labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.recipes.rule=Host(`recipes.{{ public_domain }}`)"
+            - "traefik.http.routers.recipes.rule=Host(`{{ service_name }}.{{ public_domain }}`)"
             - "traefik.docker.network={{ traefik_network_name }}"
-          depends_on:
-            - app
-          links:
-            - "app:web_recipes"
           networks:
             - app
             - "{{ traefik_network_name }}"
-          logging:
-            driver: "json-file"
-            options:
-              max-size: "200k"
-              max-file: "10"
+          depends_on:
+            - app
+          links:
+            # map the app container dns name to web_recipes, as it is hardcoded in the
+            # reverse proxies config
+            - "app:web_recipes"
 
-      volumes:
-        recipes_staticfiles:
-        recipes_nginx_config:
-        recipes_mediafiles:
+        db:
+          container_name: "{{ service_name }}-db"
+          restart: unless-stopped
+          image: postgres:11-alpine
+          volumes:
+            - "{{ recipes_dir }}/db:/var/lib/postgresql/data"
+          env_file:
+            - "{{ recipes_dir }}/.env"
+          networks:
+            - app
 
       networks:
         app:
         traefik:
           external: true
-        postgres:
-          external: true
+
+      volumes:
+        # for some reason, these paths need to be mapped to volumes
+        # otherwise the nginx config is not copied correctly
+        nginx_config:
+        staticfiles:
