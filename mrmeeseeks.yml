@@ -9,7 +9,7 @@
     - authelia
     - portainer
     - watchtower
-    - filebrowser
+    - doublecommander
     - jdownloader2
     - nzb
     - jellyfin
