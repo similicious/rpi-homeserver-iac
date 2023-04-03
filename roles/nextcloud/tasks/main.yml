@@ -9,7 +9,7 @@
       services:
         nextcloud:
           container_name: "{{ service_name }}-app"
-          image: nextcloud:25
+          image: nextcloud:26
           volumes:
             - "{{ nextcloud_dir }}/app/app:/var/www/html"
             - "{{ nextcloud_dir }}/app/data:/var/www/html/data"
