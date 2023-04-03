@@ -1,8 +1,0 @@
----
-service_name: filebrowser
-
-filebrowser_mounts:
-filebrowser_mounts_default:
-  - /var/run/docker.sock:/var/run/docker.sock
-  - "{{ docker_container_data_root }}/{{ service_name }}/database:/database"
-  - "{{ docker_container_data_root }}/{{ service_name }}/settings.json:/config/settings.json"
