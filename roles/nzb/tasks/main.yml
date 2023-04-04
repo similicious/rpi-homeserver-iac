@@ -8,6 +8,8 @@
   with_items:
     - "{{ nzb_sabnzbd_config_dir }}"
     - "{{ nzb_sonarr_config_dir }}"
+    - "{{ nzb_bazarr_config_dir }}"
+    - "{{ nzb_prowlarr_config_dir }}"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -102,6 +104,26 @@
             - "traefik.http.routers.bazarr.rule=Host(`bazarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
             - "traefik.http.routers.bazarr.middlewares=authelia@docker"
             - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+            - "traefik.docker.network={{ traefik_network_name }}"
+
+        prowlarr:
+          container_name: prowlarr
+          image: lscr.io/linuxserver/prowlarr:latest
+          restart: unless-stopped
+          volumes:
+            - "{{ nzb_prowlarr_config_dir }}:/config"
+          networks:
+            - nzb
+            - "{{ traefik_network_name }}"
+          environment:
+            TZ: Europe/Berlin
+            PUID: "{{ docker_container_puid }}"
+            PGID: "{{ docker_container_pgid }}"
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            - "traefik.http.routers.prowlarr.middlewares=authelia@docker"
+            - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
             - "traefik.docker.network={{ traefik_network_name }}"
 
       networks:
