@@ -58,6 +58,12 @@
             - "{{ docker_container_data_root }}/nextcloud/app:/backup/nextcloud/app:ro"
             - "{{ docker_container_data_root }}/photoprism/app/originals:/backup/photoprism/originals:ro"
             - "{{ docker_container_data_root }}/recipes/app/mediafiles:/backup/recipes/mediafiles:ro"
+            - "{{ docker_container_data_root }}/bazarr/backup:/backup/bazarr:ro"
+            - "{{ docker_container_data_root }}/sonarr/Backups:/backup/sonarr:ro"
+            - "{{ docker_container_data_root }}/radarr/Backups:/backup/radarr:ro"
+            - "{{ docker_container_data_root }}/prowlarr/Backups:/prowlarr/radarr:ro"
+            - "{{ docker_container_data_root }}/sabnzbd/sabnzbd.ini:/backup/sabnzbd/sabnzbd.ini:ro"
+
             - /var/run/docker.sock:/var/run/docker.sock
         prune:
           container_name: "{{ service_name }}-prune"
