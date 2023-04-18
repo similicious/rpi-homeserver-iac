@@ -54,7 +54,7 @@
           image: photoprism/photoprism:latest
           depends_on:
             - mariadb
-          # restart: unless-stopped
+          restart: unless-stopped
           security_opt:
             - seccomp:unconfined
             - apparmor:unconfined
