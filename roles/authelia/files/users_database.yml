@@ -10,7 +10,7 @@ users:
   similicious:
     disabled: false
     displayname: "Simon"
-    password: "$argon2id$v=19$m=65536,t=3,p=4$qOFqm8ATMf0t0+FCh+bBuA$pq27a4Dqki4AaZnjKq0Wl7E+Aqbk4XQ+z5oDvoWbnqc" # yamllint disable-line rule:line-length
+    password: "$argon2id$v=19$m=65536,t=3,p=4$IGN71rtyt4sVcdQ58WVUKQ$hgV24OnttTc76dWQPWVbChoAc4dMGOW32ckr/3OPc4s" # yamllint disable-line rule:line-length
     email: mail@example.de
     groups:
       - admins
