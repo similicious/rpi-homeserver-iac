@@ -22,7 +22,7 @@
       services:
         app:
           container_name: "{{ service_name }}-app"
-          image: vabene1111/recipes:1.4.9
+          image: vabene1111/recipes:1.4
           restart: unless-stopped
           env_file:
             - "{{ recipes_dir }}/.env"
