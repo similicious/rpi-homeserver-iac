@@ -1,0 +1,14 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/actualbudget/actual-server:23.5.0
+    volumes:
+      - "{{ docker_container_data_root }}/{{ service_name }}:/data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.actual.rule: "Host(`actual.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.actual.loadbalancer.server.port: "5006"
+    networks:
+      - name: "{{ traefik_network_name }}"
