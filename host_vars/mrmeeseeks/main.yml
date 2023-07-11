@@ -40,7 +40,6 @@ jdownloader_download_dir: "/media/SSD/Downloads"
 
 # nzb
 nzb_data_root: "/media/Media"
-nzb_sabnzbd_download_dir: "{{ nzb_data_root }}/Downloads"
 
 # jellyfin
 jellyfin_media_mounts:

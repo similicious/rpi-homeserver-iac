@@ -24,7 +24,7 @@
           restart: unless-stopped
           volumes:
             - "{{ nzb_sabnzbd_config_dir }}:/config"
-            - "{{ nzb_sabnzbd_download_dir }}:/downloads"
+            - "{{ nzb_data_root }}:/data"
           networks:
             - nzb
             - "{{ traefik_network_name }}"
