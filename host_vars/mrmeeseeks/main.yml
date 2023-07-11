@@ -35,19 +35,12 @@ traefik_env:
 traefik_labels:
   traefik.http.routers.api.middlewares: "authelia@docker"
 
-# filebrowser
-filebrowser_mounts:
-  - /media/Media/Media:/srv/Media
-  - /media/SSD:/srv/SSD
-
 # jdownloader
 jdownloader_download_dir: "/media/SSD/Downloads"
 
 # nzb
-nzb_sabnzbd_complete_dir: "/media/SSD/Downloads/complete"
-nzb_sabnzbd_incomplete_dir: "/media/SSD/Downloads/incomplete"
-nzb_sonarr_tv_dir: "/media/Media/Media/Serien"
-nzb_radarr_movie_dir: "/media/Media/Media/Filme"
+nzb_data_root: "/media/Media"
+nzb_sabnzbd_download_dir: "{{ nzb_data_root }}/Downloads"
 
 # jellyfin
 jellyfin_media_mounts:

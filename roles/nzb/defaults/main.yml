@@ -1,15 +1,14 @@
 ---
 service_name: nzb
 
+nzb_data_root:
+
 nzb_sabnzbd_config_dir: "{{ docker_container_data_root }}/sabnzbd"
-nzb_sabnzbd_complete_dir:
-nzb_sabnzbd_incomplete_dir:
+nzb_sabnzbd_download_dir:
 
 nzb_sonarr_config_dir: "{{ docker_container_data_root }}/sonarr"
-nzb_sonarr_tv_dir:
 
 nzb_radarr_config_dir: "{{ docker_container_data_root }}/radarr"
-nzb_radarr_movie_dir:
 
 nzb_bazarr_config_dir: "{{ docker_container_data_root }}/bazarr"
 

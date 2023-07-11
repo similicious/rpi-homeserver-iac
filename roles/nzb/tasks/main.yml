@@ -24,8 +24,7 @@
           restart: unless-stopped
           volumes:
             - "{{ nzb_sabnzbd_config_dir }}:/config"
-            - "{{ nzb_sabnzbd_complete_dir }}:/downloads"
-            - "{{ nzb_sabnzbd_incomplete_dir }}:/incomplete-downloads"
+            - "{{ nzb_sabnzbd_download_dir }}:/downloads"
           networks:
             - nzb
             - "{{ traefik_network_name }}"
@@ -46,8 +45,7 @@
           restart: unless-stopped
           volumes:
             - "{{ nzb_sonarr_config_dir }}:/config"
-            - "{{ nzb_sabnzbd_complete_dir }}:/downloads"
-            - "{{ nzb_sonarr_tv_dir }}:/storage/TV"
+            - "{{ nzb_data_root }}:/data"
           networks:
             - nzb
             - "{{ traefik_network_name }}"
@@ -68,8 +66,7 @@
           restart: unless-stopped
           volumes:
             - "{{ nzb_radarr_config_dir }}:/config"
-            - "{{ nzb_sabnzbd_complete_dir }}:/downloads"
-            - "{{ nzb_radarr_movie_dir }}:/movies"
+            - "{{ nzb_data_root }}:/data"
           networks:
             - nzb
             - "{{ traefik_network_name }}"
@@ -90,8 +87,7 @@
           restart: unless-stopped
           volumes:
             - "{{ nzb_bazarr_config_dir }}:/config"
-            - "{{ nzb_sonarr_tv_dir }}:/storage/TV"
-            - "{{ nzb_radarr_movie_dir }}:/movies"
+            - "{{ nzb_data_root }}:/data"
           networks:
             - nzb
             - "{{ traefik_network_name }}"
