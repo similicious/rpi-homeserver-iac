@@ -42,3 +42,6 @@
       traefik.http.services.adguard.loadbalancer.server.port: "80"
     networks:
       - name: "{{ traefik_network_name }}"
+    healthcheck:
+      # Workaround for https://github.com/AdguardTeam/AdGuardHome/issues/5714
+      test: ["NONE"]
