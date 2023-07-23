@@ -59,6 +59,6 @@
 - name: Make sure nextcloud cron job is present
   cron:
     name: nextcloud
-    minute: "*/15"
+    minute: "*/5"
     user: root
     job: "docker exec --user www-data nextcloud-app php -f cron.php > /dev/null 2>&1"
