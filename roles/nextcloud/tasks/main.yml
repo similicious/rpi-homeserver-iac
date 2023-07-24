@@ -51,6 +51,19 @@
           networks:
             - app
 
+        office:
+          image: collabora/code
+          container_name: "{{ service_name }}-collabora"
+          restart: unless-stopped
+          environment:
+            aliasgroup1: "https://{{ service_name }}.{{ public_domain }}:443"
+          networks:
+            - "{{ traefik_network_name }}"
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.collabora.rule: "Host(`collabora.{{ public_domain }}`)"
+            traefik.docker.network: "{{ traefik_network_name }}"
+
       networks:
         app:
         traefik:
