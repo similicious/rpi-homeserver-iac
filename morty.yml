@@ -1,0 +1,11 @@
+---
+- name: Setup home server
+  hosts: morty
+  become: true
+
+  roles:
+    - essentials
+    - geerlingguy.security
+    - geerlingguy.docker
+    - bertvv.samba
+    - traefik
