@@ -7,3 +7,5 @@ essential_packages:
   - bat
   - exa
   - zoxide
+  - ncdu
+  - python3-docker
