@@ -1,5 +1,5 @@
 mrmeeseeks ansible_host=192.168.178.80 ansible_user=root
-morty ansible_host=192.168.178.40 ansible_user=root
+morty ansible_host=192.168.178.40 ansible_user=similicious
 
 [all]
 ansible_ssh_private_key_file=~/.ssh/id_rsa
