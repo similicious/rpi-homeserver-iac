@@ -4,9 +4,10 @@
   become: true
 
   roles:
-    - essentials
-    - geerlingguy.security
-    - geerlingguy.docker
-    - bertvv.samba
+    # - essentials
+    # - geerlingguy.security
+    # - geerlingguy.docker
+    # - bertvv.samba
     - traefik
-    - stash
+    # - stash
+    - jellyfin
