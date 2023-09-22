@@ -1,0 +1,4 @@
+---
+service_name: stash
+stash_config_dir:
+stash_media_dir:

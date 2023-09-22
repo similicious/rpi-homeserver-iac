@@ -1,0 +1,17 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    hostname: "{{ service_name }}"
+    name: "{{ service_name }}"
+    image: stashapp/stash:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ stash_config_dir }}:/root/.stash"
+      - "{{ stash_media_dir }}:/data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)"
+      traefik.http.services.stash.loadbalancer.server.port: "9999"
+    networks:
+      - name: "{{ traefik_network_name }}"

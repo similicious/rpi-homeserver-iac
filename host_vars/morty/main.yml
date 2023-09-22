@@ -1,14 +1,18 @@
 # vars
-storage_path: "/mnt/storage"
+storage_dir: "/mnt/storage"
+storage_media_dir: "{{ storage_dir }}/media"
+storage_data_dir: "{{ storage_dir }}/data"
 
 # essentials
-hostname: morty
+hostname: morty-proxmox
 public_domain: "{{ vault_public_domain }}"
 username: similicious
 
 # geerlingguy.security
 security_sudoers_passwordless:
   - "{{ username }}"
+
+security_ssh_permit_root_login: "yes"
 
 # bertvv.samba
 samba_users:
@@ -17,11 +21,11 @@ samba_users:
 
 samba_shares:
   - name: media
-    path: "{{ storage_path }}/media"
+    path: "{{ storage_media_dir }}"
     group: "{{ username }}"
     write_list: "{{ username }}"
   - name: data
-    path: "{{ storage_path }}/data"
+    path: "{{ storage_data_dir }}"
     group: "{{ username }}"
     write_list: "{{ username }}"
 
@@ -49,6 +53,10 @@ traefik_env:
   HETZNER_API_KEY: "{{ vault_hetzner_api_key }}"
 traefik_labels:
   traefik.http.routers.api.middlewares: "authelia@docker"
+
+# stash
+stash_config_dir: "{{ docker_container_data_root }}/stash"
+stash_media_dir: "{{ storage_media_dir }}/{{ vault_stash_media_dir }}"
 
 # jdownloader
 jdownloader_download_dir: "/media/SSD/Downloads"
