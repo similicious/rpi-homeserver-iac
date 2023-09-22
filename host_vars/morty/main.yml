@@ -34,7 +34,7 @@ docker_container_data_root: "/mnt/appdata/docker"
 docker_container_puid: 1000
 docker_container_pgid: 1000
 
-# traefik
+# role: traefik
 traefik_ssl_certs_dir: "{{ docker_container_data_root }}/traefik/certificates"
 traefik_args: >
   --entrypoints.http.http.redirections.entryPoint.to=https
@@ -56,22 +56,25 @@ traefik_env:
 traefik_labels:
   traefik.http.routers.api.middlewares: "authelia@docker"
 
-# stash
+# role: portainer
+portainer_config_dir: "{{ docker_container_data_root }}/portainer"
+
+# role: stash
 stash_config_dir: "{{ docker_container_data_root }}/stash"
 stash_media_dir: "{{ storage_media_dir }}/{{ vault_stash_media_dir }}"
 
-# jellyfin
+# role: jellyfin
 jellyfin_media_mounts:
   - "{{ storage_media_dir }}/tv:/data/tvshows"
   - "{{ storage_media_dir }}/movies:/data/movies"
 
-# jdownloader
+# role: jdownloader
 jdownloader_download_dir: "/media/SSD/Downloads"
 
-# nzb
+# role: nzb
 nzb_data_root: "/media/Media"
 
-# adguard
+# role: adguard
 adguard_rewrites:
   - domain: "{{ vault_public_domain }}"
     answer: "192.168.178.80"

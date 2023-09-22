@@ -1,15 +1,15 @@
 ---
 - name: "Ensure portainer is running as a docker container"
   community.docker.docker_container:
-    name: portainer
+    name: "{{ service_name }}"
     image: portainer/portainer-ce
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - "{{ portainer_config_dir }}:/data"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.portainer.rule: "Host(`portainer.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.portainer.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
     networks:
       - name: "{{ traefik_network_name }}"

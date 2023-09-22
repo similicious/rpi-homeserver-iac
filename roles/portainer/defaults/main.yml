@@ -1,1 +1,5 @@
 ---
+service_name: portainer
+
+# uses volume by default
+portainer_config_dir: portainer_data
