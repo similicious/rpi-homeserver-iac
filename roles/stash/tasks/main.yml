@@ -13,5 +13,6 @@
       traefik.enable: "true"
       traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)"
       traefik.http.services.stash.loadbalancer.server.port: "9999"
+      traefik.http.routers.stash.middlewares: "authelia@docker"
     networks:
       - name: "{{ traefik_network_name }}"
