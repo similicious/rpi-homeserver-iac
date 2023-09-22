@@ -58,16 +58,16 @@ traefik_labels:
 stash_config_dir: "{{ docker_container_data_root }}/stash"
 stash_media_dir: "{{ storage_media_dir }}/{{ vault_stash_media_dir }}"
 
+# jellyfin
+jellyfin_media_mounts:
+  - "{{ storage_media_dir }}/tv:/data/tvshows"
+  - "{{ storage_media_dir }}/movies:/data/movies"
+
 # jdownloader
 jdownloader_download_dir: "/media/SSD/Downloads"
 
 # nzb
 nzb_data_root: "/media/Media"
-
-# jellyfin
-jellyfin_media_mounts:
-  - "/media/Media/Media/Serien:/data/tvshows"
-  - "/media/Media/Media/Filme:/data/movies"
 
 # adguard
 adguard_rewrites:
