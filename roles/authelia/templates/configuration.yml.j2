@@ -36,6 +36,11 @@ access_control:
       policy: bypass
       resources:
         - '^/sabnzbd/api'
+    - domain: "stash.{{public_domain}}"
+      policy: bypass
+      resources:
+        - '^\/scene\/\d+\/screenshot\?t=\d+'
+        - '^\/scene\/\d+\/stream'
     - domain: "*.{{ public_domain }}"
       policy: two_factor
 

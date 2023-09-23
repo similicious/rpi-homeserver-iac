@@ -12,6 +12,7 @@
     dest: "{{ authelia_config_dir }}/configuration.yml"
     # owner: "{{ docker_container_puid | int }}"
     # group: "{{ docker_container_pgid | int }}"
+  notify: restart_authelia
 
 - name: "Ensure the user database for {{ service_name }} is in place"
   ansible.builtin.copy:
@@ -19,6 +20,7 @@
     dest: "{{ authelia_config_dir }}/users_database.yml"
     # owner: "{{ docker_container_puid | int }}"
     # group: "{{ docker_container_pgid | int }}"
+  notify: restart_authelia
 
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:

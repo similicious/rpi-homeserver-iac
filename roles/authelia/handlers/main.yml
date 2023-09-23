@@ -1,0 +1,6 @@
+---
+- name: restart_authelia
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    state: started
+    restart: true
