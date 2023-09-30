@@ -8,4 +8,3 @@ essential_packages:
   - exa
   - zoxide
   - ncdu
-  - python3-docker
