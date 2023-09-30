@@ -6,6 +6,7 @@
   roles:
     - essentials
     - geerlingguy.security
+    - geerlingguy.hdparm
     - role: geerlingguy.pip
       environment:
         PIP_BREAK_SYSTEM_PACKAGES: 1

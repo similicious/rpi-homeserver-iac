@@ -7,5 +7,6 @@ roles:
   - name: bertvv.samba
   - name: geerlingguy.security
   - name: geerlingguy.swap
+  - name: geerlingguy.hdparm
 collections:
   - name: community.docker

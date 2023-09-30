@@ -14,6 +14,16 @@ security_sudoers_passwordless:
 
 security_ssh_permit_root_login: "yes"
 
+# geerlingguy.hdparm
+hdparm_devices:
+  - dev: /dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7GUAKLN
+    options:
+      - "apm = 127"
+      - "force_spindown_time = 244"
+  - dev: /dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7GUH0TN
+    options:
+      - "apm = 127"
+      - "force_spindown_time = 244"
 # bertvv.samba
 samba_users:
   - name: "{{ username }}"
