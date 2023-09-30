@@ -68,11 +68,11 @@ jellyfin_media_mounts:
   - "{{ storage_media_dir }}/tv:/data/tvshows"
   - "{{ storage_media_dir }}/movies:/data/movies"
 
-# role: jdownloader
-jdownloader_download_dir: "/media/SSD/Downloads"
-
 # role: nzb
-nzb_data_root: "/media/Media"
+nzb_data_root: "{{ storage_media_dir }}"
+
+# role: jdownloader
+jdownloader_download_dir: "{{ storage_media_dir }}/downloads"
 
 # role: adguard
 adguard_rewrites:
