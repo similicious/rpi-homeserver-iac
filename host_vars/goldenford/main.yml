@@ -1,0 +1,88 @@
+# vars
+storage_dir: "/mnt/storage"
+storage_media_dir: "{{ storage_dir }}/media"
+storage_data_dir: "{{ storage_dir }}/data"
+
+# essentials
+hostname: goldenford
+public_domain: "{{ vault_public_domain }}"
+username: similicious
+
+# geerlingguy.security
+security_sudoers_passwordless:
+  - "{{ username }}"
+
+security_ssh_allowed_users:
+  - "{{ username }}"
+
+# bertvv.samba
+samba_users:
+  - name: "{{ username }}"
+    password: "{{ vault_samba_user_password }}"
+
+samba_shares:
+  - name: media
+    path: "{{ storage_media_dir }}"
+    group: "{{ username }}"
+    write_list: "{{ username }}"
+  - name: data
+    path: "{{ storage_data_dir }}"
+    group: "{{ username }}"
+    write_list: "{{ username }}"
+
+# all docker services
+docker_container_data_root: "/mnt/appdata/docker"
+docker_container_puid: 1000
+docker_container_pgid: 1000
+
+# role: traefik
+traefik_ssl_certs_dir: "{{ docker_container_data_root }}/traefik/certificates"
+traefik_args: >
+  --entrypoints.http.http.redirections.entryPoint.to=https
+  --entrypoints.http.http.redirections.entryPoint.scheme=https
+  --entrypoints.http.http.redirections.entrypoint.permanent=true
+  --entrypoints.https.http.tls.certResolver=letsencrypt
+  --entrypoints.https.http.tls.domains[0].main={{ public_domain }}
+  --entrypoints.https.http.tls.domains[0].sans=*.{{ public_domain }}
+  --certificatesresolvers.letsencrypt.acme.email={{ vault_email }}
+  --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+  --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=duckdns
+  --certificatesresolvers.letsencrypt.acme.storage=/ssl-certs/acme.json
+
+#  --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=193.47.99.5:53,213.133.100.98:53
+#  --certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=10
+traefik_env:
+  HETZNER_API_KEY: "{{ vault_hetzner_api_key }}"
+  DUCKDNS_TOKEN: "{{ vault_duckdns_token }}"
+traefik_labels:
+  traefik.http.routers.api.middlewares: "authelia@docker"
+
+# role: portainer
+portainer_config_dir: "{{ docker_container_data_root }}/portainer"
+
+# role: stash
+stash_config_dir: "{{ docker_container_data_root }}/stash"
+stash_media_dir: "{{ storage_media_dir }}/{{ vault_stash_media_dir }}"
+
+# role: jellyfin
+jellyfin_media_mounts:
+  - "{{ storage_media_dir }}/tv:/data/tvshows"
+  - "{{ storage_media_dir }}/movies:/data/movies"
+
+# role: nzb
+nzb_data_root: "{{ storage_media_dir }}"
+
+# role: jdownloader
+jdownloader_download_dir: "{{ storage_media_dir }}/downloads"
+
+# role: adguard
+adguard_rewrites:
+  - domain: "{{ vault_public_domain }}"
+    answer: "192.168.178.80"
+  - domain: "*.{{ vault_public_domain }}"
+    answer: "192.168.178.80"
+
+# githubixx.ansible_role_wireguard
+wireguard_address: "10.10.0.1/24"
+wireguard_endpoint: "jellyfin.{{ public_domain }}"
+wireguard_allowed_ips: "10.10.0.1/32, 192.168.178.0/24"

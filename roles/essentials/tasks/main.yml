@@ -3,7 +3,7 @@
   hostname:
     name: "{{ hostname }}"
 
-- name: "Ensure the group {{ username }} exists and it id 1000"
+- name: "Ensure the group {{ username }} exists and its id is 1000"
   group:
     name: "{{ username }}"
     state: "present"

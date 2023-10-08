@@ -8,3 +8,4 @@ essential_packages:
   - exa
   - zoxide
   - ncdu
+  - sudo
