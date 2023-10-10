@@ -18,3 +18,7 @@
     - jellyfin
     - watchtower
     - nzb
+    - paperless-ngx
+    - photoprism
+    - tandoor-recipes
+    - shelly-monitoring

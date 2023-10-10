@@ -29,7 +29,7 @@
           volumes:
             - "staticfiles:/opt/recipes/staticfiles"
             - "nginx_config:/opt/recipes/nginx/conf.d"
-            - "{{ recipes_dir }}/app/mediafiles:/opt/recipes/mediafiles"
+            - "{{ recipes_app_media_dir }}:/opt/recipes/mediafiles"
           networks:
             - app
           depends_on:
@@ -44,7 +44,7 @@
           volumes:
             - "staticfiles:/static:ro"
             - "nginx_config:/etc/nginx/conf.d:ro"
-            - "{{ recipes_dir }}/app/mediafiles:/media:ro"
+            - "{{ recipes_app_media_dir }}:/media:ro"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.recipes.rule=Host(`{{ service_name }}.{{ public_domain }}`)"
@@ -64,7 +64,7 @@
           restart: unless-stopped
           image: postgres:11-alpine
           volumes:
-            - "{{ recipes_dir }}/db:/var/lib/postgresql/data"
+            - "{{ recipes_db_dir }}:/var/lib/postgresql/data"
           env_file:
             - "{{ recipes_dir }}/.env"
           networks:
