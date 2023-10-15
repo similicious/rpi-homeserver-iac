@@ -1,0 +1,20 @@
+# Commented Scrutiny Configuration File
+#
+# The default location for this file is /opt/scrutiny/config/scrutiny.yaml.
+# In some cases to improve clarity default values are specified,
+# uncommented. Other example values are commented out.
+#
+# When this file is parsed by Scrutiny, all configuration file keys are
+# lowercased automatically. As such, Configuration keys are case-insensitive,
+# and should be lowercase in this file to be consistent with usage.
+
+######################################################################
+# Version
+#
+# version specifies the version of this configuration file schema, not
+# the scrutiny binary. There is only 1 version available at the moment
+version: 1
+
+notify:
+  urls:
+    - "ntfy://ntfy.sh/{{ vault_ntfy_topic }}"

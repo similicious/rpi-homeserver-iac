@@ -1,4 +1,10 @@
 ---
+- name: "Ensure the configuration for {{ service_name }} is in place"
+  ansible.builtin.template:
+    src: "scrutiny.yaml.j2"
+    dest: "{{ scrutiny_config_dir }}/scrutiny.yaml"
+  notify: restart_scrutiny
+
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     hostname: "{{ hostname }}"

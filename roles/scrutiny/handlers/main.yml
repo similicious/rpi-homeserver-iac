@@ -1,0 +1,6 @@
+---
+- name: restart_scrutiny
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    state: started
+    restart: true
