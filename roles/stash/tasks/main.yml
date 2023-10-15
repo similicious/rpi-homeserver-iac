@@ -11,7 +11,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)"
+      traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
       traefik.http.services.stash.loadbalancer.server.port: "9999"
       traefik.http.routers.stash.middlewares: "authelia@docker"
     devices:
