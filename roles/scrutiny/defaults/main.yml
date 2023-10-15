@@ -1,0 +1,7 @@
+---
+service_name: scrutiny
+
+scrutiny_dir: "{{ docker_container_data_root }}/scrutiny"
+
+scrutiny_config_dir: "{{ scrutiny_dir }}/config"
+scrutiny_db_dir: "{{ scrutiny_dir }}/db"
