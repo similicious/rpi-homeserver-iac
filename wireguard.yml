@@ -2,7 +2,7 @@
 - name: Setup wireguard vpn
   become: true
   hosts:
-    - mrmeeseeks
+    - goldenford
 
   roles:
     - githubixx.ansible_role_wireguard
