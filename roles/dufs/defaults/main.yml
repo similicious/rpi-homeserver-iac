@@ -1,0 +1,4 @@
+---
+service_name: dufs
+
+dufs_dir: "{{ docker_container_data_root }}/dufs"

@@ -1,0 +1,21 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: sigoden/dufs
+    command:
+      - /data
+      - --allow-upload
+      - --allow-delete
+      - --allow-search
+      - --allow-archive
+    volumes:
+      - "{{ dufs_dir }}:/data"
+    user: "{{ docker_container_puid | int }}:{{ docker_container_pgid | int }}"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dufs.rule: "Host(`files.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.services.dufs.loadbalancer.server.port: "5000"
+    networks:
+      - name: "{{ traefik_network_name }}"
