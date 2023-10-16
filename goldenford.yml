@@ -14,6 +14,7 @@
     - adguard-home
     - authelia
     - portainer
+    - nextcloud
     - stash
     - jellyfin
     - nzb
