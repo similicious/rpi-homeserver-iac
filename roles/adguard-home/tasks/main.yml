@@ -23,7 +23,8 @@
     name: adguard/adguardhome
     source: pull
 
-- import_tasks: ./deactivate-dnsstublistener.yml
+# Not required on proxmox
+# - import_tasks: ./deactivate-dnsstublistener.yml
 
 - name: Ensure adguard-home is running as a docker container
   community.docker.docker_container:
