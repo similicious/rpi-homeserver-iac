@@ -29,6 +29,11 @@ samba_shares:
     path: "{{ storage_data_dir }}"
     group: "{{ username }}"
     write_list: "{{ username }}"
+  - name: share
+    path: "{{ docker_container_data_root }}/dufs"
+    browseable: true
+    writable: true
+    public: true
 
 # all docker services
 docker_container_data_root: "/mnt/appdata/docker"

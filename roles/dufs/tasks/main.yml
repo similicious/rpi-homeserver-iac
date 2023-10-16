@@ -1,4 +1,11 @@
 ---
+- name: "Ensure the share directory for {{ service_name }} exist"
+  file:
+    path: "{{ dufs_dir }}"
+    state: directory
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
