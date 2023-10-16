@@ -2,9 +2,9 @@
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: ghcr.io/actualbudget/actual-server:23.5.0
+    image: ghcr.io/actualbudget/actual-server:latest
     volumes:
-      - "{{ docker_container_data_root }}/{{ service_name }}:/data"
+      - "{{ actual_dir }}:/data"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
