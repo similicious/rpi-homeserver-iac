@@ -20,6 +20,9 @@ samba_users:
   - name: "{{ username }}"
     password: "{{ vault_samba_user_password }}"
 
+samba_guest_account: "{{ username }}"
+samba_map_to_guest: "Bad User"
+
 samba_shares:
   - name: media
     path: "{{ storage_media_dir }}"
@@ -30,10 +33,11 @@ samba_shares:
     group: "{{ username }}"
     write_list: "{{ username }}"
   - name: share
-    path: "{{ docker_container_data_root }}/dufs"
-    browseable: true
-    writable: true
-    public: true
+    path: "{{ storage_media_dir }}/share"
+    writable: "yes"
+    public: "yes"
+    guest_ok: "yes"
+    browsable: "yes"
 
 # all docker services
 docker_container_data_root: "/mnt/appdata/docker"
