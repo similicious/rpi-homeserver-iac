@@ -1,0 +1,8 @@
+---
+service_name: audiobookshelf
+
+audiobookshelf_app_dir: "{{ docker_container_data_root }}/audiobookshelf"
+
+audiobookshelf_app_config_dir: "{{ audiobookshelf_app_dir }}/config"
+audiobookshelf_app_metadata_dir: "{{ audiobookshelf_app_dir }}/metadata"
+audiobookshelf_media_dir: "{{ storage_media_dir }}/audiobooks"

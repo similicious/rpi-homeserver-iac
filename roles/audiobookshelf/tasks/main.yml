@@ -1,0 +1,16 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/advplyr/audiobookshelf
+    volumes:
+      - "{{ audiobookshelf_app_config_dir }}:/config"
+      - "{{ audiobookshelf_app_metadata_dir }}:/metadata"
+      - "{{ audiobookshelf_media_dir }}:/audiobooks"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.audiobookshelf.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.audiobookshelf.loadbalancer.server.port: "80"
+    networks:
+      - name: "{{ traefik_network_name }}"
