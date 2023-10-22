@@ -1,0 +1,4 @@
+---
+service_name: webtop
+
+webtop_dir: "{{ docker_container_data_root }}/webtop"

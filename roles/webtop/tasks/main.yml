@@ -1,0 +1,24 @@
+---
+- name: Ensure Traefik is running as a container
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: linuxserver/webtop:ubuntu-xfce
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ storage_media_dir }}:/mnt/media"
+      - "{{ storage_data_dir }}:/mnt/data"
+      - "{{ webtop_dir }}:/config"
+    networks:
+      - name: "{{ traefik_network_name }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.webtop.rule: "Host(`webtop.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.services.webtop.loadbalancer.server.port: "3000"
+      traefik.http.routers.webtop.middlewares: "authelia@docker"
+      traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Embedder-Policy: "require-corp"
+      traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Opener-Policy: "same-origin"
+      traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Resource-Policy: "same-site"
+    env:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
