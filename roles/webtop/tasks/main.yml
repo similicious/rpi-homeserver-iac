@@ -18,6 +18,7 @@
       traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Embedder-Policy: "require-corp"
       traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Opener-Policy: "same-origin"
       traefik.http.middlewares.webtoplossless.headers.customResponseHeaders.Cross-Origin-Resource-Policy: "same-site"
+      com.centurylinklabs.watchtower.enable: "false"
     env:
       TZ: Europe/Berlin
       PUID: "{{ docker_container_puid | string }}"
