@@ -1,8 +1,11 @@
 ---
-- name: Ensure Traefik is running as a container
+- name: "Ensure {{ service_name }} is running as a container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: linuxserver/webtop:ubuntu-xfce
+    image: linuxserver/webtop:fedora-xfce
+    security_opts:
+      - "seccomp:unconfined"
+    shm_size: "1GB"
     restart_policy: unless-stopped
     volumes:
       - "{{ storage_media_dir }}:/mnt/media"
