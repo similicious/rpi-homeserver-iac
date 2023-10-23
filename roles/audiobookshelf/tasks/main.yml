@@ -6,7 +6,8 @@
     volumes:
       - "{{ audiobookshelf_app_config_dir }}:/config"
       - "{{ audiobookshelf_app_metadata_dir }}:/metadata"
-      - "{{ audiobookshelf_media_dir }}:/audiobooks"
+      - "{{ audiobookshelf_audiobook_dir }}:/audiobooks"
+      - "{{ audiobookshelf_podcast_dir }}:/podcasts"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
