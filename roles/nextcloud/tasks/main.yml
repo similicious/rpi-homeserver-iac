@@ -9,7 +9,7 @@
       services:
         nextcloud:
           container_name: "{{ service_name }}-app"
-          image: lscr.io/linuxserver/nextcloud:27.1.2
+          image: lscr.io/linuxserver/nextcloud:latest
           volumes:
             - "{{ nextcloud_app_config_dir }}:/config"
             - "{{ nextcloud_app_data_dir }}:/data"
@@ -23,10 +23,14 @@
             traefik.enable: "true"
             traefik.http.routers.nextcloud.rule: "Host(`{{ service_name }}.{{ public_domain }}`)"
             traefik.docker.network: "{{ traefik_network_name }}"
-            traefik.http.routers.nextcloud.middlewares: "nextcloud_redirect_wellknown"
+            traefik.http.routers.nextcloud.middlewares: "nextcloud_redirect_wellknown,nextcloud_hsts"
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.permanent: true
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.regex: "https://(.*)/.well-known/(?:card|cal)dav"
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.replacement: "https://$${1}/remote.php/dav"
+            traefik.http.middlewares.nextcloud_hsts.headers.stsSeconds: "15552000"
+            traefik.http.middlewares.nextcloud_hsts.headers.stsIncludeSubdomains: "true"
+            traefik.http.middlewares.nextcloud_hsts.headers.stsPreload: "true"
+            traefik.http.middlewares.nextcloud_hsts.headers.forceSTSHeader: "true"
           networks:
             - app
             - "{{ traefik_network_name }}"
