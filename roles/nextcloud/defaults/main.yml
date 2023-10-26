@@ -1,10 +1,10 @@
 ---
 service_name: nextcloud
 
-nextcloud_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+nextcloud_dir: "{{ docker_container_data_root }}/nextcloud"
 nextcloud_app_dir: "{{ nextcloud_dir }}/app"
-nextcloud_app_app_dir: "{{ nextcloud_app_dir }}/app"
 nextcloud_app_data_dir: "{{ nextcloud_app_dir }}/data"
 nextcloud_app_config_dir: "{{ nextcloud_app_dir }}/config"
+nextcloud_app_custom_apps_dir: "{{ nextcloud_app_dir }}/custom_apps"
 
 nextcloud_db_dir: "{{ nextcloud_dir }}/db"

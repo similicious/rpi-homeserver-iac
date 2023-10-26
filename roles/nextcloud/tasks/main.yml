@@ -9,21 +9,15 @@
       services:
         nextcloud:
           container_name: "{{ service_name }}-app"
-          image: nextcloud:27
+          image: lscr.io/linuxserver/nextcloud:27.1.2
           volumes:
-            - "{{ nextcloud_app_app_dir }}:/var/www/html"
-            - "{{ nextcloud_app_data_dir }}:/var/www/html/data"
-            - "{{ nextcloud_app_config_dir }}:/var/www/html/config"
+            - "{{ nextcloud_app_config_dir }}:/config"
+            - "{{ nextcloud_app_data_dir }}:/data"
+            - "{{ nextcloud_app_custom_apps_dir }}:/app/www/public/custom_apps"
           environment:
-            POSTGRES_HOST: db
-            POSTGRES_DB: nextcloud
-            POSTGRES_USER: nextcloud
-            POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
-            NEXTCLOUD_TRUSTED_DOMAINS: "{{ service_name }}.{{ public_domain }}"
-            NEXTCLOUD_ADMIN_USER: admin
-            NEXTCLOUD_ADMIN_PASSWORD: "{{ vault_nextcloud_admin_password }}"
-            OVERWRITECLIURL: "{{ service_name }}.{{ public_domain }}"
-            OVERWRITEPROTOCOL: https
+            TZ: Europe/Berlin
+            PUID: "{{ docker_container_puid }}"
+            PGID: "{{ docker_container_pgid }}"
           restart: unless-stopped
           labels:
             traefik.enable: "true"
@@ -33,7 +27,6 @@
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.permanent: true
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.regex: "https://(.*)/.well-known/(?:card|cal)dav"
             traefik.http.middlewares.nextcloud_redirect_wellknown.redirectregex.replacement: "https://$${1}/remote.php/dav"
-
           networks:
             - app
             - "{{ traefik_network_name }}"
@@ -51,27 +44,7 @@
           networks:
             - app
 
-        # office:
-        #   image: collabora/code
-        #   container_name: "{{ service_name }}-collabora"
-        #   restart: unless-stopped
-        #   environment:
-        #     aliasgroup1: "https://{{ service_name }}.{{ public_domain }}:443"
-        #   networks:
-        #     - "{{ traefik_network_name }}"
-        #   labels:
-        #     traefik.enable: "true"
-        #     traefik.http.routers.collabora.rule: "Host(`collabora.{{ public_domain }}`)"
-        #     traefik.docker.network: "{{ traefik_network_name }}"
-
       networks:
         app:
         traefik:
           external: true
-
-- name: Make sure nextcloud cron job is present
-  cron:
-    name: nextcloud
-    minute: "*/5"
-    user: root
-    job: "docker exec --user www-data nextcloud-app php -f cron.php > /dev/null 2>&1"
