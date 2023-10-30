@@ -10,6 +10,15 @@
     - "{{ nzb_sonarr_config_dir }}"
     - "{{ nzb_bazarr_config_dir }}"
     - "{{ nzb_prowlarr_config_dir }}"
+    - "{{ nzb_lidarr_config_dir }}"
+
+- name: Ensure the beets import script is present
+  copy:
+    src: beet-import.sh
+    dest: "{{ nzb_lidarr_config_dir }}/beet-import.sh"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "744"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -79,6 +88,29 @@
             - "traefik.http.routers.radarr.rule=Host(`radarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
             - "traefik.http.routers.radarr.middlewares=authelia@docker"
             - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+            - "traefik.docker.network={{ traefik_network_name }}"
+
+        lidarr:
+          container_name: lidarr
+          image: lscr.io/linuxserver/lidarr:latest
+          restart: unless-stopped
+          volumes:
+            - "{{ nzb_lidarr_config_dir }}:/config"
+            - "{{ nzb_data_root }}:/data"
+            - /var/run/docker.sock:/var/run/docker.sock
+          networks:
+            - nzb
+            - "{{ traefik_network_name }}"
+          environment:
+            TZ: Europe/Berlin
+            PUID: "{{ docker_container_puid }}"
+            PGID: "{{ docker_container_pgid }}"
+            DOCKER_MODS: "linuxserver/mods:universal-docker"
+          labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.lidarr.rule=Host(`lidarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            - "traefik.http.routers.lidarr.middlewares=authelia@docker"
+            - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
             - "traefik.docker.network={{ traefik_network_name }}"
 
         bazarr:

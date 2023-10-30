@@ -11,4 +11,6 @@ nzb_radarr_config_dir: "{{ docker_container_data_root }}/radarr"
 
 nzb_bazarr_config_dir: "{{ docker_container_data_root }}/bazarr"
 
+nzb_lidarr_config_dir: "{{ docker_container_data_root }}/lidarr"
+
 nzb_prowlarr_config_dir: "{{ docker_container_data_root }}/prowlarr"
