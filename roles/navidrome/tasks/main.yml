@@ -1,0 +1,15 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: deluan/navidrome
+    volumes:
+      - "{{ navidrome_config_dir }}:/data"
+      - "{{ navidrome_music_dir }}:/music"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`)"
+      traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+    networks:
+      - name: "{{ traefik_network_name }}"
