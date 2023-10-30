@@ -1,0 +1,20 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: lscr.io/linuxserver/beets:latest
+    volumes:
+      - "{{ beets_config_dir }}:/config"
+      - "{{ beets_media_dir }}:/data"
+      - "{{ beets_ingest_dir }}:/ingest:ro"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}`)"
+      traefik.http.services.beets.loadbalancer.server.port: "8337"
+    env:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    networks:
+      - name: "{{ traefik_network_name }}"

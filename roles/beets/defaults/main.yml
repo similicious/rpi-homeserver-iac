@@ -1,0 +1,6 @@
+---
+service_name: "beets"
+beets_config_dir: "{{ docker_container_data_root }}/beets"
+
+beets_media_dir: "{{ storage_media_dir }}"
+beets_ingest_dir: "{{ storage_data_dir }}/Music/Library"
