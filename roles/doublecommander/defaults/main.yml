@@ -1,4 +1,0 @@
----
-service_name: doublecommander
-
-doublecommander_config_dir: "{{ docker_container_data_root }}/doublecommander"

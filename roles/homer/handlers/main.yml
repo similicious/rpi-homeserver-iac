@@ -1,5 +1,0 @@
----
-- name: restart_homer
-  community.docker.docker_container:
-    name: homer
-    restart: true
