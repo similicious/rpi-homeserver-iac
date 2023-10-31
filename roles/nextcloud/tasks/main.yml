@@ -35,6 +35,24 @@
             - app
             - "{{ traefik_network_name }}"
 
+        collabora:
+          container_name: "{{ service_name }}-collabora"
+          image: collabora/code
+          environment:
+            aliasgroup1: "https://{{ service_name }}.{{ public_domain }}:443"
+          restart: unless-stopped
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.collabora.rule: "Host(`collabora.{{ public_domain }}`)"
+            traefik.http.services.collabora.loadbalancer.server.port: "9980"
+            traefik.http.services.collabora.loadbalancer.server.scheme: "https"
+            traefik.docker.network: "{{ traefik_network_name }}"
+          cap_add:
+            - MKNOD
+          networks:
+            - app
+            - "{{ traefik_network_name }}"
+
         db:
           image: docker.io/library/postgres:13
           container_name: "{{ service_name }}-db"

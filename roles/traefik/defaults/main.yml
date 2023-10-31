@@ -10,6 +10,7 @@ traefik_args_default: >
   --entryPoints.http.address=:80
   --entryPoints.https.address=:443
   --entrypoints.https.http.tls=true
+  --serverstransport.insecureskipverify=true
 
 # for debug logging, add the following to args:
 #  --log.level=DEBUG
