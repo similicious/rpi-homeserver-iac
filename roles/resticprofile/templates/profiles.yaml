@@ -30,6 +30,9 @@ default:
     run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
 
     source:
+      # Data
+      - /mnt/storage/data
+
       # Docker containers
       # Nextcloud
       - /mnt/appdata/docker/nextcloud/app/data
@@ -64,6 +67,9 @@ default:
       - desktop.ini
       - .DS_Store
       - ._.DS_Store
+
+      # Data
+      - /mnt/storage/data/Downloads
 
     schedule: "04:00"
     schedule-permission: system
