@@ -1,0 +1,91 @@
+# yaml-language-server: $schema=https://creativeprojects.github.io/resticprofile/jsonschema/config-1.json
+version: "1"
+
+default:
+  repository: "b2:{{ vault_resticprofile_bucket_name }}:/"
+  password-file: "./password.txt"
+
+  env:
+    B2_ACCOUNT_ID: "{{ vault_resticprofile_account_id }}"
+    B2_ACCOUNT_KEY: "{{ vault_resticprofile_account_key }}"
+
+  backup:
+    run-before:
+      # Nextcloud db
+      - docker exec nextcloud-db pg_dump -U nextcloud nextcloud > /mnt/appdata/docker/nextcloud/backup/nextcloud-db.sql
+      - docker exec nextcloud-db pg_dumpall -U nextcloud --globals-only > /mnt/appdata/docker/nextcloud/backup/nextcloud-db-globals.sql
+
+      # Paperless-ngx
+      - docker exec paperless-ngx-db pg_dump -U paperless paperless > /mnt/appdata/docker/paperless-ngx/backup/paperless.sql
+      - docker exec paperless-ngx-db pg_dumpall -U paperless --globals-only > /mnt/appdata/docker/paperless-ngx/backup/paperless-postgres-globals.sql
+
+      # Photoprism
+      - docker exec photoprism-app photoprism backup -i - > /mnt/appdata/docker/photoprism/backup/photoprism-db.sql
+
+      # Recipes
+      - docker exec recipes-db pg_dump -U recipes recipes > /mnt/appdata/docker/recipes/backup/recipes.sql
+      - docker exec recipes-db pg_dumpall -U recipes --globals-only > /mnt/appdata/docker/recipes/backup/recipes-postgres-globals.sql
+
+    run-after: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}"
+    run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+
+    source:
+      # Docker containers
+      # Nextcloud
+      - /mnt/appdata/docker/nextcloud/app/data
+      - /mnt/appdata/docker/nextcloud/app/custom_apps
+      - /mnt/appdata/docker/nextcloud/app/config/www/nextcloud/config
+      - /mnt/appdata/docker/nextcloud/backup
+
+      # Paperless-ngx
+      - /mnt/appdata/docker/paperless-ngx/app/media
+      - /mnt/appdata/docker/paperless-ngx/backup/
+
+      # Photoprism
+      - /mnt/appdata/docker/photoprism/app/originals
+      - /mnt/appdata/docker/photoprism/backup/
+
+      # Recipes
+      - /mnt/appdata/docker/recipes/app/mediafiles
+      - /mnt/appdata/docker/recipes/backup/
+
+      # nzb
+      - /mnt/appdata/docker/bazarr/backup
+      - /mnt/appdata/docker/prowlarr/Backups
+      - /mnt/appdata/docker/radarr/Backups
+      - /mnt/appdata/docker/sonarr/Backups
+      - /mnt/appdata/docker/lidarr/Backups
+      - /mnt/appdata/docker/sabnzbd/sabnzbd.ini
+
+    exclude:
+      # General
+      - node_modules
+      - thumbs.db
+      - desktop.ini
+      - .DS_Store
+      - ._.DS_Store
+
+    schedule: "04:00"
+    schedule-permission: system
+    schedule-lock-wait: 10m
+
+  forget:
+    keep-last: 10
+    keep-daily: 7
+    keep-weekly: 5
+    keep-monthly: 12
+    keep-yearly: 2
+    prune: true
+    schedule: "05:00"
+    schedule-permission: system
+    schedule-lock-wait: 1h
+
+  check:
+    schedule: "06:00"
+    schedule-permission: system
+    read-data-subset: "10%"
+    schedule-lock-wait: 1h
+    send-after-fail:
+      - body: "Restic check failed"
+        method: POST
+        url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"

@@ -1,4 +1,0 @@
----
-service_name: resticker
-
-resticker_dir: "{{ docker_container_data_root }}/{{ service_name }}"

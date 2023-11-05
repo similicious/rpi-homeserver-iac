@@ -1,0 +1,40 @@
+---
+- name: "Ensure the {{ service_name }} config directory for services exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ resticprofile_config_dir }}"
+    - "{{ resticprofile_bin_config_dir }}"
+
+- name: "Install restic"
+  package:
+    name: restic
+    state: present
+
+- name: "Update restic"
+  shell:
+    cmd: "restic self-update"
+
+- name: "Download resticprofile install script"
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/creativeprojects/resticprofile/master/install.sh
+    dest: /tmp/install-resticprofile.sh
+    mode: "744"
+
+- name: "Execute install script"
+  shell:
+    cmd: "/tmp/install-resticprofile.sh -b {{ resticprofile_bin_config_dir }}"
+
+- name: "Ensure the {{ service_name }} config is present"
+  ansible.builtin.template:
+    src: profiles.yaml
+    dest: "{{ resticprofile_config_dir }}/profiles.yaml"
+
+- name: "Ensure the password file exists"
+  copy:
+    dest: "{{ resticprofile_config_dir }}/password.txt"
+    content: "{{ vault_resticprofile_password }}"
+    mode: "0600"
+    owner: root
+    group: root
