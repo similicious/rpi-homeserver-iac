@@ -34,6 +34,7 @@
           volumes:
             - "{{ nzb_sabnzbd_config_dir }}:/config"
             - "{{ nzb_data_root }}:/data"
+            - /var/run/docker.sock:/var/run/docker.sock
           networks:
             - nzb
             - "{{ traefik_network_name }}"
@@ -41,6 +42,7 @@
             TZ: Europe/Berlin
             PUID: "{{ docker_container_puid }}"
             PGID: "{{ docker_container_pgid }}"
+            DOCKER_MODS: "linuxserver/mods:universal-docker"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
@@ -97,7 +99,6 @@
           volumes:
             - "{{ nzb_lidarr_config_dir }}:/config"
             - "{{ nzb_data_root }}:/data"
-            - /var/run/docker.sock:/var/run/docker.sock
           networks:
             - nzb
             - "{{ traefik_network_name }}"
@@ -105,7 +106,6 @@
             TZ: Europe/Berlin
             PUID: "{{ docker_container_puid }}"
             PGID: "{{ docker_container_pgid }}"
-            DOCKER_MODS: "linuxserver/mods:universal-docker"
           labels:
             - "traefik.enable=true"
             - "traefik.http.routers.lidarr.rule=Host(`lidarr.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
