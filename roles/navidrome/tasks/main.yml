@@ -9,7 +9,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`)"
+      traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
     networks:
       - name: "{{ traefik_network_name }}"

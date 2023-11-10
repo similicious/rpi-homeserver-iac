@@ -10,7 +10,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}`)"
+      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}` && {{ traefik_internal_client_ip }})"
       traefik.http.services.beets.loadbalancer.server.port: "8337"
     env:
       TZ: Europe/Berlin
