@@ -11,5 +11,10 @@
       traefik.enable: "true"
       traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+    env:
+      ND_SPOTIFY_ID: "{{ vault_navidrome_spotify_client_id }}"
+      ND_SPOTIFY_SECRET: "{{ vault_navidrome_spotify_client_secret }}"
+      ND_LASTFM_APIKEY: "{{ vault_navidrome_lastfm_api_key }}"
+      ND_LASTFM_SECRET: "{{ vault_navidrome_lastfm_shared_secret }}"
     networks:
       - name: "{{ traefik_network_name }}"
