@@ -1,0 +1,28 @@
+plugins: fetchart embedart scrub zero spotify web bandcamp
+
+directory: /data/music
+library: /config/beets.blb
+
+paths:
+  default: $albumartist/$album%aunique{}/$track $title
+  singleton: $albumartist/Singles/$title
+  comp: Compilations/$album%aunique{}/$track $title
+
+import:
+  copy: yes
+  log: /config/beet.log
+
+fetchart:
+  cover_format: JPEG
+  sources: itunes coverart amazon albumart filesystem
+  enforce_ratio: yes
+
+zero:
+  fields: comments
+  update_database: true
+
+ui:
+  color: yes
+
+web:
+  host: 0.0.0.0

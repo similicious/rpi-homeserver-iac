@@ -1,4 +1,11 @@
 ---
+- name: "Ensure the config file exists"
+  ansible.builtin.copy:
+    src: config.yaml
+    dest: "{{ beets_config_dir }}/config.yaml"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
@@ -16,5 +23,7 @@
       TZ: Europe/Berlin
       PUID: "{{ docker_container_puid | string }}"
       PGID: "{{ docker_container_pgid | string }}"
+      INSTALL_PIP_PACKAGES: beetcamp
+      DOCKER_MODS: linuxserver/mods:universal-package-install
     networks:
       - name: "{{ traefik_network_name }}"
