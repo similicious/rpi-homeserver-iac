@@ -32,6 +32,10 @@ samba_shares:
     path: "{{ storage_data_dir }}"
     group: "{{ username }}"
     write_list: "{{ username }}"
+  - name: music
+    path: "{{ storage_media_dir }}/music"
+    group: "{{ username }}"
+    write_list: "{{ username }}"
   - name: share
     path: "{{ storage_media_dir }}/share"
     writable: "yes"
