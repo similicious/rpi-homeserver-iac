@@ -84,7 +84,7 @@ jellyfin_media_mounts:
 nzb_data_root: "{{ storage_media_dir }}"
 
 # role: jdownloader
-jdownloader_download_dir: "{{ storage_media_dir }}/downloads"
+jdownloader_download_dir: "{{ storage_media_dir }}/downloads/jdownloader"
 
 # role: adguard
 adguard_rewrites:
