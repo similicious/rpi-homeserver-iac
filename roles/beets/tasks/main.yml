@@ -17,13 +17,13 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}` && {{ traefik_internal_client_ip }})"
+      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.beets.loadbalancer.server.port: "8337"
     env:
       TZ: Europe/Berlin
       PUID: "{{ docker_container_puid | string }}"
       PGID: "{{ docker_container_pgid | string }}"
-      INSTALL_PIP_PACKAGES: beetcamp
+      INSTALL_PIP_PACKAGES: beetcamp|requests_oauthlib
       DOCKER_MODS: linuxserver/mods:universal-package-install
     networks:
       - name: "{{ traefik_network_name }}"
