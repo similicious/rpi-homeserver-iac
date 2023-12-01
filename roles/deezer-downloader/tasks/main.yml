@@ -1,0 +1,17 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    hostname: "{{ service_name }}"
+    name: "{{ service_name }}"
+    image: kmille2/deezer-downloader:latest
+    volumes:
+      - "{{ deezer_downloads_dir }}:/mnt/deezer-downloader"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.deezer.rule: "Host(`deezer.{{ public_domain }}`)"
+      traefik.http.services.deezer.loadbalancer.server.port: "5000"
+    env:
+      DEEZER_COOKIE_ARL: "{{ vault_deezer_arl_cookie }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
