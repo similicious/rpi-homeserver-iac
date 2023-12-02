@@ -1,4 +1,13 @@
 ---
+- name: "Ensure the appdata directory for services exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ scrutiny_dir }}"
+    - "{{ scrutiny_config_dir }}"
+    - "{{ scrutiny_db_dir }}"
+
 - name: "Ensure the configuration for {{ service_name }} is in place"
   ansible.builtin.template:
     src: "scrutiny.yaml.j2"
