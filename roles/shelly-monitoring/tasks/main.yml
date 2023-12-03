@@ -11,6 +11,9 @@
     - "{{ shelly_telegraf_config_dir }}"
     - "{{ shelly_influxdb_data_dir }}"
     - "{{ shelly_grafana_config_dir }}"
+    - "{{ shelly_prometheus_root }}"
+    - "{{ shelly_prometheus_data_dir }}"
+    - "{{ shelly_prometheus_config_dir }}"
 
 - name: "Ensure the config files are present"
   ansible.builtin.copy:
@@ -23,6 +26,8 @@
       dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
     - src: "telegraf.conf"
       dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
+    - src: "prometheus.yml"
+      dest: "{{ shelly_prometheus_config_dir }}/prometheus.yml"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -75,6 +80,29 @@
           networks:
             - shelly
             - "{{ traefik_network_name }}"
+
+        prometheus:
+          image: prom/prometheus
+          container_name: prometheus
+          volumes:
+            - "{{ shelly_prometheus_data_dir }}:/etc/prometheus"
+            - "{{ shelly_prometheus_config_dir }}/prometheus.yml:/etc/prometheus/prometheus.yml"
+          networks:
+            - "{{ traefik_network_name }}"
+            - shelly
+          restart: unless-stopped
+
+        node_exporter:
+          image: quay.io/prometheus/node-exporter:latest
+          container_name: node_exporter
+          command:
+            - "--path.rootfs=/host"
+          pid: host
+          volumes:
+            - "/:/host:ro,rslave"
+          networks:
+            - shelly
+          restart: unless-stopped
 
       networks:
         shelly:

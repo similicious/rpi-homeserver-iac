@@ -11,6 +11,7 @@ traefik_args_default: >
   --entryPoints.https.address=:443
   --entrypoints.https.http.tls=true
   --serverstransport.insecureskipverify=true
+  --metrics.prometheus=true
 
 # for debug logging, add the following to args:
 #  --log.level=DEBUG

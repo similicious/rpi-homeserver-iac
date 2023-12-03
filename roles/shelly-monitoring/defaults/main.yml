@@ -7,3 +7,7 @@ shelly_mosquitto_config_dir: "{{ shelly_config_root }}/mosquitto"
 shelly_telegraf_config_dir: "{{ shelly_config_root }}/telegraf"
 shelly_influxdb_data_dir: "{{ shelly_config_root }}/influxdb"
 shelly_grafana_config_dir: "{{ shelly_config_root }}/grafana"
+
+shelly_prometheus_root: "{{ shelly_config_root}}/prometheus"
+shelly_prometheus_data_dir: "{{ shelly_prometheus_root }}/data"
+shelly_prometheus_config_dir: "{{ shelly_prometheus_root }}/config"
