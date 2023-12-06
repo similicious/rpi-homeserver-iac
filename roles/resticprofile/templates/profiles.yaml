@@ -60,6 +60,9 @@ default:
       - /mnt/appdata/docker/lidarr/Backups
       - /mnt/appdata/docker/sabnzbd/sabnzbd.ini
 
+      # 2fauth
+      - /mnt/appdata/docker/2fauth
+
     exclude:
       # General
       - node_modules
