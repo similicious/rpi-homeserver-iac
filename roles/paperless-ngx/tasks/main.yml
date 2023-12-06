@@ -50,10 +50,12 @@
             PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
             PAPERLESS_OCR_LANGUAGE: "deu+eng"
             PAPERLESS_URL: "https://paperless.{{ public_domain }}"
+            PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
           labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.paperless.rule=Host(`paperless.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
-            - "traefik.docker.network={{ traefik_network_name }}"
+            traefik.enable: "true"
+            traefik.http.routers.paperless.rule: "Host(`paperless.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            traefik.http.routers.paperless.middlewares: "authelia@docker"
+            traefik.docker.network: "{{ traefik_network_name }}"
           networks:
             - app
             - traefik
