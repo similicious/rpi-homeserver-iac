@@ -8,7 +8,7 @@ ssh_keys:
 
 # geerlingguy.security
 security_autoupdate_reboot_time: "05:00"
-security_autoupdate_mail_to: "{{ vault_autoupdate_mail_to }}"
+security_autoupdate_mail_to: "{{ vault_mail }}"
 security_autoupdate_mail_on_error: true
 
 # geerlingguy.pip

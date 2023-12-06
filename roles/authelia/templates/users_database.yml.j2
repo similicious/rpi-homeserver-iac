@@ -11,6 +11,6 @@ users:
     disabled: false
     displayname: "Simon"
     password: "$argon2id$v=19$m=65536,t=3,p=4$IGN71rtyt4sVcdQ58WVUKQ$hgV24OnttTc76dWQPWVbChoAc4dMGOW32ckr/3OPc4s" # yamllint disable-line rule:line-length
-    email: mail@example.de
+    email: "{{ vault_mail }}"
     groups:
       - admins

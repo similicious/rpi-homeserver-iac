@@ -3,23 +3,17 @@
   file:
     path: "{{ authelia_config_dir }}"
     state: directory
-    # owner: "{{ docker_container_puid | int }}"
-    # group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure the configuration for {{ service_name }} is in place"
   ansible.builtin.template:
     src: "configuration.yml.j2"
     dest: "{{ authelia_config_dir }}/configuration.yml"
-    # owner: "{{ docker_container_puid | int }}"
-    # group: "{{ docker_container_pgid | int }}"
   notify: restart_authelia
 
 - name: "Ensure the user database for {{ service_name }} is in place"
-  ansible.builtin.copy:
-    src: "users_database.yml"
+  ansible.builtin.template:
+    src: "users_database.yml.j2"
     dest: "{{ authelia_config_dir }}/users_database.yml"
-    # owner: "{{ docker_container_puid | int }}"
-    # group: "{{ docker_container_pgid | int }}"
   notify: restart_authelia
 
 - name: "Ensure {{ service_name }} is running as a docker container"
@@ -39,5 +33,3 @@
       traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
     env:
       TZ: Europe/Berlin
-      # PGID: "{{ docker_container_puid | string }}"
-      # PUID: "{{ docker_container_pgid | string }}"

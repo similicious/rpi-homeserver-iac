@@ -30,8 +30,6 @@ authentication_backend:
 access_control:
   default_policy: two_factor
   rules:
-    - domain: jellyfin.{{ public_domain }}
-      policy: bypass
     - domain: "sabnzbd.{{public_domain}}"
       policy: bypass
       resources:
@@ -41,8 +39,6 @@ access_control:
       resources:
         - '^\/scene\/\d+\/screenshot\?t=\d+'
         - '^\/scene\/\d+\/stream'
-    - domain: "*.{{ public_domain }}"
-      policy: two_factor
 
 session:
   name: authelia_session

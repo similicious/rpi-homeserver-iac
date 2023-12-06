@@ -1,0 +1,29 @@
+---
+- name: "Ensure the appdata directory for {{ service_name }} exist"
+  file:
+    path: "{{ twofauth_dir }}"
+    state: directory
+    owner: 1000
+    group: 1000
+    mode: "700"
+
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: 2fauth/2fauth
+    volumes:
+      - "{{ twofauth_dir }}:/2fauth"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.twofauth.rule: "Host(`{{ subdomain_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.twofauth.loadbalancer.server.port: "8000"
+      traefik.http.routers.twofauth.middlewares: "authelia@docker"
+    env:
+      APP_URL: "https://{{ subdomain_name }}.{{ public_domain }}"
+      AUTHENTICATION_GUARD: "reverse-proxy-guard"
+      AUTH_PROXY_HEADER_FOR_USER: "Remote-User"
+      AUTH_PROXY_HEADER_FOR_EMAIL: "Remote-Email"
+      APP_KEY: "{{ vault_twofauth_app_key }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
