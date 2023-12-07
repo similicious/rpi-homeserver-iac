@@ -1,0 +1,6 @@
+---
+- name: restart_telegraf
+  community.docker.docker_container:
+    name: telegraf
+    state: started
+    restart: true

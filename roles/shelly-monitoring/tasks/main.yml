@@ -24,10 +24,16 @@
   with_items:
     - src: "mosquitto.conf"
       dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
-    - src: "telegraf.conf"
-      dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
     - src: "prometheus.yml"
       dest: "{{ shelly_prometheus_config_dir }}/prometheus.yml"
+
+- name: "Ensure the telegraf config is present"
+  ansible.builtin.copy:
+    src: "telegraf.conf"
+    dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  notify: restart_telegraf
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
