@@ -11,6 +11,7 @@
       traefik.enable: "true"
       traefik.http.routers.deezer.rule: "Host(`deezer.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
       traefik.http.services.deezer.loadbalancer.server.port: "5000"
+      traefik.http.routers.deezer.middlewares: "authelia@docker"
     env:
       DEEZER_COOKIE_ARL: "{{ vault_deezer_arl_cookie }}"
     networks:
