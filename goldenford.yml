@@ -53,7 +53,7 @@
         - tandoor-recipes
     - role: shelly-monitoring
       tags:
-        - shelly-monitoring
+        - monitoring
     - role: scrutiny
       tags:
         - scrutiny
@@ -89,7 +89,7 @@
         - resticprofile
     - role: deezer-downloader
       tags:
-        - deezer-downloader
+        - deezer
     - role: 2fauth
       tags:
         - 2fauth
