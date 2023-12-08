@@ -93,3 +93,6 @@
     - role: 2fauth
       tags:
         - 2fauth
+    - role: ps4-exploit-host
+      tags:
+        - ps4
