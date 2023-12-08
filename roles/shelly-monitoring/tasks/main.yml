@@ -15,17 +15,12 @@
     - "{{ shelly_prometheus_data_dir }}"
     - "{{ shelly_prometheus_config_dir }}"
 
-- name: "Ensure the config files are present"
+- name: "Ensure the mosquitto are present"
   ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "mosquitto.conf"
+    dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
-  with_items:
-    - src: "mosquitto.conf"
-      dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
-    - src: "prometheus.yml"
-      dest: "{{ shelly_prometheus_config_dir }}/prometheus.yml"
 
 - name: "Ensure the telegraf config is present"
   ansible.builtin.copy:
@@ -34,6 +29,14 @@
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
   notify: restart_telegraf
+
+- name: "Ensure the prometheus config is present"
+  ansible.builtin.copy:
+    src: "prometheus.yml"
+    dest: "{{ shelly_prometheus_config_dir }}/prometheus.yml"
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  notify: restart_prometheus
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:

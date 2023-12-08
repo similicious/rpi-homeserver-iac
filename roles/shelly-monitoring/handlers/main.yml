@@ -4,3 +4,9 @@
     name: telegraf
     state: started
     restart: true
+
+- name: restart_prometheus
+  community.docker.docker_container:
+    name: prometheus
+    state: started
+    restart: true
