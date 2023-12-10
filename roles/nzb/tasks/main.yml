@@ -11,6 +11,7 @@
     - "{{ nzb_bazarr_config_dir }}"
     - "{{ nzb_prowlarr_config_dir }}"
     - "{{ nzb_lidarr_config_dir }}"
+    - "{{ nzb_searcharr_root_dir }}"
 
 - name: Ensure the beets import script is present
   copy:
@@ -19,6 +20,11 @@
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: "744"
+
+- name: Ensure searcharr config is present
+  template:
+    src: settings.py
+    dest: "{{ nzb_searcharr_root_dir }}/settings.py"
 
 - name: "Ensure the {{ service_name }} stack is running"
   docker_compose:
@@ -153,6 +159,19 @@
             - "traefik.http.routers.prowlarr.middlewares=authelia@docker"
             - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
             - "traefik.docker.network={{ traefik_network_name }}"
+
+        searcharr:
+          container_name: searcharr
+          image: toddrob/searcharr
+          restart: unless-stopped
+          volumes:
+            - "{{ nzb_searcharr_root_dir }}/settings.py:/app/settings.py"
+            - "{{ nzb_searcharr_data_dir }}:/app/data"
+            - "{{ nzb_searcharr_logs_dir }}:/app/logs"
+          networks:
+            - nzb
+          environment:
+            TZ: Europe/Berlin
 
       networks:
         nzb:
