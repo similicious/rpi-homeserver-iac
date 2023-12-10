@@ -96,3 +96,6 @@
     - role: ps4-exploit-host
       tags:
         - ps4
+    - role: jellystat
+      tags:
+        - jellystat
