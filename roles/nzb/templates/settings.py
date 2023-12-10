@@ -25,11 +25,11 @@ sonarr_add_monitored = True
 sonarr_search_on_add = True
 sonarr_tag_with_username = True
 sonarr_forced_tags = []  # e.g. ["searcharr", "friends-and-family"] - leave empty for none
-sonarr_allow_user_to_select_tags = True
+sonarr_allow_user_to_select_tags = False
 sonarr_user_selectable_tags = []  # e.g. ["custom-tag-1", "custom-tag-2"] - leave empty to let user choose from all tags in Sonarr
 sonarr_series_command_aliases = ["series"]  # e.g. ["series", "tv", "t"]
-sonarr_series_paths = []  # e.g. ["/tv", "/anime"] - can be full path or id value - leave empty to enable all
-sonarr_season_monitor_prompt = False  # False - always monitor all seasons; True - prompt user to select from All, First, or Latest season(s)
+sonarr_series_paths = ["/data/tv/"]  # e.g. ["/tv", "/anime"] - can be full path or id value - leave empty to enable all
+sonarr_season_monitor_prompt = True  # False - always monitor all seasons; True - prompt user to select from All, First, or Latest season(s)
 
 # Radarr
 radarr_enabled = True
@@ -44,7 +44,7 @@ radarr_allow_user_to_select_tags = True
 radarr_user_selectable_tags = []  # e.g. ["custom-tag-1", "custom-tag-2"] - leave empty to let user choose from all tags in Radarr
 radarr_min_availability = "released"  # options: "announced", "inCinemas", "released"
 radarr_movie_command_aliases = ["movie"]  # e.g. ["movie", "mv", "m"]
-radarr_movie_paths = []  # e.g. ["/movies", "/other-movies"] - can be full path or id value - leave empty to enable all
+radarr_movie_paths = ["/data/movies"]  # e.g. ["/movies", "/other-movies"] - can be full path or id value - leave empty to enable all
 
 # Readarr
 readarr_enabled = False
