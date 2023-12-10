@@ -6,13 +6,13 @@
 
 - name: "Ensure the configuration for {{ service_name }} is in place"
   ansible.builtin.template:
-    src: "configuration.yml.j2"
+    src: "configuration.yml"
     dest: "{{ authelia_config_dir }}/configuration.yml"
   notify: restart_authelia
 
 - name: "Ensure the user database for {{ service_name }} is in place"
   ansible.builtin.template:
-    src: "users_database.yml.j2"
+    src: "users_database.yml"
     dest: "{{ authelia_config_dir }}/users_database.yml"
   notify: restart_authelia
 

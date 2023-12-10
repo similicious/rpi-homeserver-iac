@@ -86,6 +86,21 @@
             traefik.http.routers.grafana.rule: "Host(`grafana.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
             traefik.http.services.grafana.loadbalancer.server.port: "3000"
             traefik.docker.network: "{{ traefik_network_name }}"
+          # environment:
+          #   GF_SERVER_ROOT_URL: "https://grafana.{{ public_domain }}"
+          #   GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+          #   GF_AUTH_GENERIC_OAUTH_NAME: "Authelia"
+          #   GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "grafana"
+          #   GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{ vault_monitoring_grafana_client_secret }}"
+          #   GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email groups"
+          #   GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES: "false"
+          #   GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.{{ public_domain }}/api/oidc/authorization"
+          #   GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.{{ public_domain }}/api/oidc/token"
+          #   GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.{{ public_domain }}/api/oidc/userinfo"
+          #   GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH: "preferred_username"
+          #   GF_AUTH_GENERIC_OAUTH_GROUPS_ATTRIBUTE_PATH: "groups"
+          #   GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH: "name"
+          #   GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
           networks:
             - shelly
             - "{{ traefik_network_name }}"
