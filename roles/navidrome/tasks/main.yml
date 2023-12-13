@@ -1,4 +1,9 @@
 ---
+- name: Get container data on traefik
+  docker_container_info:
+    name: traefik
+  register: traefik
+
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
@@ -11,10 +16,12 @@
       traefik.enable: "true"
       traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+      traefik.http.routers.navidrome.middlewares: "authelia@docker"
     env:
       ND_SPOTIFY_ID: "{{ vault_navidrome_spotify_client_id }}"
       ND_SPOTIFY_SECRET: "{{ vault_navidrome_spotify_client_secret }}"
       ND_LASTFM_APIKEY: "{{ vault_navidrome_lastfm_api_key }}"
       ND_LASTFM_SECRET: "{{ vault_navidrome_lastfm_shared_secret }}"
+      ND_REVERSEPROXYWHITELIST: "{{ traefik.container.NetworkSettings.Networks.traefik.IPAddress }}/32"
     networks:
       - name: "{{ traefik_network_name }}"

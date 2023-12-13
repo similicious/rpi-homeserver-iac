@@ -34,6 +34,10 @@ access_control:
       policy: bypass
       resources:
         - "^/sabnzbd/api"
+    - domain: "navidrome.{{ public_domain }}"
+      policy: bypass
+      resources:
+        - "^/rest"
     - domain: "stash.{{ public_domain }}"
       policy: bypass
       resources:
