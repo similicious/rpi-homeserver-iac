@@ -8,6 +8,7 @@
   with_items:
     - "{{ shelly_config_root }}"
     - "{{ shelly_mosquitto_config_dir }}"
+    - "{{ shelly_mqtt_explorer_config_dir }}"
     - "{{ shelly_telegraf_config_dir }}"
     - "{{ shelly_influxdb_data_dir }}"
     - "{{ shelly_grafana_config_dir }}"
@@ -55,6 +56,21 @@
             - "{{ shelly_mosquitto_config_dir }}/mosquitto.conf:/mosquitto/config/mosquitto.conf"
           networks:
             - shelly
+
+        mqtt-explorer:
+          container_name: mqtt-explorer
+          image: smeagolworms4/mqtt-explorer
+          restart: unless-stopped
+          volumes:
+            - "{{ shelly_mqtt_explorer_config_dir }}:/mqtt-explorer/config"
+          labels:
+            traefik.enable: "true"
+            traefik.http.routers.mqttexplorer.rule: "Host(`mqtt-explorer.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+            traefik.http.services.mqttexplorer.loadbalancer.server.port: "4000"
+            traefik.docker.network: "{{ traefik_network_name }}"
+          networks:
+            - shelly
+            - "{{ traefik_network_name }}"
 
         influxdb:
           container_name: influxdb
