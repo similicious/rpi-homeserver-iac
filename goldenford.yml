@@ -99,3 +99,6 @@
     - role: jellystat
       tags:
         - jellystat
+    - role: homeassistant
+      tags:
+        - homeassistant

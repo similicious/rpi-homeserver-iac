@@ -1,0 +1,13 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - "{{ homeassistant_config_dir }}:/config"
+      - "/run/dbus:/run/dbus:ro"
+    restart_policy: unless-stopped
+    env:
+      TZ: "Europe/Berlin"
+    privileged: true
+    network_mode: host
