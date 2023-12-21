@@ -5,8 +5,6 @@ service_name: shelly-monitoring
 shelly_config_root: "{{ docker_container_data_root }}/shelly"
 shelly_mosquitto_config_dir: "{{ shelly_config_root }}/mosquitto"
 shelly_mqtt_explorer_config_dir: "{{ shelly_config_root }}/mqtt-explorer"
-shelly_telegraf_config_dir: "{{ shelly_config_root }}/telegraf"
-shelly_influxdb_data_dir: "{{ shelly_config_root }}/influxdb"
 shelly_grafana_config_dir: "{{ shelly_config_root }}/grafana"
 
 shelly_prometheus_root: "{{ shelly_config_root}}/prometheus"

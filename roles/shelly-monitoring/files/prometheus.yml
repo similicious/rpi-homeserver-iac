@@ -26,10 +26,6 @@ scrape_configs:
     static_configs:
       - targets: ["traefik:8080"]
 
-  - job_name: "shelly"
-    static_configs:
-      - targets: ["192.168.178.101"]
-
   # Example job for cadvisor
   # - job_name: 'cadvisor'
   #   static_configs:

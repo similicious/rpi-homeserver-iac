@@ -9,8 +9,6 @@
     - "{{ shelly_config_root }}"
     - "{{ shelly_mosquitto_config_dir }}"
     - "{{ shelly_mqtt_explorer_config_dir }}"
-    - "{{ shelly_telegraf_config_dir }}"
-    - "{{ shelly_influxdb_data_dir }}"
     - "{{ shelly_grafana_config_dir }}"
     - "{{ shelly_prometheus_root }}"
     - "{{ shelly_prometheus_data_dir }}"
@@ -22,14 +20,6 @@
     dest: "{{ shelly_mosquitto_config_dir }}/mosquitto.conf"
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
-
-- name: "Ensure the telegraf config is present"
-  ansible.builtin.copy:
-    src: "telegraf.conf"
-    dest: "{{ shelly_telegraf_config_dir }}/telegraf.conf"
-    owner: "{{ docker_container_puid | int }}"
-    group: "{{ docker_container_pgid | int }}"
-  notify: restart_telegraf
 
 - name: "Ensure the prometheus config is present"
   ansible.builtin.copy:
@@ -71,24 +61,6 @@
           networks:
             - shelly
             - "{{ traefik_network_name }}"
-
-        influxdb:
-          container_name: influxdb
-          restart: unless-stopped
-          image: influxdb:1.8
-          volumes:
-            - "{{ shelly_influxdb_data_dir }}:/var/lib/influxdb"
-          networks:
-            - shelly
-
-        telegraf:
-          container_name: telegraf
-          restart: unless-stopped
-          image: telegraf
-          volumes:
-            - "{{ shelly_telegraf_config_dir }}/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
-          networks:
-            - shelly
 
         grafana:
           container_name: grafana
