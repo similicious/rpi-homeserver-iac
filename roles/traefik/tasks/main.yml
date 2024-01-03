@@ -18,6 +18,7 @@
       {{ traefik_args }}
     networks:
       - name: "{{ traefik_network_name }}"
+        ipv4_address: "172.18.0.4"
     labels: "{{ traefik_labels_default | combine(traefik_labels) }}"
     env: "{{ traefik_env }}"
     restart_policy: unless-stopped
