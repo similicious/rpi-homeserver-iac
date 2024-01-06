@@ -164,6 +164,7 @@
           container_name: searcharr
           image: toddrob/searcharr
           restart: unless-stopped
+          # command: python3 searcharr.py -v
           volumes:
             - "{{ nzb_searcharr_root_dir }}/settings.py:/app/settings.py"
             - "{{ nzb_searcharr_data_dir }}:/app/data"
