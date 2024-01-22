@@ -7,11 +7,6 @@
     group: 1000
     mode: "700"
 
-- name: Get container data on traefik
-  docker_container_info:
-    name: traefik
-  register: traefik
-
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
@@ -27,7 +22,7 @@
     env:
       APP_URL: "https://{{ subdomain_name }}.{{ public_domain }}"
       AUTHENTICATION_GUARD: "reverse-proxy-guard"
-      TRUSTED_PROXIES: "{{ traefik.container.NetworkSettings.Networks.traefik.IPAddress }}"
+      TRUSTED_PROXIES: "172.18.0.0/16"
       ASSET_URL: "https://{{ subdomain_name }}.{{ public_domain }}"
       AUTH_PROXY_HEADER_FOR_USER: "Remote-User"
       AUTH_PROXY_HEADER_FOR_EMAIL: "Remote-Email"
