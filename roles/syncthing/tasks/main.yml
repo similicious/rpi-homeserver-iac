@@ -1,0 +1,24 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    hostname: "{{ hostname }}"
+    name: "{{ service_name }}"
+    image: lscr.io/linuxserver/syncthing:latest
+    volumes:
+      - "{{ syncthing_config_dir }}:/config"
+      - "{{ syncthing_data_dir }}:/data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.syncthing.rule: "Host(`syncthing.{{ public_domain }}`)"
+      traefik.http.services.syncthing.loadbalancer.server.port: "8384"
+    env:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    ports:
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    networks:
+      - name: "{{ traefik_network_name }}"
