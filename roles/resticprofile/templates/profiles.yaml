@@ -33,6 +33,10 @@ default:
       # Data
       - /mnt/storage/data
 
+      # Media
+      - /mnt/storage/media/backup
+      - /mnt/storage/media/documents
+
       # Docker containers
       # Nextcloud
       - /mnt/appdata/docker/nextcloud/app/data

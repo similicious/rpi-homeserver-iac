@@ -5,7 +5,6 @@
     state: directory
   with_items:
     - "{{ resticprofile_config_dir }}"
-    - "{{ resticprofile_bin_config_dir }}"
 
 - name: "Ensure the {{ service_name }} config is present"
   ansible.builtin.template:

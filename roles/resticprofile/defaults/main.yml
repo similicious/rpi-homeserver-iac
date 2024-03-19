@@ -2,4 +2,3 @@
 service_name: resticprofile
 
 resticprofile_config_dir: "{{ docker_container_data_root }}/resticprofile"
-resticprofile_bin_config_dir: "{{ resticprofile_config_dir }}/bin"
