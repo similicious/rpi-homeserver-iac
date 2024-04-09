@@ -102,3 +102,6 @@
     - role: syncthing
       tags:
         - syncthing
+    - role: vikunja
+      tags:
+        - vikunja

@@ -1,0 +1,5 @@
+---
+service_name: "vikunja"
+vikunja_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+vikunja_data_dir: "{{ vikunja_dir }}/data"
+vikunja_db_dir: "{{ vikunja_dir }}/db"

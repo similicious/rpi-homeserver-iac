@@ -67,6 +67,9 @@ default:
       # 2fauth
       - /mnt/appdata/docker/2fauth
 
+      # vikunja
+      - /mnt/appdata/docker/vikunja
+
     exclude:
       # General
       - node_modules

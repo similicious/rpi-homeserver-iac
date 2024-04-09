@@ -1,0 +1,32 @@
+---
+- name: "Ensure the appdata directory for services exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ docker_container_puid | int }}"
+    group: "{{ docker_container_pgid | int }}"
+  with_items:
+    - "{{ vikunja_dir }}"
+    - "{{ vikunja_data_dir }}"
+    - "{{ vikunja_db_dir }}"
+
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: vikunja/vikunja
+    volumes:
+      - "{{ vikunja_data_dir }}:/app/vikunja/files"
+      - "{{ vikunja_db_dir }}:/db"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.vikunja.rule: "Host(`vikunja.{{ public_domain }}`)"
+      traefik.http.services.vikunja.loadbalancer.server.port: "3456"
+    env:
+      VIKUNJA_SERVICE_JWTSECRET: "{{ vault_vikunja_jwtsecret }}"
+      VIKUNJA_DATABASE_PATH: "/db/vikunja.db"
+      VIKUNJA_SERVICE_PUBLICURL: "https://vikunja.{{ public_domain }}"
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+      VIKUNJA_SERVICE_TIMEZONE: "Europe/Berlin"
+    networks:
+      - name: "{{ traefik_network_name }}"
