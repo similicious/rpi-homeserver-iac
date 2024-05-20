@@ -51,6 +51,7 @@
             PAPERLESS_OCR_LANGUAGE: "deu+eng"
             PAPERLESS_URL: "https://paperless.{{ public_domain }}"
             PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
+            PAPERLESS_IGNORE_DATES: "{{ vault_paperless_birthdate }}"
           labels:
             traefik.enable: "true"
             traefik.http.routers.paperless.rule: "Host(`paperless.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
