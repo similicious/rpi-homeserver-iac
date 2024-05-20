@@ -1,0 +1,16 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: quay.io/redlib/redlib:latest
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.redlib.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.redlib.loadbalancer.server.port: "8080"
+      traefik.docker.network: "traefik"
+    networks:
+      - name: "{{ traefik_network_name }}"
+    healthcheck:
+      # Workaround for https://github.com/AdguardTeam/AdGuardHome/issues/5714
+      test: ["NONE"]
