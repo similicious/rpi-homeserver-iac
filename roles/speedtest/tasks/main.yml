@@ -1,0 +1,15 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/librespeed/speedtest:latest
+    env:
+      MODE: standalone
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.speedtest.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.services.speedtest.loadbalancer.server.port: "80"
+      traefik.docker.network: "traefik"
+    networks:
+      - name: "{{ traefik_network_name }}"
