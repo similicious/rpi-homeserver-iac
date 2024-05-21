@@ -27,6 +27,8 @@ dns:
     - tls://dns2.digitalcourage.de
     - "[//]192.168.178.1"
     - "[/fritz.box/]192.168.178.1"
+    - "[/in-addr.arpa/]192.168.178.1"
+    - "[/ip6.arpa/]192.168.178.1"
   upstream_dns_file: ""
   bootstrap_dns:
     - 9.9.9.10
@@ -64,7 +66,8 @@ dns:
   upstream_timeout: 10s
   private_networks: []
   use_private_ptr_resolvers: true
-  local_ptr_upstreams: []
+  local_ptr_upstreams:
+    - 192.168.178.1
   use_dns64: false
   dns64_prefixes: []
   serve_http3: false
