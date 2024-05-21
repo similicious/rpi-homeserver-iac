@@ -18,13 +18,15 @@ dns:
   port: 53
   anonymize_client_ip: false
   ratelimit: 0
+  ratelimit_subnet_len_ipv4: 24
+  ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
     - https://dns10.quad9.net/dns-query
     - tls://dns2.digitalcourage.de
-    - '[//]192.168.178.1'
-    - '[/fritz.box/]192.168.178.1'
+    - "[//]192.168.178.1"
+    - "[/fritz.box/]192.168.178.1"
   upstream_dns_file: ""
   bootstrap_dns:
     - 9.9.9.10
@@ -32,8 +34,7 @@ dns:
     - 2620:fe::10
     - 2620:fe::fe:10
   fallback_dns: []
-  all_servers: false
-  fastest_addr: false
+  upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -68,6 +69,8 @@ dns:
   dns64_prefixes: []
   serve_http3: false
   use_http3_upstreams: false
+  serve_plain_dns: true
+  hostsfile_enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -84,35 +87,67 @@ tls:
   private_key_path: ""
   strict_sni_check: false
 querylog:
+  dir_path: ""
   ignored: []
   interval: 2160h
   size_memory: 1000
   enabled: true
   file_enabled: true
 statistics:
+  dir_path: ""
   ignored: []
   interval: 24h
   enabled: true
 filters:
   - enabled: true
-    url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_33.txt
+    name: Steven Black's List
+    id: 1699899895
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_49.txt
+    name: HaGeZi's Ultimate Blocklist
+    id: 1699899896
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_27.txt
+    name: OISD Blocklist Big
+    id: 1699899897
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
     name: AdGuard DNS filter
-    id: 1
+    id: 1699899898
   - enabled: true
-    url: https://adaway.org/hosts.txt
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_4.txt
+    name: Dan Pollock's List
+    id: 1699899899
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
     name: AdAway Default Blocklist
-    id: 2
+    id: 1699899900
   - enabled: true
-    url: https://easylist.to/easylistgermany/easylistgermany.txt
-    name: EasyList Germany
-    id: 1620480500
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_8.txt
+    name: NoCoin Filter List
+    id: 1699899901
   - enabled: true
-    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-    name: StevenBlack
-    id: 1620480501
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_18.txt
+    name: Phishing Army
+    id: 1699899902
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_30.txt
+    name: Phishing URL Blocklist (PhishTank and OpenPhish)
+    id: 1699899903
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_50.txt
+    name: uBlock₀ filters – Badware risks
+    id: 1699899904
 whitelist_filters: []
 user_rules:
-  - '@@||jobs.ebayclassifiedsgroup.com^$important'
+  - "@@||jobs.ebayclassifiedsgroup.com^$important"
+  - /^(.*\.)?playstation\.(com|net|org)/
+  - /^(.*\.)?scea\.com/
+  - /^(.*\.)?sonyentertainmentnetwork\.com/
+  - /^(.*\.)?nintendo\.(net|at|be|ch|co.jp|co.kr|co.nz|co.uk|co.za|com|com.au|com.hk|cz|de|dk|es|fi|fr|gr|hu|it|jp|nl|no|pt|ru|se|tw)/
+  - /^(.*\.)?nintendo-europe\.com/
+  - /^(.*\.)?nintendoswitch\.(cn|com|com.cn)/
 dhcp:
   enabled: false
   interface_name: ""
@@ -184,4 +219,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 27
+schema_version: 28
