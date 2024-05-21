@@ -92,6 +92,7 @@ default:
     schedule: "04:00"
     schedule-permission: system
     schedule-lock-wait: 10m
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/backup.log
 
   forget:
     keep-last: 10
@@ -103,12 +104,14 @@ default:
     schedule: "05:00"
     schedule-permission: system
     schedule-lock-wait: 1h
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/forget.log
 
   check:
     schedule: "06:00"
     schedule-permission: system
     read-data-subset: "10%"
     schedule-lock-wait: 1h
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/check.log
     send-after-fail:
       - body: "Restic check failed"
         method: POST
