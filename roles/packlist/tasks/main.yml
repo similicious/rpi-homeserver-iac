@@ -1,0 +1,21 @@
+---
+- name: "Is logged in into ghcr"
+  docker_login:
+    registry: ghcr.io
+    username: similicious
+    password: "{{ vault_ghcr_pat }}"
+    reauthorize: yes
+
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/similicious/packlist:main
+    volumes:
+      - "{{ packlist_dir }}:/pb/pb_data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.packlist.rule: "Host(`packlist.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.services.packlist.loadbalancer.server.port: "8080"
+    networks:
+      - name: "{{ traefik_network_name }}"

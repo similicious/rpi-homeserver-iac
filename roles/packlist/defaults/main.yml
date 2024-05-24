@@ -1,0 +1,4 @@
+---
+service_name: packlist
+
+packlist_dir: "{{ docker_container_data_root }}/packlist"
