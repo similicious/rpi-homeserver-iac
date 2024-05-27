@@ -14,9 +14,9 @@
     - "{{ nzb_searcharr_root_dir }}"
 
 - name: Ensure the beets import script is present
-  copy:
-    src: beet-import.sh
-    dest: "{{ nzb_lidarr_config_dir }}/beet-import.sh"
+  ansible.builtin.template:
+    src: beets-import
+    dest: "{{ nzb_sabnzbd_scripts_dir }}/beets-import"
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: "744"

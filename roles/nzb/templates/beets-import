@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $7 -eq 0 ]
+then
+    docker --config /config/.docker exec -u abc beets /bin/bash -c "beet import -m -q \"$1\""
+    curl 'http://navidrome:4533/rest/startScan?u=scan&p={{ vault_navidrome_scan_password }}&f=json&v=1.8.0&c=NavidromeUI&fullScan=false' > /dev/null 2>&1
+else
+    echo "sabnzbd post processing failed, skipping import"
+fi
