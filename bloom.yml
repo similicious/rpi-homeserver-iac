@@ -1,5 +1,5 @@
 ---
-- name: Setup home server
+- name: Setup monitoring server
   hosts: bloom
   become: true
 
