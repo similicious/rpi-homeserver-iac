@@ -4,9 +4,11 @@ This repository contains the configuration of my RaspberryPi homeserver, automat
 
 ## Prerequisites
 
-Install the dependencies:
+Install ansible and the dependencies:
 
 ```
+pipx install ansible
+
 ansible-galaxy install -r requirements.yml
 ```
 

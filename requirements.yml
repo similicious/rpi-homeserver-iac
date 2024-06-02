@@ -10,3 +10,4 @@ roles:
   - name: geerlingguy.hdparm
 collections:
   - name: community.docker
+  - name: lucasheld.uptime_kuma

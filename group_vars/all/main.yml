@@ -15,9 +15,16 @@ security_autoupdate_mail_on_error: true
 
 # geerlingguy.pip
 # Install the docker python sdk for ansible (community.docker)
+ansible_docker_venv_dir: "/usr/local/ansible-docker-venv"
+ansible_docker_venv_bin: "{{ ansible_docker_venv_dir }}/bin/python"
+
 pip_install_packages:
   - name: docker
-  - name: docker-compose
+    virtualenv: "{{ ansible_docker_venv_dir }}"
+  - name: requests
+    virtualenv: "{{ ansible_docker_venv_dir }}"
+  - name: uptime-kuma-api
+    virtualenv: "{{ ansible_docker_venv_dir }}"
 
 # traefik
 traefik_internal_client_ip: "ClientIP(`10.10.0.0/16`, `192.168.178.0/24`, `127.0.0.1`, `::1`)"
@@ -29,14 +36,8 @@ docker_users:
 docker_daemon_options:
   log-driver: "local"
 
-# Path for docker containers to mount configs etc.
-docker_service_conf_dir: "/home/{{ username }}/docker-services"
-
 # traefik
 traefik_network_name: traefik
-
-# postgres
-postgres_network_name: postgres
 
 # githubixx.ansible_role_wireguard
 wireguard_unmanaged_peers:

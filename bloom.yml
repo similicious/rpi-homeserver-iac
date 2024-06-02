@@ -1,0 +1,28 @@
+---
+- name: Setup home server
+  hosts: bloom
+  become: true
+
+  vars:
+    # comment out on first run
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
+
+  roles:
+    - role: essentials
+      tags:
+        - essentials
+    - role: geerlingguy.security
+      tags:
+        - security
+    - role: geerlingguy.pip
+      tags:
+        - pip
+    - role: geerlingguy.docker
+      tags:
+        - docker
+    - role: traefik
+      tags:
+        - traefik
+    - role: uptime-kuma
+      tags:
+        - uptime-kuma

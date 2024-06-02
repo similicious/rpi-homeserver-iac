@@ -8,6 +8,66 @@
       - "{{ uptime_kuma_data_dir }}:/app/data"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.uptime.rule: "Host(`uptime.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.uptime.rule: "Host(`{{ uptime_kuma_public_domain }}`)"
+      traefik.http.services.uptime.loadbalancer.server.port: "3001"
     networks:
       - name: "{{ traefik_network_name }}"
+
+- name: "Ensure the initial setup is completed with preset password"
+  lucasheld.uptime_kuma.setup:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_username: "{{ vault_uptime_kuma_username }}"
+    api_password: "{{ vault_uptime_kuma_password }}"
+
+- name: "Ensure an auth token is available for further use"
+  lucasheld.uptime_kuma.login:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_username: "{{ vault_uptime_kuma_username }}"
+    api_password: "{{ vault_uptime_kuma_password }}"
+  register: result
+
+- name: "Ensure the auth token is stored in variable"
+  set_fact:
+    uptime_kuma_api_token: "{{ result.token }}"
+
+- name: "Ensure the ntfy notification channel is set up"
+  lucasheld.uptime_kuma.notification:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: ntfy
+    type: ntfy
+    isDefault: true
+    applyExisting: true
+    ntfyserverurl: "https://ntfy.sh"
+    ntfyPriority: 5
+    ntfyAuthenticationMethod: "none"
+    ntfytopic: "{{ vault_ntfy_topic }}"
+    state: present
+
+- name: "Ensure the Jellyfin monitor is set up"
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: Jellyfin
+    type: keyword
+    url: "https://{{ vault_uptime_jellyfin_domain }}/health"
+    keyword: Healthy
+    maxretries: 3
+    notification_names:
+      - ntfy
+    state: present
+
+- name: "Ensure the DNS monitor is set up"
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: DNS
+    type: dns
+    dns_resolve_type: "CNAME"
+    dns_resolve_server: "1.1.1.1"
+    port: "53"
+    hostname: "{{ vault_uptime_jellyfin_domain }}"
+    maxretries: 3
+    notification_names:
+      - ntfy
+    state: present
