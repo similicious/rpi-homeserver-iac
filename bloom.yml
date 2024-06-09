@@ -26,3 +26,6 @@
     - role: uptime-kuma
       tags:
         - uptime-kuma
+    - role: watchtower
+      tags:
+        - watchtower
