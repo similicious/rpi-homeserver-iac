@@ -1,2 +1,11 @@
 ---
 service_name: watchtower
+
+watchtower_mount_auth: false
+
+watchtower_mounts_docker_sock:
+  - /var/run/docker.sock:/var/run/docker.sock
+watchtower_mounts_docker_auth:
+  - /root/.docker/config.json:/config.json:ro
+
+watchtower_mounts: "{{ watchtower_mounts_docker_sock + watchtower_mounts_docker_auth if watchtower_mount_auth else watchtower_mounts_docker_sock }}"

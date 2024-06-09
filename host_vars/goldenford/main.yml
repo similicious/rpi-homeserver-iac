@@ -97,3 +97,6 @@ adguard_rewrites:
 wireguard_address: "10.10.0.1/24"
 wireguard_endpoint: "jellyfin.{{ public_domain }}"
 wireguard_allowed_ips: "10.10.0.1/32, 192.168.178.0/24"
+
+# role: watchtwoer
+watchtower_mount_auth: true

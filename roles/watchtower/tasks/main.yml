@@ -3,9 +3,7 @@
   community.docker.docker_container:
     name: "{{ service_name }}"
     image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json:ro
+    volumes: "{{ watchtower_mounts }}"
     command: --interval 28800 --cleanup --no-startup-message
     env:
       WATCHTOWER_NOTIFICATIONS: "shoutrrr"
