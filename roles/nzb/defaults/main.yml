@@ -1,6 +1,8 @@
 ---
 service_name: nzb
 
+nzb_compose_file: "{{ docker_compose_root }}/nzb/docker-compose.yml"
+
 nzb_data_root:
 
 nzb_sabnzbd_config_dir: "{{ docker_container_data_root }}/sabnzbd"

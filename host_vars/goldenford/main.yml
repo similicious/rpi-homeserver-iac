@@ -47,6 +47,7 @@ samba_shares:
 docker_container_data_root: "/mnt/appdata/docker"
 docker_container_puid: 1000
 docker_container_pgid: 1000
+docker_compose_root: "{{ docker_container_data_root }}/compose"
 
 # role: traefik
 traefik_ssl_certs_dir: "{{ docker_container_data_root }}/traefik/certificates"

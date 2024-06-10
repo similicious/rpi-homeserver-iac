@@ -1,0 +1,125 @@
+services:
+  sabnzbd:
+    container_name: sabnzbd
+    image: linuxserver/sabnzbd
+    restart: unless-stopped
+    volumes:
+      - "{{ nzb_sabnzbd_config_dir }}:/config"
+      - "{{ nzb_data_root }}:/data"
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - nzb
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+      DOCKER_MODS: "linuxserver/mods:universal-docker"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.sabnzbd.middlewares=authelia@docker"
+      - "traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
+      - "traefik.docker.network={{ traefik_network_name }}"
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    restart: unless-stopped
+    volumes:
+      - "{{ nzb_sonarr_config_dir }}:/config"
+      - "{{ nzb_data_root }}:/data"
+    networks:
+      - nzb
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.sonarr.middlewares=authelia@docker"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+      - "traefik.docker.network={{ traefik_network_name }}"
+
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr
+    restart: unless-stopped
+    volumes:
+      - "{{ nzb_radarr_config_dir }}:/config"
+      - "{{ nzb_data_root }}:/data"
+    networks:
+      - nzb
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.radarr.middlewares=authelia@docker"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+      - "traefik.docker.network={{ traefik_network_name }}"
+
+  bazarr:
+    container_name: bazarr
+    image: lscr.io/linuxserver/bazarr
+    restart: unless-stopped
+    volumes:
+      - "{{ nzb_bazarr_config_dir }}:/config"
+      - "{{ nzb_data_root }}:/data"
+    networks:
+      - nzb
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.bazarr.middlewares=authelia@docker"
+      - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+      - "traefik.docker.network={{ traefik_network_name }}"
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    restart: unless-stopped
+    volumes:
+      - "{{ nzb_prowlarr_config_dir }}:/config"
+    networks:
+      - nzb
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.prowlarr.middlewares=authelia@docker"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+      - "traefik.docker.network={{ traefik_network_name }}"
+
+  searcharr:
+    container_name: searcharr
+    image: toddrob/searcharr
+    restart: unless-stopped
+    # command: python3 searcharr.py -v
+    volumes:
+      - "{{ nzb_searcharr_root_dir }}/settings.py:/app/settings.py"
+      - "{{ nzb_searcharr_data_dir }}:/app/data"
+      - "{{ nzb_searcharr_logs_dir }}:/app/logs"
+    networks:
+      - nzb
+    environment:
+      TZ: Europe/Berlin
+
+networks:
+  nzb:
+  traefik:
+    external: true

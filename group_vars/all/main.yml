@@ -28,6 +28,7 @@ pip_install_packages:
 
 # traefik
 traefik_internal_client_ip: "ClientIP(`10.10.0.0/16`, `192.168.178.0/24`, `127.0.0.1`, `::1`)"
+traefik_internal_client_ip_v3: "(ClientIP(`10.10.0.0/16`) || ClientIP(`192.168.178.0/24`) || ClientIP(`127.0.0.1`) || ClientIP(`::1`))"
 
 # A list of system users to be added to the docker group
 docker_users:

@@ -9,3 +9,4 @@ essential_packages:
   - zoxide
   - ncdu
   - sudo
+  - python3-virtualenv
