@@ -1,0 +1,125 @@
+# Example Docker Compose config file for PhotoPrism (Linux / AMD64)
+#
+# Note:
+# - Running PhotoPrism on a server with less than 4 GB of swap space or setting a memory/swap limit can cause unexpected
+#   restarts ("crashes"), for example, when the indexer temporarily needs more memory to process large files.
+# - If you install PhotoPrism on a public server outside your home network, please always run it behind a secure
+#   HTTPS reverse proxy such as Traefik or Caddy. Your files and passwords will otherwise be transmitted
+#   in clear text and can be intercepted by anyone, including your provider, hackers, and governments:
+#   https://docs.photoprism.app/getting-started/proxies/traefik/
+#
+# Documentation : https://docs.photoprism.app/getting-started/docker-compose/
+# Docker Hub URL: https://hub.docker.com/r/photoprism/photoprism/
+#
+# DOCKER COMPOSE COMMAND REFERENCE
+# see https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
+# --------------------------------------------------------------------------
+# Start    | docker-compose up -d
+# Stop     | docker-compose stop
+# Update   | docker-compose pull
+# Logs     | docker-compose logs --tail=25 -f
+# Terminal | docker-compose exec photoprism bash
+# Help     | docker-compose exec photoprism photoprism help
+# Config   | docker-compose exec photoprism photoprism config
+# Reset    | docker-compose exec photoprism photoprism reset
+# Backup   | docker-compose exec photoprism photoprism backup -a -i
+# Restore  | docker-compose exec photoprism photoprism restore -a -i
+# Index    | docker-compose exec photoprism photoprism index
+# Reindex  | docker-compose exec photoprism photoprism index -f
+# Import   | docker-compose exec photoprism photoprism import
+#
+# To search originals for faces without a complete rescan:
+# docker-compose exec photoprism photoprism faces index
+#
+# All commands may have to be prefixed with "sudo" when not running as root.
+# This will point the home directory shortcut ~ to /root in volume mounts.
+
+services:
+  photoprism:
+    container_name: "{{ service_name }}-app"
+    image: photoprism/photoprism:latest
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    environment:
+      PHOTOPRISM_ADMIN_USER: "admin"
+      PHOTOPRISM_ADMIN_PASSWORD: "{{ vault_photoprism_admin_password }}"
+      PHOTOPRISM_AUTH_MODE: "password" # authentication mode (public, password)
+      PHOTOPRISM_SITE_URL: "https://{{ service_name }}.{{ public_domain }}" # server URL in the format "http(s)://domain.name(:port)/(path)"
+      PHOTOPRISM_ORIGINALS_LIMIT: 5000 # file size limit for originals in MB (increase for high-res video)
+      PHOTOPRISM_HTTP_COMPRESSION: "gzip" # improves transfer speed and bandwidth utilization (none or gzip)
+      PHOTOPRISM_LOG_LEVEL: "info" # log level: trace, debug, info, warning, error, fatal, or panic
+      PHOTOPRISM_READONLY: "false" # do not modify originals directory (reduced functionality)
+      PHOTOPRISM_EXPERIMENTAL: "false" # enables experimental features
+      PHOTOPRISM_DISABLE_CHOWN: "false" # disables updating storage permissions via chmod and chown on startup
+      PHOTOPRISM_DISABLE_WEBDAV: "false" # disables built-in WebDAV server
+      PHOTOPRISM_DISABLE_SETTINGS: "false" # disables settings UI and API
+      PHOTOPRISM_DISABLE_TENSORFLOW: "false" # disables all features depending on TensorFlow
+      PHOTOPRISM_DISABLE_FACES: "false" # disables face detection and recognition (requires TensorFlow)
+      PHOTOPRISM_DISABLE_CLASSIFICATION: "false" # disables image classification (requires TensorFlow)
+      PHOTOPRISM_DISABLE_RAW: "false" # disables indexing and conversion of RAW files
+      PHOTOPRISM_RAW_PRESETS: "false" # enables applying user presets when converting RAW files (reduces performance)
+      PHOTOPRISM_JPEG_QUALITY: 85 # a higher value increases the quality and file size of JPEG images and thumbnails (25-100)
+      PHOTOPRISM_DETECT_NSFW: "false" # automatically flags photos as private that MAY be offensive (requires TensorFlow)
+      PHOTOPRISM_UPLOAD_NSFW: "true" # allows uploads that MAY be offensive (no effect without TensorFlow)
+      # PHOTOPRISM_DATABASE_DRIVER: "sqlite"         # SQLite is an embedded database that doesn't require a server
+      PHOTOPRISM_DATABASE_DRIVER: "mysql" # use MariaDB 10.5+ or MySQL 8+ instead of SQLite for improved performance
+      PHOTOPRISM_DATABASE_SERVER: "mariadb:3306" # MariaDB or MySQL database server (hostname:port)
+      PHOTOPRISM_DATABASE_NAME: "{{ service_name }}" # MariaDB or MySQL database schema name
+      PHOTOPRISM_DATABASE_USER: "{{ service_name }}" # MariaDB or MySQL database user name
+      PHOTOPRISM_DATABASE_PASSWORD: "{{ vault_photoprism_database_password }}" # MariaDB or MySQL database user password
+      PHOTOPRISM_SITE_CAPTION: "AI-Powered Photos App"
+      PHOTOPRISM_SITE_DESCRIPTION: "" # meta site description
+      PHOTOPRISM_SITE_AUTHOR: "" # meta site author
+      ## Run/install on first startup (options: update https gpu tensorflow davfs clitools clean):
+      PHOTOPRISM_INIT: "intel tensorflow"
+      ## Hardware Video Transcoding:
+      PHOTOPRISM_FFMPEG_ENCODER: "intel" # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry")
+      # PHOTOPRISM_FFMPEG_BITRATE: "32"              # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
+      ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
+      PHOTOPRISM_UID: "{{ docker_container_puid | int }}"
+      PHOTOPRISM_GID: "{{ docker_container_pgid | int }}"
+      PHOTOPRISM_UMASK: 0000
+    user: "{{ docker_container_puid }}:{{ docker_container_pgid }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.photoprism.rule=Host(`{{ service_name }}.{{ public_domain }}`)"
+      - "traefik.docker.network={{ traefik_network_name }}"
+    working_dir: "/photoprism"
+    volumes:
+      - "{{ photoprism_app_dir }}/originals:/photoprism/originals" # original media files (photos and videos)
+      - "{{ photoprism_app_dir }}/storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
+      - "{{ photoprism_app_dir }}/import:/photoprism/import" # *writable* storage folder for cache, database, and sidecar files (never remove)
+    networks:
+      - app
+      - traefik
+    devices:
+      - /dev/dri:/dev/dri
+
+  mariadb:
+    container_name: "{{ service_name }}-mariadb"
+    restart: unless-stopped
+    image: mariadb:10.10
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    volumes:
+      - "{{ photoprism_db_dir }}:/var/lib/mysql"
+    environment:
+      MARIADB_AUTO_UPGRADE: "1"
+      MARIADB_INITDB_SKIP_TZINFO: "1"
+      MARIADB_DATABASE: "{{ service_name }}"
+      MARIADB_USER: "{{ service_name }}"
+      MARIADB_PASSWORD: "{{ vault_photoprism_database_password }}"
+      MARIADB_ROOT_PASSWORD: "{{ vault_photoprism_database_root_password }}"
+    networks:
+      - app
+
+networks:
+  app:
+  traefik:
+    external: true
