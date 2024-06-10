@@ -20,7 +20,7 @@ traefik_labels:
 traefik_labels_default:
   # Expose traefik dashboard on subdomain
   traefik.enable: "true"
-  traefik.http.routers.api.rule: "Host(`traefik.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+  traefik.http.routers.api.rule: "Host(`traefik.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
   traefik.http.routers.api.service: "api@internal"
 
 traefik_env:

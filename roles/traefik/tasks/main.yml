@@ -21,3 +21,5 @@
     labels: "{{ traefik_labels_default | combine(traefik_labels) }}"
     env: "{{ traefik_env }}"
     restart_policy: unless-stopped
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
