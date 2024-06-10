@@ -1,7 +1,7 @@
 ---
 service_name: nzb
 
-nzb_compose_file: "{{ docker_compose_root }}/nzb/docker-compose.yml"
+nzb_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
 
 nzb_data_root:
 
