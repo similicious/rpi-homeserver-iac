@@ -6,7 +6,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.redlib.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.redlib.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.redlib.loadbalancer.server.port: "8080"
       traefik.docker.network: "traefik"
     networks:
@@ -14,3 +14,5 @@
     healthcheck:
       # Workaround for https://github.com/AdguardTeam/AdGuardHome/issues/5714
       test: ["NONE"]
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
