@@ -26,7 +26,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.scrutiny.rule: "Host(`scrutiny.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.scrutiny.rule: "Host(`scrutiny.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.scrutiny.loadbalancer.server.port: "8080"
     devices:
       - /dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7GUAKLN:/dev/sda
@@ -38,3 +38,5 @@
       - SYS_ADMIN
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
