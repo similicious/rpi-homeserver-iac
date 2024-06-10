@@ -11,7 +11,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.stash.rule: "Host(`stash.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.stash.loadbalancer.server.port: "9999"
       traefik.http.routers.stash.middlewares: "authelia@docker"
     devices:
@@ -19,3 +19,5 @@
       - /dev/dri/card0:/dev/dri/card0
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
