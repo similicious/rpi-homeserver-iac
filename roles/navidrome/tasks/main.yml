@@ -2,14 +2,14 @@
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: deluan/navidrome
+    image: deluan/navidrome:latest
     volumes:
       - "{{ navidrome_config_dir }}:/data"
       - "{{ navidrome_music_dir }}:/music"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.navidrome.rule: "Host(`navidrome.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
       traefik.http.routers.navidrome.middlewares: "authelia@docker"
     env:
@@ -20,3 +20,5 @@
       ND_REVERSEPROXYWHITELIST: "172.18.0.0/16"
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
