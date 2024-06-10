@@ -17,7 +17,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.beets.rule: "Host(`beets.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.beets.loadbalancer.server.port: "8337"
     env:
       TZ: Europe/Berlin
@@ -27,3 +27,5 @@
       DOCKER_MODS: linuxserver/mods:universal-package-install
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
