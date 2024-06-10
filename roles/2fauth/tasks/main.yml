@@ -10,13 +10,13 @@
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: 2fauth/2fauth
+    image: 2fauth/2fauth:latest
     volumes:
       - "{{ twofauth_dir }}:/2fauth"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.twofauth.rule: "Host(`{{ subdomain_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.twofauth.rule: "Host(`{{ subdomain_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.twofauth.loadbalancer.server.port: "8000"
       traefik.http.routers.twofauth.middlewares: "authelia@docker"
     env:
@@ -29,3 +29,5 @@
       APP_KEY: "{{ vault_twofauth_app_key }}"
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
