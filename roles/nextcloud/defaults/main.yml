@@ -1,6 +1,8 @@
 ---
 service_name: nextcloud
 
+nextcloud_compose_file: "{{ docker_compose_root }}/nextcloud/docker-compose.yml"
+
 nextcloud_dir: "{{ docker_container_data_root }}/nextcloud"
 nextcloud_app_dir: "{{ nextcloud_dir }}/app"
 nextcloud_app_data_dir: "{{ nextcloud_app_dir }}/data"
