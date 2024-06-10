@@ -1,4 +1,14 @@
 ---
+- name: "Ensure the appdata directory for services exist"
+  file:
+    path: "{{ paperless_compose_file | dirname }}"
+    state: directory
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ paperless_compose_file }}"
+
 - name: "Ensure the data subfolder for {{ service_name }} exists"
   file:
     path: "{{ paperless_dir }}"
@@ -7,74 +17,6 @@
     group: "{{ docker_container_pgid | int }}"
 
 - name: "Ensure the {{ service_name }} stack is running"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ service_name }}"
-    pull: true
-    definition:
-      version: "3.4"
-
-      services:
-        broker:
-          container_name: "{{ service_name }}-broker"
-          image: redis:7
-          restart: unless-stopped
-          volumes:
-            - "{{ paperless_redis_data_dir }}:/data"
-          networks:
-            - app
-
-        app:
-          container_name: "{{ service_name }}-app"
-          image: ghcr.io/paperless-ngx/paperless-ngx:latest
-          restart: unless-stopped
-          depends_on:
-            - broker
-          healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8000"]
-            interval: 30s
-            timeout: 10s
-            retries: 5
-          volumes:
-            - "{{ paperless_app_data_dir }}:/usr/src/paperless/data"
-            - "{{ paperless_app_media_dir }}:/usr/src/paperless/media"
-            - "{{ paperless_app_export_dir }}:/usr/src/paperless/export"
-            - "{{ paperless_app_consume_dir }}/:/usr/src/paperless/consume"
-          environment:
-            COMPOSE_PROJECT_NAME: "{{ service_name }}"
-            PAPERLESS_REDIS: redis://broker:6379
-            PAPERLESS_DBHOST: db
-            PAPERLESS_DBUSER: paperless
-            PAPERLESS_DBPASS: "{{ vault_postgres_password }}"
-            USERMAP_UID: "{{ docker_container_puid }}"
-            USERMAP_GID: "{{ docker_container_pgid }}"
-            PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{created} - {title}"
-            PAPERLESS_OCR_LANGUAGE: "deu+eng"
-            PAPERLESS_URL: "https://paperless.{{ public_domain }}"
-            PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
-            PAPERLESS_IGNORE_DATES: "{{ vault_paperless_birthdate }}"
-          labels:
-            traefik.enable: "true"
-            traefik.http.routers.paperless.rule: "Host(`paperless.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
-            traefik.http.routers.paperless.middlewares: "authelia@docker"
-            traefik.docker.network: "{{ traefik_network_name }}"
-          networks:
-            - app
-            - traefik
-
-        db:
-          image: docker.io/library/postgres:13
-          container_name: "{{ service_name }}-db"
-          restart: unless-stopped
-          volumes:
-            - "{{ paperless_postgres_data_dir }}:/var/lib/postgresql/data"
-          environment:
-            POSTGRES_DB: paperless
-            POSTGRES_USER: paperless
-            POSTGRES_PASSWORD: "{{ vault_postgres_password }}"
-          networks:
-            - app
-
-      networks:
-        app:
-        traefik:
-          external: true
+    project_src: "{{ paperless_compose_file | dirname }}"
