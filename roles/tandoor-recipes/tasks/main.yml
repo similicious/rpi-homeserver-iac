@@ -1,82 +1,22 @@
 ---
-- name: "Ensure the config subfolder for {{ service_name }} exists"
+- name: "Ensure the appdata directory for services exist"
   file:
-    path: "{{ recipes_dir }}"
+    path: "{{ recipes_compose_dir }}"
     state: directory
-    owner: "{{ docker_container_puid | int }}"
-    group: "{{ docker_container_pgid | int }}"
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ recipes_compose_file }}"
 
 - name: "Ensure the environment file exists"
   template:
     src: .env.j2
-    dest: "{{ recipes_dir }}/.env"
-    owner: "{{ docker_container_puid | int }}"
-    group: "{{ docker_container_pgid | int }}"
+    dest: "{{ recipes_compose_dir }}/.env"
 
 - name: "Ensure the {{ service_name }} stack is running"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ service_name }}"
-    pull: true
-    definition:
-      version: "3"
-      services:
-        app:
-          container_name: "{{ service_name }}-app"
-          image: vabene1111/recipes:1.4
-          restart: unless-stopped
-          env_file:
-            - "{{ recipes_dir }}/.env"
-          volumes:
-            - "staticfiles:/opt/recipes/staticfiles"
-            - "nginx_config:/opt/recipes/nginx/conf.d"
-            - "{{ recipes_app_media_dir }}:/opt/recipes/mediafiles"
-          networks:
-            - app
-          depends_on:
-            - db
-
-        web:
-          container_name: "{{ service_name }}-web"
-          image: nginx:mainline-alpine
-          restart: unless-stopped
-          env_file:
-            - "{{ recipes_dir }}/.env"
-          volumes:
-            - "staticfiles:/static:ro"
-            - "nginx_config:/etc/nginx/conf.d:ro"
-            - "{{ recipes_app_media_dir }}:/media:ro"
-          labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.recipes.rule=Host(`{{ service_name }}.{{ public_domain }}`)"
-            - "traefik.docker.network={{ traefik_network_name }}"
-          networks:
-            - app
-            - "{{ traefik_network_name }}"
-          depends_on:
-            - app
-          links:
-            # map the app container dns name to web_recipes, as it is hardcoded in the
-            # reverse proxies config
-            - "app:web_recipes"
-
-        db:
-          container_name: "{{ service_name }}-db"
-          restart: unless-stopped
-          image: postgres:11-alpine
-          volumes:
-            - "{{ recipes_db_dir }}:/var/lib/postgresql/data"
-          env_file:
-            - "{{ recipes_dir }}/.env"
-          networks:
-            - app
-
-      networks:
-        app:
-        traefik:
-          external: true
-
-      volumes:
-        # for some reason, these paths need to be mapped to volumes
-        # otherwise the nginx config is not copied correctly
-        nginx_config:
-        staticfiles:
+    project_src: "{{ recipes_compose_dir }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

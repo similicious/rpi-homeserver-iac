@@ -1,5 +1,9 @@
 ---
 service_name: recipes
+
+recipes_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+recipes_compose_dir: "{{ recipes_compose_file | dirname }}"
+
 recipes_dir: "{{ docker_container_data_root }}/{{ service_name }}"
 
 recipes_app_dir: "{{ recipes_dir }}/app"
