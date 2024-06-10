@@ -9,10 +9,12 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "true"
-      traefik.http.routers.deezer.rule: "Host(`deezer.{{ public_domain }}`)  && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.deezer.rule: "Host(`deezer.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.services.deezer.loadbalancer.server.port: "5000"
       traefik.http.routers.deezer.middlewares: "authelia@docker"
     env:
       DEEZER_COOKIE_ARL: "{{ vault_deezer_arl_cookie }}"
     networks:
       - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
