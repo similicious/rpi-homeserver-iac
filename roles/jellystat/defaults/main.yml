@@ -1,7 +1,0 @@
----
-service_name: jellystat
-
-jellystat_dir: "{{ docker_container_data_root }}/{{ service_name }}"
-
-jellystat_app_dir: "{{ jellystat_dir }}/app"
-jellystat_db_dir: "{{ jellystat_dir }}/db"
