@@ -19,7 +19,7 @@
 - name: "Ensure {{ service_name }} is running as a docker container"
   community.docker.docker_container:
     name: "{{ service_name }}"
-    image: authelia/authelia
+    image: authelia/authelia:latest
     restart_policy: unless-stopped
     volumes:
       - "{{ authelia_config_dir }}:/config"
@@ -27,9 +27,11 @@
       - name: "{{ traefik_network_name }}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.authelia.rule: "Host(`auth.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
+      traefik.http.routers.authelia.rule: "Host(`auth.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
       traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://auth.{{ public_domain }}"
       traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: "true"
       traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
     env:
       TZ: Europe/Berlin
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
