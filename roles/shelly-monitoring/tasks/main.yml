@@ -6,6 +6,7 @@
     owner: "{{ docker_container_puid | int }}"
     group: "{{ docker_container_pgid | int }}"
   with_items:
+    - "{{ shelly_compose_file | dirname }}"
     - "{{ shelly_config_root }}"
     - "{{ shelly_mosquitto_config_dir }}"
     - "{{ shelly_mqtt_explorer_config_dir }}"
@@ -13,6 +14,11 @@
     - "{{ shelly_prometheus_root }}"
     - "{{ shelly_prometheus_data_dir }}"
     - "{{ shelly_prometheus_config_dir }}"
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ shelly_compose_file }}"
 
 - name: "Ensure the mosquitto are present"
   ansible.builtin.copy:
@@ -30,93 +36,8 @@
   notify: restart_prometheus
 
 - name: "Ensure the {{ service_name }} stack is running"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ service_name }}"
-    definition:
-      version: "3.4"
-
-      services:
-        mosquitto:
-          container_name: mosquitto
-          image: eclipse-mosquitto
-          restart: unless-stopped
-          ports:
-            - 1883:1883
-          volumes:
-            - "{{ shelly_mosquitto_config_dir }}/mosquitto.conf:/mosquitto/config/mosquitto.conf"
-          networks:
-            - shelly
-
-        mqtt-explorer:
-          container_name: mqtt-explorer
-          image: smeagolworms4/mqtt-explorer
-          restart: unless-stopped
-          volumes:
-            - "{{ shelly_mqtt_explorer_config_dir }}:/mqtt-explorer/config"
-          labels:
-            traefik.enable: "true"
-            traefik.http.routers.mqttexplorer.rule: "Host(`mqtt-explorer.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
-            traefik.http.services.mqttexplorer.loadbalancer.server.port: "4000"
-            traefik.docker.network: "{{ traefik_network_name }}"
-          networks:
-            - shelly
-            - "{{ traefik_network_name }}"
-
-        grafana:
-          container_name: grafana
-          restart: unless-stopped
-          user: "{{ docker_container_puid | int }}:{{ docker_container_pgid | int }}"
-          image: grafana/grafana
-          volumes:
-            - "{{ shelly_grafana_config_dir }}:/var/lib/grafana"
-          labels:
-            traefik.enable: "true"
-            traefik.http.routers.grafana.rule: "Host(`grafana.{{ public_domain }}`) && {{ traefik_internal_client_ip }}"
-            traefik.http.services.grafana.loadbalancer.server.port: "3000"
-            traefik.docker.network: "{{ traefik_network_name }}"
-          # environment:
-          #   GF_SERVER_ROOT_URL: "https://grafana.{{ public_domain }}"
-          #   GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
-          #   GF_AUTH_GENERIC_OAUTH_NAME: "Authelia"
-          #   GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "grafana"
-          #   GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{ vault_monitoring_grafana_client_secret }}"
-          #   GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email groups"
-          #   GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES: "false"
-          #   GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.{{ public_domain }}/api/oidc/authorization"
-          #   GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.{{ public_domain }}/api/oidc/token"
-          #   GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.{{ public_domain }}/api/oidc/userinfo"
-          #   GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH: "preferred_username"
-          #   GF_AUTH_GENERIC_OAUTH_GROUPS_ATTRIBUTE_PATH: "groups"
-          #   GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH: "name"
-          #   GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
-          networks:
-            - shelly
-            - "{{ traefik_network_name }}"
-
-        prometheus:
-          image: prom/prometheus
-          container_name: prometheus
-          volumes:
-            - "{{ shelly_prometheus_data_dir }}:/etc/prometheus"
-            - "{{ shelly_prometheus_config_dir }}/prometheus.yml:/etc/prometheus/prometheus.yml"
-          networks:
-            - "{{ traefik_network_name }}"
-            - shelly
-          restart: unless-stopped
-
-        node_exporter:
-          image: quay.io/prometheus/node-exporter:latest
-          container_name: node_exporter
-          command:
-            - "--path.rootfs=/host"
-          pid: host
-          volumes:
-            - "/:/host:ro,rslave"
-          networks:
-            - shelly
-          restart: unless-stopped
-
-      networks:
-        shelly:
-        traefik:
-          external: true
+    project_src: "{{ shelly_compose_file | dirname }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
