@@ -10,6 +10,6 @@
     dest: "{{ nextcloud_compose_file }}"
 
 - name: "Make sure {{ service_name }} is running as a container"
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ service_name }}"
     project_src: "{{ nextcloud_compose_file | dirname }}"
