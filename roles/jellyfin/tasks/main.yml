@@ -17,9 +17,9 @@
       JELLYFIN_PublishedServerUrl: "https://jellyfin.{{ public_domain }}"
     ports:
       - 7359:7359/udp
-      - 1900:1900/udp
+      # - 1900:1900/udp
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/card1:/dev/dri/card0
     networks:
       - name: "{{ traefik_network_name }}"
