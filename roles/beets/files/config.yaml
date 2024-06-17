@@ -26,3 +26,6 @@ ui:
 
 web:
   host: 0.0.0.0
+
+match:
+  strong_rec_thresh: 0.10
