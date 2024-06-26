@@ -22,3 +22,7 @@
       - 21027:21027/udp
     networks:
       - name: "{{ traefik_network_name }}"
+    log_driver: "local"
+    log_options:
+      max-size: "50m"
+      max-file: "10"
