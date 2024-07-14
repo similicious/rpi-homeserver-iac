@@ -1,4 +1,7 @@
 ---
 service_name: authelia
 
+authelia_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+authelia_compose_dir: "{{ authelia_compose_file | dirname }}"
+
 authelia_config_dir: "{{ docker_container_data_root }}/authelia"

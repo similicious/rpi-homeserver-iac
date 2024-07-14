@@ -53,6 +53,10 @@ session:
   inactivity: 5m
   remember_me_duration: 1M
 
+  redis:
+    host: redis
+    port: 6379
+
 regulation:
   max_retries: 3
   find_time: 120

@@ -1,0 +1,31 @@
+services:
+  web:
+    container_name: "{{ service_name }}"
+    image: authelia/authelia:latest
+    restart: unless-stopped
+    volumes:
+      - "{{ authelia_config_dir }}:/config"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.authelia.rule: "Host(`auth.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://auth.{{ public_domain }}"
+      traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: "true"
+      traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+      traefik.docker.network: "{{ traefik_network_name }}"
+    networks:
+      - app
+      - "{{ traefik_network_name }}"
+    environment:
+      TZ: Europe/Berlin
+
+  redis:
+    image: redis
+    container_name: "{{ service_name }}-redis"
+    restart: unless-stopped
+    networks:
+      - app
+
+networks:
+  app:
+  traefik:
+    external: true

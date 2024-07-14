@@ -4,6 +4,16 @@
     path: "{{ authelia_config_dir }}"
     state: directory
 
+- name: "Ensure the compose directory for {{ service_name }} exist"
+  file:
+    path: "{{ authelia_compose_dir }}"
+    state: directory
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ authelia_compose_file }}"
+
 - name: "Ensure the configuration for {{ service_name }} is in place"
   ansible.builtin.template:
     src: "configuration.yml"
@@ -17,21 +27,8 @@
   notify: restart_authelia
 
 - name: "Ensure {{ service_name }} is running as a docker container"
-  community.docker.docker_container:
-    name: "{{ service_name }}"
-    image: authelia/authelia:latest
-    restart_policy: unless-stopped
-    volumes:
-      - "{{ authelia_config_dir }}:/config"
-    networks:
-      - name: "{{ traefik_network_name }}"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.authelia.rule: "Host(`auth.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
-      traefik.http.middlewares.authelia.forwardauth.address: "http://authelia:9091/api/verify?rd=https://auth.{{ public_domain }}"
-      traefik.http.middlewares.authelia.forwardauth.trustForwardHeader: "true"
-      traefik.http.middlewares.authelia.forwardauth.authResponseHeaders: "Remote-User,Remote-Groups,Remote-Name,Remote-Email"
-    env:
-      TZ: Europe/Berlin
+  community.docker.docker_compose_v2:
+    project_name: "{{ service_name }}"
+    project_src: "{{ authelia_compose_dir }}"
   vars:
     ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
