@@ -1,14 +1,7 @@
 # yaml-language-server: $schema=https://creativeprojects.github.io/resticprofile/jsonschema/config-1.json
 version: "1"
 
-default:
-  repository: "b2:{{ vault_resticprofile_bucket_name }}:/"
-  password-file: "./password.txt"
-
-  env:
-    B2_ACCOUNT_ID: "{{ vault_resticprofile_account_id }}"
-    B2_ACCOUNT_KEY: "{{ vault_resticprofile_account_key }}"
-
+base:
   backup:
     run-before:
       # Nextcloud db
@@ -25,9 +18,6 @@ default:
       # Recipes
       - docker exec recipes-db pg_dump -U recipes recipes > /mnt/appdata/docker/recipes/backup/recipes.sql
       - docker exec recipes-db pg_dumpall -U recipes --globals-only > /mnt/appdata/docker/recipes/backup/recipes-postgres-globals.sql
-
-    run-after: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}"
-    run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
 
     source:
       # Data
@@ -89,6 +79,19 @@ default:
       # Docker containers
       - /mnt/appdata/docker/navidrome/cache
 
+default:
+  inherit: base
+  repository: "b2:{{ vault_resticprofile_bucket_name }}:/"
+  password-file: "./password.txt"
+
+  env:
+    B2_ACCOUNT_ID: "{{ vault_resticprofile_account_id }}"
+    B2_ACCOUNT_KEY: "{{ vault_resticprofile_account_key }}"
+
+  backup:
+    run-after: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}"
+    run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+
     schedule: "04:00"
     schedule-permission: system
     schedule-lock-wait: 10m
@@ -120,3 +123,20 @@ default:
       - body: "Restic check failed"
         method: POST
         url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+
+# sudo ./bin/resticprofile ext.backup
+ext:
+  inherit: base
+  repository: "/mnt/st-backup/restic"
+  password-file: "./password.txt"
+
+  run-before: "sudo mount /dev/disk/by-id/usb-Intenso_USB_3.0_device_904000000000000014B2-0:0-part1 /mnt/st-backup"
+  run-finally: "sudo umount /mnt/st-backup"
+
+  forget:
+    keep-last: 10
+    keep-daily: 7
+    keep-weekly: 5
+    keep-monthly: 12
+    keep-yearly: 2
+    prune: true
