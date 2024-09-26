@@ -42,6 +42,9 @@ traefik_network_name: traefik
 
 # githubixx.ansible_role_wireguard
 wireguard_unmanaged_peers:
+  berylax:
+    public_key: 34k2V+GezcOvJVwNWtxtH+yBUtW9Ay83TSMi+4i5iRo=
+    allowed_ips: 10.10.0.2/32
   smartphone:
     public_key: jHqz4lrMWR04e/7GxA5EvrV20ztKuIeLAUnb00XkLgY=
     allowed_ips: 10.10.0.3/32
