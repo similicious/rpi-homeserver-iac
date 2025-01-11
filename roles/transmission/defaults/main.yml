@@ -1,0 +1,10 @@
+---
+service_name: transmission
+
+transmission_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+transmission_compose_dir: "{{ transmission_compose_file | dirname }}"
+
+transmission_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+transmission_download_dir:
+
+gluetun_dir: "{{ docker_container_data_root }}/gluetun"

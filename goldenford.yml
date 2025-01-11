@@ -118,3 +118,6 @@
     - role: searxng
       tags:
         - searxng
+    - role: transmission
+      tags:
+        - transmission

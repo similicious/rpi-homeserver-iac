@@ -1,0 +1,42 @@
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      TZ: Europe/Berlin
+      PUID: "{{ docker_container_puid }}"
+      PGID: "{{ docker_container_pgid }}"
+      DOCKER_MODS: linuxserver/mods:transmission-floodui
+    volumes:
+      - "{{ transmission_dir }}:/config"
+      - "{{ transmission_download_dir }}:/downloads"
+    restart: unless-stopped
+    network_mode: "container:gluetun"
+
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      # - grand krill
+      - "WIREGUARD_PRIVATE_KEY={{ vault_gluetun_wireguard_private_key }}"
+      - "WIREGUARD_ADDRESSES={{ vault_gluetun_wireguard_ip }}"
+      - SERVER_CITIES=Berlin
+    volumes:
+      - "{{ gluetun_dir }}:/gluetun"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.rule=Host(`transmission.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      - "traefik.http.routers.transmission.middlewares=authelia@docker"
+      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
