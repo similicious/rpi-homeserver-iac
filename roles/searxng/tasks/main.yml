@@ -1,0 +1,16 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: docker.io/searxng/searxng:latest
+    volumes:
+      - "{{ searxng_dir }}:/etc/searxng"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.searxng.rule: "Host(`search.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.searxng.loadbalancer.server.port: "8080"
+    networks:
+      - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
