@@ -32,16 +32,6 @@ samba_shares:
     path: "{{ storage_data_dir }}"
     group: "{{ username }}"
     write_list: "{{ username }}"
-  - name: music
-    path: "{{ storage_media_dir }}/music"
-    group: "{{ username }}"
-    write_list: "{{ username }}"
-  - name: share
-    path: "{{ storage_media_dir }}/share"
-    writable: "yes"
-    public: "yes"
-    guest_ok: "yes"
-    browsable: "yes"
 
 # all docker services
 docker_container_data_root: "/mnt/appdata/docker"
@@ -86,6 +76,9 @@ nzb_data_root: "{{ storage_media_dir }}"
 
 # role: jdownloader
 jdownloader_download_dir: "{{ storage_media_dir }}/downloads/jdownloader"
+
+# role: transmission
+transmission_download_dir: "{{ storage_media_dir }}/downloads/torrent"
 
 # role: adguard
 adguard_rewrites:
