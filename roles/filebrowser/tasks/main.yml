@@ -1,0 +1,24 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: filebrowser/filebrowser:s6
+    volumes:
+      - "{{ filebrowser_config_dir }}/database:/database"
+      - "{{ filebrowser_config_dir }}/config:/config"
+      - "{{ storage_media_dir }}:/srv/media"
+      - "{{ storage_data_dir }}:/srv/data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.filebrowser.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.filebrowser.loadbalancer.server.port: "80"
+      traefik.http.routers.filebrowser.middlewares: "authelia@docker"
+      traefik.docker.network: "{{ traefik_network_name }}"
+    env:
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

@@ -112,3 +112,6 @@
     - role: packlist
       tags:
         - packlist
+    - role: filebrowser
+      tags:
+        - filebrowser
