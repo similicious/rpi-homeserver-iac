@@ -1,4 +1,0 @@
----
-service_name: dufs
-
-dufs_dir: "{{ storage_media_dir }}/share"

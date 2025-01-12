@@ -61,9 +61,6 @@
     - role: watchtower
       tags:
         - watchtower
-    - role: dufs
-      tags:
-        - dufs
     - role: audiobookshelf
       tags:
         - audiobookshelf
