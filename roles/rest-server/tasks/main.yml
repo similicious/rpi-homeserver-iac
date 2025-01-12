@@ -1,0 +1,17 @@
+---
+- name: "Ensure the compose directory for services exist"
+  file:
+    path: "{{ rest_server_compose_dir }}"
+    state: directory
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ rest_server_compose_file }}"
+
+- name: "Ensure the {{ service_name }} stack is running"
+  community.docker.docker_compose_v2:
+    project_name: "{{ service_name }}"
+    project_src: "{{ rest_server_compose_dir }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

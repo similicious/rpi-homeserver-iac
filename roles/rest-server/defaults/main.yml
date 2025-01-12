@@ -1,0 +1,9 @@
+---
+service_name: rest-server
+
+rest_server_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+rest_server_compose_dir: "{{ rest_server_compose_file | dirname }}"
+
+rest_server_data_dir: "{{ storage_media_dir }}/backup/{{ service_name }}"
+
+rest_server_tailscale_dir: "{{ docker_container_data_root }}/gluetun"

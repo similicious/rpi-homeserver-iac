@@ -121,3 +121,6 @@
     - role: transmission
       tags:
         - transmission
+    - role: rest-server
+      tags:
+        - rest-server

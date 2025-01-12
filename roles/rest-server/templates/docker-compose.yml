@@ -1,0 +1,27 @@
+services:
+  rest-server:
+    image: restic/rest-server:latest
+    container_name: "{{ service_name }}"
+    environment:
+      DISABLE_AUTHENTICATION: true
+    volumes:
+      - "{{ rest_server_data_dir }}:/data"
+    restart: unless-stopped
+    network_mode: service:tailscale-rest-server
+
+  tailscale-rest-server:
+    image: tailscale/tailscale:latest
+    hostname: rest-server-simon
+    container_name: "tailscale-{{ service_name }}"
+    environment:
+      - "TS_AUTHKEY={{ vault_rest_server_ts_authkey }}"
+      # - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - "{{ rest_server_tailscale_dir }}:/var/lib/tailscale"
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
