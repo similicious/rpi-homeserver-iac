@@ -4,8 +4,9 @@ traefik_network_name: traefik
 traefik_args:
 traefik_args_default: >
   --api.dashboard=true
-  --providers.docker
+  --providers.docker=true
   --providers.docker.exposedByDefault=false
+  --providers.file.filename=/etc/traefik/dynamic.yml
   --accesslog=true
   --entryPoints.http.address=:80
   --entryPoints.https.address=:443
@@ -27,3 +28,7 @@ traefik_env:
 
 # Per default, a docker volume is used to store certs
 traefik_ssl_certs_dir: "traefik_ssl_certs"
+
+traefik_dynamic_file_path: "{{ docker_container_data_root }}/traefik/dynamic.yaml"
+traefik_dynamic_file_dir: "{{ traefik_dynamic_file_path | dirname }}"
+traefik_dynamic_file_content:

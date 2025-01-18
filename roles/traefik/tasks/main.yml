@@ -1,4 +1,14 @@
 ---
+- name: "Create config directory"
+  ansible.builtin.file:
+    path: "{{ traefik_dynamic_file_dir }}"
+    state: directory
+
+- name: "Create dynamic config file"
+  ansible.builtin.copy:
+    dest: "{{ traefik_dynamic_file_path }}"
+    content: "{{ traefik_dynamic_file_content }}"
+
 - name: Ensure the proxy network exists
   community.docker.docker_network:
     name: "{{ traefik_network_name }}"
@@ -13,6 +23,7 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - "{{ traefik_ssl_certs_dir }}:/ssl-certs"
+      - "{{ traefik_dynamic_file_path }}:/etc/traefik/dynamic.yml"
     command: >
       {{ traefik_args_default }}
       {{ traefik_args }}

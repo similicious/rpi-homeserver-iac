@@ -59,6 +59,19 @@ traefik_env:
 traefik_labels:
   traefik.http.routers.api.middlewares: "authelia@docker"
 
+traefik_dynamic_file_content: |
+  http:
+    routers:
+      proxmox:
+        rule: "Host(`proxmox.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+        service: "proxmox"
+
+    services:
+      proxmox:
+        loadBalancer:
+          servers:
+            - url: "https://192.168.178.60:8006"
+
 # role: portainer
 portainer_config_dir: "{{ docker_container_data_root }}/portainer"
 
