@@ -22,3 +22,20 @@
       - name: "{{ traefik_network_name }}"
   vars:
     ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
+
+- name: "Ensure airsonic-refix is running as a docker container"
+  community.docker.docker_container:
+    name: "airsonic-refix"
+    image: tamland/airsonic-refix:latest
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.airsonic.rule: "Host(`airsonic.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.airsonic.loadbalancer.server.port: "80"
+      traefik.http.routers.airsonic.middlewares: "authelia@docker"
+    env:
+      SERVER_URL: "https://{{ service_name }}.{{ public_domain }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
