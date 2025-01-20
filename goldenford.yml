@@ -118,3 +118,6 @@
     - role: rest-server
       tags:
         - rest-server
+    - role: stirling-pdf
+      tags:
+        - stirling-pdf

@@ -1,0 +1,3 @@
+---
+service_name: "stirling-pdf"
+stirling_dir: "{{ docker_container_data_root }}/{{ service_name }}"

@@ -1,0 +1,21 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: stirlingtools/stirling-pdf:latest
+    volumes:
+      - "{{ stirling_dir }}/trainingData:/usr/share/tessdata"
+      - "{{ stirling_dir }}/extraConfigs:/configs"
+      - "{{ stirling_dir }}/customFiles:/customFiles/"
+      - "{{ stirling_dir }}/logs:/logs/"
+      - "{{ stirling_dir }}/pipeline:/pipeline/"
+    env:
+      DOCKER_ENABLE_SECURITY: "false"
+      LANGS: "en_GB"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.stirling-pdf.rule: "Host(`pdf.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.stirling-pdf.loadbalancer.server.port: "8080"
+    networks:
+      - name: "{{ traefik_network_name }}"
