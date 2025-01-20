@@ -1,0 +1,17 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: sbs20/scanservjs:latest
+    volumes:
+      - "{{ scanservjs_dir }}:/var/lib/scanservjs/output"
+    env:
+      DEVICES: "net:192.168.178.140:airscan:w0:Brother DCP-7055W"
+      SANED_NET_HOSTS: "192.168.178.140"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.scanservjs.rule: "Host(`scan.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.scanservjs.loadbalancer.server.port: "8080"
+    networks:
+      - name: "{{ traefik_network_name }}"

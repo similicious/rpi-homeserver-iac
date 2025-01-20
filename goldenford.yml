@@ -121,3 +121,6 @@
     - role: stirling-pdf
       tags:
         - stirling-pdf
+    - role: scanservjs
+      tags:
+        - scanservjs
