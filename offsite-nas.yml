@@ -1,0 +1,9 @@
+---
+- name: Setup offsite nas
+  hosts: offsitenas
+  become: true
+
+  roles:
+    - role: geerlingguy.docker
+      tags:
+        - docker

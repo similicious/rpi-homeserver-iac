@@ -1,0 +1,12 @@
+# essentials
+hostname: offsite-nas
+username: similicious
+
+# geerlingguy.docker
+docker_users:
+  - "{{ username }}"
+
+docker_daemon_options:
+  log-driver: local
+  log-opts:
+    max-size: "10m"

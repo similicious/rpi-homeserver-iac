@@ -1,4 +1,4 @@
 goldenford ansible_host=192.168.178.60 ansible_user=similicious
-bloom ansible_host=104.198.110.85 ansible_user=ubuntu
+offsitenas ansible_host=offsite-nas.van-crocodile.ts.net ansible_user=similicious
 [all]
 ansible_ssh_private_key_file=~/.ssh/id_rsa
