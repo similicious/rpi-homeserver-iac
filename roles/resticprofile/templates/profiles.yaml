@@ -75,6 +75,9 @@ base:
       # Data
       - /mnt/storage/data/Downloads
 
+      # Media
+      - /mnt/storage/media/backup/rest-server
+
       # Docker
       # Docker containers
       - /mnt/appdata/docker/navidrome/cache
