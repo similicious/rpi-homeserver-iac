@@ -130,17 +130,17 @@ default:
 # sudo ./bin/resticprofile offsitenas.backup
 offsitenas:
   inherit: base
-  repository: "rest:http://192.168.178.163:8000/simon"
+  repository: "rest:http://offsite-nas.van-crocodile.ts.net:8000/simon"
   password-file: "./password.txt"
 
-  # backup:
-  # run-after: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}"
-  # run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+  backup:
+    run-after: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id2 }}"
+    run-after-fail: "curl -fsS -m 10 --retry 5 https://hc-ping.com/{{ vault_resticprofile_healthcheck_id2 }}/fail"
 
-  # schedule: "04:00"
-  # schedule-permission: system
-  # schedule-lock-wait: 10m
-  # schedule-log: /mnt/appdata/docker/resticprofile/logs/backup.log
+    schedule: "01:00"
+    schedule-permission: system
+    schedule-lock-wait: 10m
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/backup.log
 
   forget:
     keep-last: 10
@@ -149,25 +149,25 @@ offsitenas:
     keep-monthly: 12
     keep-yearly: 2
     prune: true
-    # schedule: "05:00"
-    # schedule-permission: system
-    # schedule-lock-wait: 1h
-    # schedule-log: /mnt/appdata/docker/resticprofile/logs/forget.log
-    # send-after-fail:
-    #   - body: "Restic forget failed"
-    #     method: POST
-    #     url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+    schedule: "02:00"
+    schedule-permission: system
+    schedule-lock-wait: 1h
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/forget.log
+    send-after-fail:
+      - body: "Restic forget failed"
+        method: POST
+        url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id2 }}/fail"
 
-  # check:
-  #   schedule: "06:00"
-  #   schedule-permission: system
-  #   read-data-subset: "10%"
-  #   schedule-lock-wait: 1h
-  #   schedule-log: /mnt/appdata/docker/resticprofile/logs/check.log
-  #   send-after-fail:
-  #     - body: "Restic check failed"
-  #       method: POST
-  #       url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id }}/fail"
+  check:
+    schedule: "03:00"
+    schedule-permission: system
+    read-data-subset: "2%"
+    schedule-lock-wait: 1h
+    schedule-log: /mnt/appdata/docker/resticprofile/logs/check.log
+    send-after-fail:
+      - body: "Restic check failed"
+        method: POST
+        url: "https://hc-ping.com/{{ vault_resticprofile_healthcheck_id2 }}/fail"
 
 # sudo ./bin/resticprofile ext.backup
 ext:
