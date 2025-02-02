@@ -3,7 +3,8 @@ services:
     image: restic/rest-server:latest
     container_name: "{{ service_name }}"
     environment:
-      DISABLE_AUTHENTICATION: true
+      DISABLE_AUTHENTICATION: 1
+      OPTIONS: "--prometheus"
     volumes:
       - "{{ rest_server_data_dir }}:/data"
     restart: unless-stopped
