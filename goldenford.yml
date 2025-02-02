@@ -49,9 +49,6 @@
     - role: tandoor-recipes
       tags:
         - tandoor-recipes
-    - role: shelly-monitoring
-      tags:
-        - monitoring
     - role: scrutiny
       tags:
         - scrutiny
