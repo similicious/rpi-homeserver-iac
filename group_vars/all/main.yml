@@ -25,6 +25,8 @@ pip_install_packages:
     virtualenv: "{{ ansible_docker_venv_dir }}"
   - name: uptime-kuma-api
     virtualenv: "{{ ansible_docker_venv_dir }}"
+  - name: requests
+    virtualenv: "{{ ansible_docker_venv_dir }}"
 
 # traefik
 traefik_internal_client_ip: "ClientIP(`10.10.0.0/16`, `192.168.178.0/24`, `127.0.0.1`, `::1`)"

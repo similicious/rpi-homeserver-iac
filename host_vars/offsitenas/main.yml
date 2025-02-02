@@ -1,6 +1,7 @@
 # essentials
 hostname: offsite-nas
 username: similicious
+public_domain: offsite-nas.van-crocodile.ts.net
 
 # geerlingguy.docker
 docker_users:
@@ -10,3 +11,5 @@ docker_daemon_options:
   log-driver: local
   log-opts:
     max-size: "10m"
+
+docker_container_data_root: "/home/{{ username }}/docker"

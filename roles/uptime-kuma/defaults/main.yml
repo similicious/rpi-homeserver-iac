@@ -4,4 +4,4 @@ service_name: "uptime-kuma"
 uptime_kuma_data_dir: "{{ docker_container_data_root }}/uptimekuma"
 
 uptime_kuma_public_domain: "{{ public_domain }}"
-uptime_kuma_api_url: "https://{{ uptime_kuma_public_domain }}"
+uptime_kuma_api_url: "http://{{ uptime_kuma_public_domain }}:3001"

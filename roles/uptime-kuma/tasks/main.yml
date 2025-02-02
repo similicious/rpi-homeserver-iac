@@ -4,20 +4,20 @@
     name: "{{ service_name }}"
     restart_policy: unless-stopped
     image: louislam/uptime-kuma
+    ports:
+      - 3001:3001
     volumes:
       - "{{ uptime_kuma_data_dir }}:/app/data"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.uptime.rule: "Host(`{{ uptime_kuma_public_domain }}`)"
-      traefik.http.services.uptime.loadbalancer.server.port: "3001"
-    networks:
-      - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
 - name: "Ensure the initial setup is completed with preset password"
   lucasheld.uptime_kuma.setup:
     api_url: "{{ uptime_kuma_api_url }}"
     api_username: "{{ vault_uptime_kuma_username }}"
     api_password: "{{ vault_uptime_kuma_password }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
 - name: "Ensure an auth token is available for further use"
   lucasheld.uptime_kuma.login:
@@ -25,6 +25,8 @@
     api_username: "{{ vault_uptime_kuma_username }}"
     api_password: "{{ vault_uptime_kuma_password }}"
   register: result
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
 - name: "Ensure the auth token is stored in variable"
   set_fact:
@@ -43,6 +45,8 @@
     ntfyAuthenticationMethod: "none"
     ntfytopic: "{{ vault_ntfy_topic }}"
     state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
 - name: "Ensure the Jellyfin monitor is set up"
   lucasheld.uptime_kuma.monitor:
@@ -56,6 +60,8 @@
     notification_names:
       - ntfy
     state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
 - name: "Ensure the DNS monitor is set up"
   lucasheld.uptime_kuma.monitor:
@@ -71,3 +77,5 @@
     notification_names:
       - ntfy
     state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

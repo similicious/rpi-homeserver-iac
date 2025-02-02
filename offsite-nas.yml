@@ -4,6 +4,12 @@
   become: true
 
   roles:
+    - role: geerlingguy.pip
+      tags:
+        - pip
     - role: geerlingguy.docker
       tags:
         - docker
+    - role: uptime-kuma
+      tags:
+        - uptime-kuma
