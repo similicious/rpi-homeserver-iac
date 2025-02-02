@@ -16,3 +16,6 @@
     - role: beszel
       tags:
         - beszel
+    - role: watchtower
+      tags:
+        - watchtower
