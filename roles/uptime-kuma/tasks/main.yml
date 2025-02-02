@@ -4,10 +4,9 @@
     name: "{{ service_name }}"
     restart_policy: unless-stopped
     image: louislam/uptime-kuma
-    ports:
-      - 3001:3001
     volumes:
       - "{{ uptime_kuma_data_dir }}:/app/data"
+    network_mode: "host"
   vars:
     ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
 
@@ -73,6 +72,36 @@
     dns_resolve_server: "1.1.1.1"
     port: "53"
     hostname: "{{ vault_uptime_jellyfin_domain }}"
+    maxretries: 3
+    notification_names:
+      - ntfy
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
+
+- name: "Ensure the rest-server Simon monitor is set up"
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: "rest-server Simon"
+    type: keyword
+    url: "http://rest-server-simon.van-crocodile.ts.net:8000/metrics"
+    keyword: promhttp_metric_handler_requests_total
+    maxretries: 3
+    notification_names:
+      - ntfy
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
+
+- name: "Ensure the rest-server Offsite monitor is set up"
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: "rest-server Offsite"
+    type: keyword
+    url: "http://offsite-nas.van-crocodile.ts.net:8000/metrics"
+    keyword: promhttp_metric_handler_requests_total
     maxretries: 3
     notification_names:
       - ntfy
