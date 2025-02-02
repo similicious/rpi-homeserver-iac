@@ -13,3 +13,6 @@
     - role: uptime-kuma
       tags:
         - uptime-kuma
+    - role: beszel
+      tags:
+        - beszel

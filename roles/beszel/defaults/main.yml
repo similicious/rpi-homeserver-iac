@@ -1,0 +1,16 @@
+---
+service_name: beszel
+
+beszel_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+
+beszel_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+
+beszel_hub_enabled: false
+beszel_agent_default_mounts:
+  - /var/run/docker.sock:/var/run/docker.sock:ro
+
+beszel_agent_mounts:
+
+beszel_agent_combined_mounts: "{{ beszel_agent_default_mounts + beszel_agent_mounts }}"
+beszel_agent_networks:
+beszel_agent_network_mode: "default"

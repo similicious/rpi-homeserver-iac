@@ -107,3 +107,11 @@ wireguard_allowed_ips: "10.10.0.1/32, 192.168.178.0/24"
 
 # role: watchtwoer
 watchtower_mount_auth: true
+
+# role: beszel
+beszel_hub_enabled: true
+beszel_agent_mounts:
+  - "{{ storage_data_dir }}:/extra-filesystems/data:ro"
+  - "{{ storage_media_dir }}:/extra-filesystems/media:ro"
+beszel_agent_networks:
+  - name: "{{ traefik_network_name }}"

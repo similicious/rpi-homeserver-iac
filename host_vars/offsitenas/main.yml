@@ -1,3 +1,6 @@
+# vars
+storage_dir: "/media/hdd"
+
 # essentials
 hostname: offsite-nas
 username: similicious
@@ -13,3 +16,8 @@ docker_daemon_options:
     max-size: "10m"
 
 docker_container_data_root: "/home/{{ username }}/docker"
+
+# role: beszel
+beszel_agent_mounts:
+  - "{{ storage_dir }}:/extra-filesystems/hdd:ro"
+beszel_agent_network_mode: "host"

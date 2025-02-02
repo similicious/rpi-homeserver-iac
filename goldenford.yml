@@ -124,3 +124,6 @@
     - role: scanservjs
       tags:
         - scanservjs
+    - role: beszel
+      tags:
+        - beszel

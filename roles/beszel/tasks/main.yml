@@ -1,0 +1,30 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: henrygd/beszel:latest
+    volumes:
+      - "{{ beszel_dir }}:/beszel_data"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.beszel.rule: "Host(`{{ service_name }}.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.beszel.loadbalancer.server.port: "8090"
+      traefik.docker.network: "{{ traefik_network_name }}"
+    networks:
+      - name: "{{ traefik_network_name }}"
+  when: beszel_hub_enabled == true
+
+- name: "Ensure {{ service_name }} agent is running as a docker container"
+  community.docker.docker_container:
+    name: "beszel-agent"
+    image: "henrygd/beszel-agent"
+    restart_policy: unless-stopped
+    volumes: "{{ beszel_agent_combined_mounts }}"
+    env:
+      PORT: "45876"
+      KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOqIhB/F3fvxbt7exFlVPjrOssUfk+AEi/0tIOZPu013"
+    networks: "{{ beszel_agent_networks }}"
+    network_mode: "{{ beszel_agent_network_mode }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
