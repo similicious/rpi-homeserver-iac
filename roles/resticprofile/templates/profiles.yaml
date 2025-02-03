@@ -119,7 +119,7 @@ default:
   check:
     schedule: "06:00"
     schedule-permission: system
-    read-data-subset: "10%"
+    read-data-subset: "5%"
     schedule-lock-wait: 1h
     schedule-log: /mnt/appdata/docker/resticprofile/logs/check.log
     send-after-fail:
