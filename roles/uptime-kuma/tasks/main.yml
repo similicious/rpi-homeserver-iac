@@ -68,7 +68,7 @@
     api_token: "{{ uptime_kuma_api_token }}"
     name: DNS
     type: dns
-    dns_resolve_type: "CNAME"
+    dns_resolve_type: "A"
     dns_resolve_server: "1.1.1.1"
     port: "53"
     hostname: "{{ vault_uptime_jellyfin_domain }}"
