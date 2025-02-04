@@ -1,0 +1,13 @@
+{
+  "settings": [
+    {
+      "provider": "hetzner",
+      "zone_identifier": "nULFUCXhXDkcNmSmGYbMUS",
+      "domain": "{{ public_domain }}",
+      "ttl": 60,
+      "token": "{{ vault_hetzner_api_key }}",
+      "ip_version": "ipv4",
+      "ipv6_suffix": ""
+    }
+  ]
+}

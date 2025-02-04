@@ -124,3 +124,6 @@
     - role: beszel
       tags:
         - beszel
+    - role: ddns
+      tags:
+        - ddns

@@ -1,0 +1,5 @@
+---
+service_name: ddns-updater
+
+ddns_config_file: "{{ docker_container_data_root }}/{{ service_name }}/config.json"
+ddns_config_dir: "{{ ddns_config_file | dirname }}"
