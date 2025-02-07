@@ -1,0 +1,19 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/open-webui/open-webui:main
+    volumes:
+      - "{{ open_webui_dir }}:/app/backend/data"
+    restart_policy: unless-stopped
+    env:
+      WEBUI_AUTH: "true"
+      WEBUI_URL: "https://ai.{{ public_domain }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.openwebui.rule: "Host(`ai.{{ public_domain }}`) && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.openwebui.loadbalancer.server.port: "8080"
+    networks:
+      - name: "{{ traefik_network_name }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

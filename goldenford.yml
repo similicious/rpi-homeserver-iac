@@ -127,3 +127,6 @@
     - role: ddns
       tags:
         - ddns
+    - role: open-webui
+      tags:
+        - open-webui
