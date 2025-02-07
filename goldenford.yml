@@ -130,3 +130,6 @@
     - role: open-webui
       tags:
         - open-webui
+    - role: deemix
+      tags:
+        - deemix

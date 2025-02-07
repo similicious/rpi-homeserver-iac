@@ -1,0 +1,4 @@
+---
+service_name: deemix
+deemix_config_dir: "{{ docker_container_data_root }}/{{ service_name }}"
+deemix_downloads_dir: "{{ storage_media_dir }}/downloads/deemix"

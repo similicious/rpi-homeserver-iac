@@ -1,0 +1,19 @@
+---
+- name: "Ensure {{ service_name }} is running as a docker container"
+  community.docker.docker_container:
+    name: "{{ service_name }}"
+    image: ghcr.io/bambanah/deemix:latest
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ traefik_network_name }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.deemix.rule: "Host(`{{ service_name }}.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.deemix.loadbalancer.server.port: "6595"
+      traefik.docker.network: "{{ traefik_network_name }}"
+    volumes:
+      - "{{ deemix_config_dir }}:/config"
+      - "{{ deemix_downloads_dir }}:/downloads"
+    env:
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
