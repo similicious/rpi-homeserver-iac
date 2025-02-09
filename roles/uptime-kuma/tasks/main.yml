@@ -108,3 +108,18 @@
     state: present
   vars:
     ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
+
+- name: "Ensure the rest-server Jakob monitor is set up"
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ uptime_kuma_api_url }}"
+    api_token: "{{ uptime_kuma_api_token }}"
+    name: "rest-server Jakob"
+    type: keyword
+    url: "http://rest-server-jakob.korat-chinstrap.ts.net:8000/metrics"
+    keyword: promhttp_metric_handler_requests_total
+    maxretries: 3
+    notification_names:
+      - ntfy
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"
