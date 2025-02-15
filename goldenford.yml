@@ -133,3 +133,6 @@
     - role: deemix
       tags:
         - deemix
+    - role: hibiscus-server
+      tags:
+        - hibiscus-server
