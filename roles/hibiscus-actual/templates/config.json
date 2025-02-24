@@ -1,0 +1,30 @@
+{
+  "server": {
+    "publicUrl": "https://hibiscus-actual.{{ public_domain }}"
+  },
+  "ntfy": {
+    "topic": "{{ vault_hibiscus_actual_ntfy_topic }}",
+    "schedule": "0 14 * * *"
+  },
+  "dataDir": "data",
+  "actual": {
+    "serverUrl": "http://actual:5006",
+    "password": "{{ vault_hibiscus_actual_actual_password }}"
+  },
+  "hibiscus": {
+    "url": "http://hibiscus-server:8080",
+    "username": "admin",
+    "password": "{{ vault_hibiscus_actual_hibiscus_master_password }}"
+  },
+  "budgets": [
+    {
+      "syncId": "54af2893-bcde-40d3-8c13-72ade7706748",
+      "accounts": [
+        {
+          "accountId": "bc0b47d9-29d9-4cd1-8e4d-9b680797594e",
+          "hibiscusAccountId": 1
+        }
+      ]
+    }
+  ]
+}

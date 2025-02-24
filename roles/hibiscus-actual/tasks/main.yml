@@ -1,0 +1,31 @@
+---
+- name: "Ensure the compose directory exists"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  with_items:
+    - "{{ hibiscus_actual_compose_file | dirname }}"
+    - "{{ service_root }}"
+    - "{{ hibiscus_actual_dir }}"
+    - "{{ hibiscus_actual_config_dir }}"
+
+- name: Ensure the docker-compose file is present
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: "{{ hibiscus_actual_compose_file }}"
+
+- name: "Ensure the config file exists"
+  ansible.builtin.template:
+    src: config.json
+    dest: "{{ hibiscus_actual_config_dir }}/config.json"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: "Ensure {{ service_name }} is running as a container"
+  community.docker.docker_compose_v2:
+    project_name: "{{ service_name }}"
+    project_src: "{{ nextcloud_compose_file | dirname }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_docker_venv_bin }}"

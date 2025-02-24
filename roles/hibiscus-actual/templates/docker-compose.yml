@@ -1,0 +1,39 @@
+services:
+  hibiscus-server:
+    container_name: "hibiscus-server"
+    image: ghcr.io/similicious/hibiscus-server-docker:2.10.24
+    volumes:
+      - "{{ hibiscus_server_dir }}:/opt/hibiscus-data"
+    environment:
+      HIBISCUS_PASSWORD: "{{ vault_hibiscus_actual_hibiscus_master_password }}"
+      HIBISCUS_HTTPS_ENABLED: "false"
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.hibiscus.rule: "Host(`hibiscus.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.hibiscus.loadbalancer.server.port: "8080"
+    networks:
+      - "{{ traefik_network_name }}"
+
+  hibiscus-actual:
+    container_name: hibiscus-actual
+    image: ghcr.io/similicious/hibiscus-actual-budget:latest
+    volumes:
+      - "{{ hibiscus_actual_data_dir }}:/app/data"
+      - "{{ hibiscus_actual_config_dir }}:/app/config"
+    restart: unless-stopped
+    environment:
+      PUID: "{{ docker_container_puid | string }}"
+      PGID: "{{ docker_container_pgid | string }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.hibiscus-actual.rule: "Host(`hibiscus-actual.{{ public_domain }}`)  && {{ traefik_internal_client_ip_v3 }}"
+      traefik.http.services.hibiscus-actual.loadbalancer.server.port: "3000"
+    networks:
+      - "{{ traefik_network_name }}"
+
+networks:
+  traefik:
+    external: true

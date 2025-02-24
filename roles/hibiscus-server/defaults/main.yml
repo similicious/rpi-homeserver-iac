@@ -1,4 +1,0 @@
----
-service_name: hibiscus-server
-
-hibiscus_server_dir: "{{ docker_container_data_root }}/{{ service_name }}"

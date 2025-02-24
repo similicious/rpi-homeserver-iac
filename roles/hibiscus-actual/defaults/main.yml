@@ -1,0 +1,11 @@
+---
+service_name: hibiscus-actual
+hibiscus_actual_compose_file: "{{ docker_compose_root }}/{{ service_name }}/docker-compose.yml"
+
+service_root: "{{ docker_container_data_root }}/{{ service_name }}"
+
+hibiscus_server_dir: "{{ service_root }}/hibiscus-server"
+
+hibiscus_actual_dir: "{{ service_root }}/hibiscus-actual"
+hibiscus_actual_data_dir: "{{ hibiscus_actual_dir }}/data"
+hibiscus_actual_config_dir: "{{ hibiscus_actual_dir }}/config"
